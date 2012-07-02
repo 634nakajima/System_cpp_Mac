@@ -18,20 +18,20 @@ static void error(int num, const char *msg, const char *path) {
 
 int main()
 {
-    //DAC *dac;
-	//ADC *adc;
-    Coordinator *co;
+    DAC *dac;
+	ADC *adc;
+    //Coordinator *co;
     lo_server_thread st;
     
     st = lo_server_thread_new("6340", error);
-    //dac = new DAC(st, "/DAC/1");
-	//adc = new ADC(st, "/ADC/1");
-    co = new Coordinator(st, "/Coordinator");
+    dac = new DAC(st, "/DAC/1");
+	adc = new ADC(st, "/ADC/1");
+    //co = new Coordinator(st, "/Coordinator");
     lo_server_thread_start(st);
     
     getchar();
-	//delete dac;
-	//delete adc;
-    delete co;
+	delete dac;
+	delete adc;
+    //delete co;
     return 0;
 }
