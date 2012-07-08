@@ -43,7 +43,6 @@ Module::Module(lo_server_thread s, const char *osc)
     addMethodToServer("/DeleteRoute", "ss", Module::deleteRoute, this);
 
     rTable = new RoutingTable();
-    sendSetMdtkn();
 }
 
 void Module::sendSetMdtkn()
@@ -153,11 +152,49 @@ void Module::sendData(Data *d, lo_arg **argv, int argc)
             for (int i=0; i<rTable->aNum; i++) {
                 lo_send(rTable->loAddr[i], 
                         rTable->oscAddr[i],
-                        "iiiiii",
+                        "iiiiiiii",
+                        argv[0]->i,
+                        argv[1]->i,
                         argv[2]->i,
                         argv[3]->i,
                         argv[4]->i,
                         argv[5]->i,
+                        d->value,
+                        d->dataID);
+            } 
+            break;
+        
+        case 8:
+            for (int i=0; i<rTable->aNum; i++) {
+                lo_send(rTable->loAddr[i], 
+                        rTable->oscAddr[i],
+                        "iiiiiiiiii",
+                        argv[0]->i,
+                        argv[1]->i,
+                        argv[2]->i,
+                        argv[3]->i,
+                        argv[4]->i,
+                        argv[5]->i,
+                        argv[6]->i,
+                        argv[7]->i,
+                        d->value,
+                        d->dataID);
+            } 
+            break;
+        
+        case 10:
+            for (int i=0; i<rTable->aNum; i++) {
+                lo_send(rTable->loAddr[i], 
+                        rTable->oscAddr[i],
+                        "iiiiiiiiii",
+                        argv[2]->i,
+                        argv[3]->i,
+                        argv[4]->i,
+                        argv[5]->i,
+                        argv[6]->i,
+                        argv[7]->i,
+                        argv[8]->i,
+                        argv[9]->i,
                         d->value,
                         d->dataID);
             } 

@@ -113,6 +113,9 @@ DAC::DAC(lo_server_thread s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", DAC::stream, this);
     addMethodToServer("/Data", "ii", DAC::data1, this);
+    sendSetMdtkn();
+    sendSetMdtkn();
+
     for (int i=0; i<128; i++) {
         vTable[i] = 1.0 - logf((float)(127-i))/logf(127.0);
     }

@@ -125,17 +125,6 @@ void Coordinator::disconnect(int mID1, int mID2, const char *t)
             strcat(m2OSC,t));
 }
 
-void sendSetMtkn()
-{
-    //Do Nothing
-    printf("!!\n");
-}
-
-void sendDeleteMtkn()
-{
-    //Do Nothing
-}
-
 Coordinator::~Coordinator()
 {
     for (int i=0; i<mNum; i++) {
