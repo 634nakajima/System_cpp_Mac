@@ -38,7 +38,7 @@ public:
     void setRoute(char *ip, char *osc);
     void deleteRoute(char *ip, char *osc);
     void addMethodToServer(const char *path, const char *type, lo_method_handler h, void *user_data);
-    void sendData(Data *d);
+    void sendData(Data *d lo_arg **argv, int argc);
     void sendAudio(Audio *a);
     void sendAudio(short *a, unsigned long l);
     

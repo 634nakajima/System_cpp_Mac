@@ -52,8 +52,8 @@ int ADC::data1(const char   *path,
 
 ADC::ADC(lo_server_thread s, const char *osc) : Module(s, osc)
 {
-    addMethodToServer("/Stream", "b", stream, this);
-    addMethodToServer("/Data", "ii", data1, this);
+    addMethodToServer("/Stream", "b", ADC::stream, this);
+    addMethodToServer("/Data", "ii", ADC::data1, this);
     
     isPlaying = false;
 	buf = (short *)malloc(FRAMES_PER_BUFFER*sizeof(short));
