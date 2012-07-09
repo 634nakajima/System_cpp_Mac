@@ -232,7 +232,7 @@ void Module::getAddr()
     ifr.ifr_addr.sa_family = AF_INET;
     
     /* eth0のIPアドレスを取得 */
-    strncpy(ifr.ifr_name, "en0", IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, "en1", IFNAMSIZ-1);
     
     ioctl(fd, SIOCGIFADDR, &ifr);
     
