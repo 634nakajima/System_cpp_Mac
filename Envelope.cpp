@@ -208,10 +208,10 @@ void Envelope::updatevVal()
     count++;
 }
 
-
-
-
-
+Envelope::~Envelope()
+{
+    free(output);
+}
 
 
 
