@@ -36,6 +36,7 @@ int main()
     co->connect(6, 2, "/Stream");
     co->connect(2, 3, "/Stream");
     co->connect(4, 2, "/Data");
+    co->connect(5, 6, "/Data");
 
 
     getchar();
