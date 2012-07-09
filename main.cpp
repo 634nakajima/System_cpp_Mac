@@ -32,6 +32,7 @@ int main()
     lo_server_thread_start(st);
     
     env->sendSetMdtkn();
+    getchar();
     co->connect(7, 2, "/Stream");
     getchar();
 	delete dac;
