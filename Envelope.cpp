@@ -22,7 +22,7 @@ int Envelope::stream(const char   *path,
     int         dsize   = lo_blob_datasize(blob);
     short       *in     = (short *)lo_blob_dataptr(blob);
 
-    if (env->adsr++%4 == 0)
+    if (env->adsr++%2 == 0)
         env->updatevVal();
     
     for (int i=0; i<dsize/sizeof(short); i++) {
