@@ -24,7 +24,8 @@ int Envelope::stream(const char   *path,
 
     if (env->adsr++%4 == 0)
         env->updatevVal();
-    
+    if (env->adsr++%50 == 0)
+        printf("recerved\n");
     for (int i=0; i<dsize/sizeof(short); i++) {
         env->vol = 0.005*env->vTable[env->vVal] + 0.995*env->vol;
         *out++ = *in++*env->vol;
