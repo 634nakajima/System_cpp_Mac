@@ -170,7 +170,7 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     }
     
     vTable[127]     = 1.0;
-    vVal            = 127;
+    vVal            = 0;
     vol             = 0.0;
     isPlaying       = false;
     sampleRate      = 44100.0;
