@@ -16,7 +16,23 @@ int Envelope::Stream(const char   *path,
                      void         *data, 
                      void         *user_data)
 {
-    Envelope *env = (Envelope *)user_data;
+    Envelope    *env    = (Envelope *)user_data;
+    short       *out    = (short *)env->output;
+    int         
+    lo_blob     data    = (lo_blob)argv[0];
+    int         dsize   = lo_blob_datasize(data);
+    short       *in     = lo_blob_dataptr(data);
+
+    if (i++%4 == 0)
+        updatevVal();
+    
+    for (int i=0; i<dsize/sizeof(short); i++) {
+        env->vol = 0.005*env->vTable[env->vVal] + 0.995*env->vol;
+        *out++ = *in++*env->vol;
+    }
+
+    adc->sendAudio(env->putput, dsize);
+
     return 0;
 }
 
@@ -139,19 +155,20 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
         vTable[i] = 1.0 - logf((float)(127-i))/logf(127.0);
     }
     
-    vTable[127] = 1.0;
-    vVal        = 127;
-    vol         = 1.0;
-    isPlaying   = false;
-    sampleRate  = 44100.0;
-    output         = (short *)malloc(sizeof(short)*MAX_PACKET);
+    vTable[127]     = 1.0;
+    vVal            = 127;
+    vol             = 1.0;
+    isPlaying       = false;
+    sampleRate      = 44100.0;
+    output          = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(output, 0, sizeof(short)*MAX_PACKET);
     
-    a = 1;
-    d = 10;
-    s = 100;
-    r = 10;
-    count = 0;
+    a       = 1;
+    d       = 10;
+    s       = 100;
+    r       = 10;
+    i       = 0;
+    count   = 0;
 }
 
 void Envelope::updatevVal()
