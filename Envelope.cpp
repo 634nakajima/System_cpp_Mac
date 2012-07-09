@@ -24,8 +24,7 @@ int Envelope::stream(const char   *path,
 
     if (env->adsr++%4 == 0)
         env->updatevVal();
-    if (env->adsr++%50 == 0)
-        printf("recerved\n");
+    
     for (int i=0; i<dsize/sizeof(short); i++) {
         env->vol = 0.005*env->vTable[env->vVal] + 0.995*env->vol;
         *out++ = *in++*env->vol;
@@ -45,8 +44,11 @@ int Envelope::data1(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1)
+    if (argv[0]->i != -1) {
         env->isPlaying = true;
+    } else {
+        env->isPlaying = false;
+    }
 
     return 0;
 }
@@ -60,8 +62,11 @@ int Envelope::data2(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1)
+    if (argv[0]->i != -1) {
         env->isPlaying = true;
+    } else {
+        env->isPlaying = false;
+    }
     
     if (argv[2]->i != -1)
         env->A = argv[2]->i;
@@ -78,8 +83,11 @@ int Envelope::data3(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1)
+    if (argv[0]->i != -1) {
         env->isPlaying = true;
+    } else {
+        env->isPlaying = false;
+    }
     
     if (argv[2]->i != -1)
         env->A = argv[2]->i;
@@ -99,8 +107,11 @@ int Envelope::data4(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1)
+    if (argv[0]->i != -1) {
         env->isPlaying = true;
+    } else {
+        env->isPlaying = false;
+    }
     
     if (argv[2]->i != -1)
         env->A = argv[2]->i;
@@ -123,8 +134,11 @@ int Envelope::data5(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1)
+    if (argv[0]->i != -1) {
         env->isPlaying = true;
+    } else {
+        env->isPlaying = false;
+    }
     
     if (argv[2]->i != -1)
         env->A = argv[0]->i;
@@ -157,7 +171,7 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     
     vTable[127]     = 1.0;
     vVal            = 127;
-    vol             = 1.0;
+    vol             = 0.0;
     isPlaying       = false;
     sampleRate      = 44100.0;
     output          = (short *)malloc(sizeof(short)*MAX_PACKET);

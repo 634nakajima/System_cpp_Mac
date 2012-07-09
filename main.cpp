@@ -35,12 +35,13 @@ int main()
     getchar();
     co->connect(6, 2, "/Stream");
     co->connect(2, 3, "/Stream");
-    //co->connect(4, 2, "/Data");
+    co->connect(4, 2, "/Data");
 
 
     getchar();
 	delete dac;
 	delete adc;
-    //delete co;
+    delete env;
+    delete co;
     return 0;
 }
