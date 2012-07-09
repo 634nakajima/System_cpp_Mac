@@ -34,7 +34,8 @@ int main()
     env->sendSetMdtkn();
     getchar();
     co->connect(6, 2, "/Stream");
-    co->connect(2, 3, "/Stream");
+    co->connect(2, 5, "/Stream");
+    co->connect(5, 3, "/Stream");
     co->connect(4, 2, "/Data");
     co->connect(5, 6, "/Data");
 
