@@ -18,7 +18,7 @@
 
 class Envelope : public Module {
 public:
-    int     a, d, s, r, i, count, vVal;
+    int     A, D, S, R, adsr, count, vVal;
     float   vol, v, vTable[128], sampleRate;
     bool    isPlaying;
     short   *output;

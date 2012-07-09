@@ -25,12 +25,12 @@ int main()
     st = lo_server_thread_new("6340", error);
     dac = new DAC(st, "/DAC/1");
 	adc = new ADC(st, "/ADC/1");
-    co = new Coordinator(st, "/Coordinator");
+    //co = new Coordinator(st, "/Coordinator");
     lo_server_thread_start(st);
     
     getchar();
 	delete dac;
 	delete adc;
-    delete co;
+    //delete co;
     return 0;
 }

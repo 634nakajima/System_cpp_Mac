@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Envelope.h"
 
-int Envelope::Stream(const char   *path, 
+int Envelope::stream(const char   *path, 
                      const char   *types, 
                      lo_arg       **argv, 
                      int          argc,
@@ -18,20 +18,19 @@ int Envelope::Stream(const char   *path,
 {
     Envelope    *env    = (Envelope *)user_data;
     short       *out    = (short *)env->output;
-    int         
-    lo_blob     data    = (lo_blob)argv[0];
-    int         dsize   = lo_blob_datasize(data);
-    short       *in     = lo_blob_dataptr(data);
+    lo_blob     blob    = (lo_blob)argv[0];
+    int         dsize   = lo_blob_datasize(blob);
+    short       *in     = (short *)lo_blob_dataptr(blob);
 
-    if (i++%4 == 0)
-        updatevVal();
+    if (env->adsr++%4 == 0)
+        env->updatevVal();
     
     for (int i=0; i<dsize/sizeof(short); i++) {
         env->vol = 0.005*env->vTable[env->vVal] + 0.995*env->vol;
         *out++ = *in++*env->vol;
     }
 
-    adc->sendAudio(env->putput, dsize);
+    env->sendAudio(env->output, dsize);
 
     return 0;
 }
@@ -64,7 +63,7 @@ int Envelope::data2(const char   *path,
         env->isPlaying = true;
     
     if (argv[2]->i != -1)
-        env->a = argv[2]->i;
+        env->A = argv[2]->i;
     
     return 0;
 }
@@ -82,10 +81,10 @@ int Envelope::data3(const char   *path,
         env->isPlaying = true;
     
     if (argv[2]->i != -1)
-        env->a = argv[2]->i;
+        env->A = argv[2]->i;
     
     if (argv[4]->i != -1)
-        env->d = argv[4]->i;
+        env->D = argv[4]->i;
     
     return 0;
 }
@@ -103,18 +102,18 @@ int Envelope::data4(const char   *path,
         env->isPlaying = true;
     
     if (argv[2]->i != -1)
-        env->a = argv[2]->i;
+        env->A = argv[2]->i;
     
     if (argv[4]->i != -1)
-        env->d = argv[4]->i;
+        env->D = argv[4]->i;
     
     if (argv[6]->i != -1)
-        env->s = argv[6]->i;
+        env->S = argv[6]->i;
     
     return 0;
 }
 
-int Envelope::data4(const char   *path, 
+int Envelope::data5(const char   *path, 
                     const char   *types, 
                     lo_arg       **argv, 
                     int          argc,
@@ -127,16 +126,16 @@ int Envelope::data4(const char   *path,
         env->isPlaying = true;
     
     if (argv[2]->i != -1)
-        env->a = argv[0]->i;
+        env->A = argv[0]->i;
     
     if (argv[4]->i != -1)
-        env->d = argv[2]->i;
+        env->D = argv[2]->i;
     
     if (argv[6]->i != -1)
-        env->s = argv[4]->i;
+        env->S = argv[4]->i;
     
     if (argv[8]->i != -1)
-        env->r = argv[6]->i;
+        env->R = argv[6]->i;
     
     return 0;
 }
@@ -163,33 +162,31 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     output          = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(output, 0, sizeof(short)*MAX_PACKET);
     
-    a       = 1;
-    d       = 10;
-    s       = 100;
-    r       = 10;
-    i       = 0;
+    A       = 1;
+    D       = 10;
+    S       = 100;
+    R       = 10;
+    adsr    = 0;
     count   = 0;
 }
 
 void Envelope::updatevVal()
 {
     float fc = (float)count+1.0;
-    float fa = (float)a+1.0;
-    float fd = (float)d+1.0;
-    float fr = (float)r+1.0;
+    float fa = (float)A+1.0;
+    float fd = (float)D+1.0;
+    float fr = (float)R+1.0;
     
     if (isPlaying) {
-        if (count <= a) {
-            vVal = fc*127.0/fa
-        }
-        else if (count <= a+d) {
-            vVal = 127.0 - (fc-fa)*(127.0-(float)s)/fd;
-        }
-        else {
-            vVal = s;
+        if (count <= A) {
+            vVal = fc*127.0/fa;
+        } else if (count <= A+D) {
+            vVal = 127.0 - (fc-fa)*(127.0-(float)S)/fd;
+        } else {
+            vVal = S;
         }
     } else {
-        vVal -= (float)s/fr;
+        vVal -= (float)S/fr;
         if (vVal<=0)
             vVal = 0;
     }
