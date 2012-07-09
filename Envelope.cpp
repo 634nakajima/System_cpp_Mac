@@ -178,8 +178,8 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     memset(output, 0, sizeof(short)*MAX_PACKET);
     
     A       = 100;
-    D       = 10;
-    S       = 100;
+    D       = 50;
+    S       = 30;
     R       = 30;
     adsr    = 0;
     count   = 0;
