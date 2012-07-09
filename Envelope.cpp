@@ -200,12 +200,13 @@ void Envelope::updatevVal()
         } else {
             vVal = S;
         }
+        count++;
     } else {
         vVal -= (float)S/fr;
         if (vVal<=0)
             vVal = 0;
+        count = 0;
     }
-    count++;
 }
 
 Envelope::~Envelope()
