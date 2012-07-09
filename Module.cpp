@@ -232,8 +232,18 @@ void Module::getAddr()
     ifr.ifr_addr.sa_family = AF_INET;
     
     /* eth0のIPアドレスを取得 */
-    strncpy(ifr.ifr_name, "en1", IFNAMSIZ-1);
+//#ifdef _iMAC_
+    strncpy(ifr.ifr_name, "en0", IFNAMSIZ-1);
+/*#endif
     
+#ifdef _MB_
+    strncpy(ifr.ifr_name, "en0", IFNAMSIZ-1);
+#endif
+    
+#ifdef _Beagle_
+    strncpy(ifr.ifr_name, "usb1", IFNAMSIZ-1);
+#endif
+*/
     ioctl(fd, SIOCGIFADDR, &ifr);
     
     close(fd);
