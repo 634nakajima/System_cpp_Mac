@@ -177,7 +177,7 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     output          = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(output, 0, sizeof(short)*MAX_PACKET);
     
-    A       = 10;
+    A       = 30;
     D       = 10;
     S       = 100;
     R       = 30;
