@@ -28,16 +28,6 @@ int main()
     
     st = lo_server_thread_new("6340", error);
     dac = new DAC(st, "/DAC/1");
-<<<<<<< HEAD
-	//adc = new ADC(st, "/ADC/1");
-    //env = new Envelope(st, "/EF/Envelope/1");
-    //co = new Coordinator(st, "/Coordinator");
-	//sine = new Sine(st, "/GN/Sine");
-    lo_server_thread_start(st);
-    
-    //env->sendSetMdtkn();
-	//sine->sendSetMdtkn();
-=======
 	adc = new ADC(st, "/ADC/1");
     env = new Envelope(st, "/EF/Envelope/1");
     //co = new Coordinator(st, "/Coordinator");
@@ -51,21 +41,14 @@ int main()
     //co->connect(4, 2, "/Data");
     //co->connect(5, 7, "/Data");
 
->>>>>>> mba
-
     getchar();
 	//co->connect(1, 0, "/Stream");
 	getchar();
 
 	//delete dac;
 	delete adc;
-<<<<<<< HEAD
-    //delete env;
-    //delete co;
-	//delete sine;
-=======
     delete env;
     //delete co;
->>>>>>> mba
+
     return 0;
 }
