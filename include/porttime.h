@@ -58,7 +58,7 @@ typedef void (PtCallback)( PtTimestamp timestamp, void *userData );
     return value:
     Upon success, returns ptNoError. See PtError for other values.
 */
-PMEXPORT PtError Pt_Start(int resolution, PtCallback *callback, void *userData);
+PMEXPORT PtError Pt_Start(double resolution, PtCallback *callback, void *userData);
 
 /*
     Pt_Stop() stops the timer.

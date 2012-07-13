@@ -10,6 +10,7 @@
 #include "ADC.h"
 #include "Coordinator.h"
 #include "Envelope.h"
+#include "Sine.h"
 #include "lo.h"
 
 static void error(int num, const char *msg, const char *path) {
@@ -22,28 +23,28 @@ int main()
 	ADC *adc;
     Envelope *env;
     Coordinator *co;
+	Sine *sine;
     lo_server_thread st;
     
     st = lo_server_thread_new("6340", error);
     dac = new DAC(st, "/DAC/1");
-	adc = new ADC(st, "/ADC/1");
-    env = new Envelope(st, "/EF/Envelope/1");
-    co = new Coordinator(st, "/Coordinator");
+	//adc = new ADC(st, "/ADC/1");
+    //env = new Envelope(st, "/EF/Envelope/1");
+    //co = new Coordinator(st, "/Coordinator");
+	//sine = new Sine(st, "/GN/Sine");
     lo_server_thread_start(st);
     
-    env->sendSetMdtkn();
-    getchar();
-    co->connect(7, 2, "/Stream");
-    co->connect(2, 3, "/Stream");
-    //co->connect(6, 3, "/Stream");
-    co->connect(4, 2, "/Data");
-    co->connect(5, 7, "/Data");
-
+    //env->sendSetMdtkn();
+	//sine->sendSetMdtkn();
 
     getchar();
-	delete dac;
+	//co->connect(1, 0, "/Stream");
+	getchar();
+
+	//delete dac;
 	delete adc;
-    delete env;
-    delete co;
+    //delete env;
+    //delete co;
+	//delete sine;
     return 0;
 }

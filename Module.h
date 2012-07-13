@@ -18,6 +18,7 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <math.h>
 #include "lo.h"
 #include "portaudio.h"
 #include "RoutingTable.h"

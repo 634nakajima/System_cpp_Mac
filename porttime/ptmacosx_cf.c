@@ -20,7 +20,7 @@ static CFAbsoluteTime startTime = 0.0;
 static CFRunLoopRef timerRunLoop;
 
 typedef struct {
-    int resolution;
+    double resolution;
     PtCallback *callback;
     void *userData;
 } PtThreadParams;
@@ -69,7 +69,7 @@ static void* Pt_Thread(void *p)
     timerContext.copyDescription = NULL;
 
     /* create a new timer */
-    timerInterval = (double)params->resolution / 1000.0;
+    timerInterval = params->resolution;
     timer = CFRunLoopTimerCreate(NULL, startTime+timerInterval, timerInterval,
                                  0, 0, Pt_CFTimerCallback, &timerContext);
 
@@ -86,7 +86,7 @@ static void* Pt_Thread(void *p)
     return NULL;
 }
 
-PtError Pt_Start(int resolution, PtCallback *callback, void *userData)
+PtError Pt_Start(double resolution, PtCallback *callback, void *userData)
 {
     PtThreadParams *params = (PtThreadParams*)malloc(sizeof(PtThreadParams));
     pthread_t pthread_id;
