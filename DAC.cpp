@@ -74,7 +74,7 @@ int DAC::stream(const char   *path,
     if (dac->isPlaying) {
         for(int i=0; i<size; i++){
             
-            if (d++ <= dac->bs+size) {
+            if (d++ <= dac->bs+size*4) {
                 dac->buf[dac->wp] = *dp++;
                 dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
             } else {
