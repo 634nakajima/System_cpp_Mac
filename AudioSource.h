@@ -1,37 +1,36 @@
 /*
- *  Sine.h
+ *  AudioSource.h
  *  
  *
- *  Created by kannolab on 12/07/13.
+ *  Created by kannolab on 12/07/16.
  *  Copyright 2012 __MyCompanyName__. All rights reserved.
  *
  */
 
-#ifndef _Sine_h
-#define _Sine_h
+#ifndef _AudioSource_h
+#define _AudioSource_h
 
 #include "Module.h"
 #include "porttime.h"
 
-
-class Sine : public Module {
-
+class AudioSource : public Module {
+	
 public:
-	int			freq;
-	float		fVal;
+	int			rate;
+	float		rVal;
 	float		*sample;
 	double		location;
 	long		packetCount;
 	double		interval;
     double		sampleRate;
     unsigned	numPackets;
-	float		fTable[128];
+	float		rTable[128];
 	float		*buf;
 	short		*output;
 	
-	Sine(lo_server_thread s, const char *osc);
-	~Sine();
-
+	AudioSource(lo_server_thread s, const char *osc);
+	~AudioSource();
+	
 private:
     
     static int stream(const char   *path, 
@@ -48,7 +47,7 @@ private:
                      void         *data, 
                      void         *user_data);
 	
-	void prepareAudioResources();
+	int prepareAudioResources();
 	void initWave();
 	static void render(PtTimestamp timestamp, void *userData);
 };

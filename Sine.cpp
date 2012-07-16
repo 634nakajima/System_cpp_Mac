@@ -11,7 +11,7 @@
 
 void Sine::render(PtTimestamp timestamp, void *userData)
 {
-	/*Sine *sine = (Sine *)userData;
+	Sine *sine = (Sine *)userData;
     
 	int i;
 	
@@ -51,8 +51,7 @@ void Sine::render(PtTimestamp timestamp, void *userData)
     
     //データ送信
     sine->sendAudio(sine->output, sine->numPackets*sizeof(short));
-*/
-	printf("render!\n");
+
 }
 
 int Sine::stream(const char   *path, 
@@ -87,9 +86,9 @@ Sine::Sine(lo_server_thread s, const char *osc) : Module(s, osc)
 	buf			= (float *)malloc(numPackets*sizeof(float));
 	output		= (short *)malloc(numPackets*sizeof(short));
 	
-	//prepareAudioResources();
-	//initWave();
-	//Pt_Start(interval, render, this);
+	prepareAudioResources();
+	initWave();
+	Pt_Start(interval, render, this);
 }
 
 void Sine::prepareAudioResources()
@@ -119,4 +118,6 @@ void Sine::initWave()
 Sine::~Sine()
 {
 	Pt_Stop();
+	free(buf);
+	free(output);
 }

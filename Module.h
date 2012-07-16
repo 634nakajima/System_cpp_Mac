@@ -25,6 +25,8 @@
 #include "Data.h"
 #include "Audio.h"
 
+#define SAMPLE_RATE	44100.0
+
 class Module
 {
 public:

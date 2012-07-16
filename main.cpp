@@ -13,10 +13,6 @@
 #include "Sine.h"
 #include "lo.h"
 
-static void error(int num, const char *msg, const char *path) {
-    printf("lo_server_thread err\n");
-}
-
 int main()
 {
     DAC *dac;
@@ -26,29 +22,26 @@ int main()
 	Sine *sine;
     lo_server_thread st;
     
-    st = lo_server_thread_new("6340", error);
+    st = lo_server_thread_new("6340", NULL);
     dac = new DAC(st, "/DAC/1");
-	adc = new ADC(st, "/ADC/1");
-    env = new Envelope(st, "/EF/Envelope/1");
-    //co = new Coordinator(st, "/Coordinator");
+	//adc = new ADC(st, "/ADC/1");
+    //env = new Envelope(st, "/EF/Envelope/1");
+	sine = new Sine(st, "/GN/Sine/1");
+    co = new Coordinator(st, "/Coordinator");
     lo_server_thread_start(st);
     
-    env->sendSetMdtkn();
-    getchar();
-    //co->connect(7, 2, "/Stream");
-    //co->connect(2, 3, "/Stream");
-    //co->connect(6, 3, "/Stream");
-    //co->connect(4, 2, "/Data");
-    //co->connect(5, 7, "/Data");
+    sine->sendSetMdtkn();
+	dac->sendSetMdtkn();
 
     getchar();
-	//co->connect(1, 0, "/Stream");
+	co->connect(0, 1, "/Stream");
 	getchar();
 
-	//delete dac;
-	delete adc;
-    delete env;
-    //delete co;
-
+	delete dac;
+	//delete adc;
+    //delete env;
+    delete co;
+	delete sine;
+	
     return 0;
 }

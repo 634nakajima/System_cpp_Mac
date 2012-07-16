@@ -14,7 +14,6 @@
 #include "portaudio.h"
 #include "Module.h"
 
-#define SAMPLE_RATE         (44100)
 #define PA_SAMPLE_TYPE      paInt16
 #define FRAMES_PER_BUFFER   (64*2)
 #define MAX_PACKET          44100
@@ -62,7 +61,12 @@ private:
                      void         *data, 
                      void         *user_data);
 	
-	
+	static int data2(const char   *path, 
+                     const char   *types, 
+                     lo_arg       **argv, 
+                     int          argc,
+                     void         *data, 
+                     void         *user_data);
 	
 	
 };

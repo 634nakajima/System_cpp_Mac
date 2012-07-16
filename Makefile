@@ -6,9 +6,9 @@ MIDI		= MIDIMain.o
 CC          	= g++
 PROGS		= system midi
 
-.PHONY: liblo pmmac porttime clean
+.PHONY: liblo pmmac porttime portsf clean
 
-all:	liblo pmmac porttime system midi
+all:	liblo pmmac porttime portsf system midi
 
 liblo:
 	cd liblo; make; make install;
@@ -18,6 +18,9 @@ pmmac:
 
 porttime:
 	cd porttime; make; make install;
+
+portsf:
+	cd portsf; make; make install;
 
 .cpp.o:
 	$(CC) $(INCLUDES) -c $<
@@ -34,5 +37,6 @@ clean:
 	cd liblo; make clean; cd ../
 	cd pm_mac; make clean; cd ../
 	cd porttime; make clean; cd ../
+	cd portsf; make clean; cd ../
 
 	

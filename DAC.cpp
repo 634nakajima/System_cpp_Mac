@@ -109,12 +109,25 @@ int DAC::data1(const char   *path,
     return 0;
 }
 
+int DAC::data2(const char   *path, 
+               const char   *types, 
+               lo_arg       **argv, 
+               int          argc,
+               void         *data, 
+               void         *user_data)
+{
+    DAC *dac = (DAC *)user_data;
+    dac->vVal = argv[0]->i;
+	dac->bs = 32*argv[2]->i;
+
+    return 0;
+}
+
 DAC::DAC(lo_server_thread s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", DAC::stream, this);
     addMethodToServer("/Data", "ii", DAC::data1, this);
-    sendSetMdtkn();
-    sendSetMdtkn();
+	addMethodToServer("/Data", "iiii", DAC::data2, this);
 
     for (int i=0; i<128; i++) {
         vTable[i] = 1.0 - logf((float)(127-i))/logf(127.0);
@@ -127,7 +140,7 @@ DAC::DAC(lo_server_thread s, const char *osc) : Module(s, osc)
     sampleRate  = 44100.0;
     rp          = 0;
     wp          = 0;
-    bs          = 128*8;
+    bs          = 32*48;
     buf         = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(buf, 0, sizeof(short)*MAX_PACKET);
     if(preparePa()) printf("err_preparePa\n");
