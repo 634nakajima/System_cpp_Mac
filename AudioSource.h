@@ -47,8 +47,8 @@ private:
                      void         *data, 
                      void         *user_data);
 	
-	int prepareAudioResources();
-	void initWave();
+	int			prepareAudioResources();
+	void		initWave();
 	static void render(PtTimestamp timestamp, void *userData);
 };
 

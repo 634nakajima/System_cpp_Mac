@@ -96,23 +96,22 @@ int AudioSource::prepareAudioResources()
 		
 	int ifd = -1,rc=0;
 	MYLONG pos, size;
-	float *framebuf = NULL;
+	sample = NULL;
 	PSF_PROPS props;
 	
 	if(psf_init()){
 		printf("unable to start portsf\n");
 		return 1;
 	}
-	ifd  = psf_sndOpen(argv[1],&props,0);
+	ifd  = psf_sndOpen("sound_c.wav",&props,0);
 	if(ifd < 0){
-		printf("Unable to open infile %s\n",argv[1]);
-		exit(1);
+		printf("Unable to open infile %s\n","sound_c.wav");
+		return 1;
 	}
 	
-	framebuf = (float *) malloc(props.chans * sizeof(float));
-	if(framebuf==NULL){
+	sample = (float *) malloc(props.chans * sizeof(float));
+	if(sample==NULL){
 			puts("no memory for frame buffer\n");
-		goto finish;
 	}
 	
 		size = psf_sndSize(ifd);
@@ -120,14 +119,12 @@ int AudioSource::prepareAudioResources()
 		printf("cannot find file size\n");
 	else if (size==0){
 		printf("File %s is empty\n",argv[1]);
-		goto finish;
 	}
 	printf("File size = %ld frames\n",size);
 	/* seek to last sample frame */
 	rc = psf_sndSeek(ifd,-1,PSF_SEEK_END);
 	if(rc){
 		printf("error seeking to last frame\n");
-		goto finish;
 	}
 	
 	pos = psf_sndTell(ifd);
@@ -136,12 +133,10 @@ int AudioSource::prepareAudioResources()
 	
 	if(read_frame_and_reverse(framebuf,ifd)){
 		printf("Error reading initial frame\n");
-		goto finish;
 	}
 	while(size-- >= 0) {							
 		if(psf_sndWriteFloatFrames(ofd,framebuf,1)<1){
 			printf("error writing frame\n");
-			goto finish;
 		}
 		if(size % 100000 == 0)
 			printf("%ld\r",size);
@@ -154,14 +149,6 @@ int AudioSource::prepareAudioResources()
 			break;
 		}
 	}
-finish:
-	if(framebuf)
-		free(framebuf);
-	if(ifd >=0)
-		psf_sndClose(ifd);
-	if(ofd >=0)
-		psf_sndClose(ofd);
-	psf_finish();
 	
 	return 0;		
 }
