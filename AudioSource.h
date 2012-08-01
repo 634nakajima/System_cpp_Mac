@@ -16,8 +16,7 @@
 class AudioSource : public Module {
 	
 public:
-	int			rate;
-	float		rVal;
+	float		rate;
 	float		*sample;
 	double		location;
 	long		packetCount;
@@ -27,6 +26,8 @@ public:
 	float		rTable[128];
 	float		*buf;
 	short		*output;
+    int         ifd;
+
 	
 	AudioSource(lo_server_thread s, const char *osc);
 	~AudioSource();
@@ -48,7 +49,7 @@ private:
                      void         *user_data);
 	
 	int			prepareAudioResources();
-	void		initWave();
+	void		initAudioInfo();
 	static void render(PtTimestamp timestamp, void *userData);
 };
 

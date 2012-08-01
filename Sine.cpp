@@ -61,6 +61,7 @@ int Sine::stream(const char   *path,
 				 void         *data, 
 				 void         *user_data)
 {
+
     return 0;
 }
 
@@ -71,6 +72,12 @@ int Sine::data1(const char   *path,
 				void         *data, 
 				void         *user_data)
 {
+    Sine *sine = (Sine *)user_data;
+    
+    int f = argv[0]->i;
+    if (f > 0)
+        sine->freq = f;
+    
     return 0;
 }
 
@@ -110,8 +117,6 @@ void Sine::initWave()
 {
 	freq = 69;
     fVal = 440.0;
-    sample = sample;
-    packetCount = packetCount;
     location = 0.0;
 }
 
