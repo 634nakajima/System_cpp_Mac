@@ -116,60 +116,16 @@ int AudioSource::prepareAudioResources()
 		printf("Unable to open infile %s\n","sound_c.wav");
 		return 1;
 	}
-<<<<<<< HEAD
 
     packetCount = psf_sndSize(ifd);
 	if(size <= 0)
-=======
-	
-	size = psf_sndSize(ifd);
-	if(size < 0)
->>>>>>> a
 		printf("cannot find file size\n");
 
 	printf("File size = %ld frames\n",size);
-<<<<<<< HEAD
 
 	sample = (float *) malloc(packetCount * sizeof(float));
 	if(sample==NULL){
         puts("no memory for frame buffer\n");
-=======
-	
-	sample = (float *) malloc(size * sizeof(float));
-	if(sample==NULL){
-		puts("no memory for frame buffer\n");
-	}
-	
-	psf_sndWriteFloatFrames(ifd, sample, size);
-
-	/* seek to last sample frame */
-	rc = psf_sndSeek(ifd,-1,PSF_SEEK_END);
-	if(rc){
-		printf("error seeking to last frame\n");
-	}
-	
-	pos = psf_sndTell(ifd);
-	printf("starting at frame %ld\n",pos);
-	printf("processing...\n");
-	
-	if(read_frame_and_reverse(framebuf,ifd)){
-		printf("Error reading initial frame\n");
-	}
-	while(size-- >= 0) {							
-		if(psf_sndWriteFloatFrames(ofd,framebuf,1)<1){
-			printf("error writing frame\n");
-		}
-		if(size % 100000 == 0)
-			printf("%ld\r",size);
-		if(read_frame_and_reverse(framebuf,ifd) <0){
-			/* we read the first sample, but failed to reverse; write final sample and break */
-			if(psf_sndWriteFloatFrames(ofd,framebuf,1)<1){
-				printf("error writing frame\n");
-				goto finish;
-			}
-			break;
-		}
->>>>>>> a
 	}
 
     psf_sndReadFloatFrames(ifd, sample, packetCount);
