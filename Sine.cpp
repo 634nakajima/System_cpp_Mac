@@ -15,9 +15,9 @@ void Sine::render(PtTimestamp timestamp, void *userData)
     
 	int i;
 	if (timestamp != -1) {
-		memset(audio->buf, 0, audio->numPackets*sizeof(float));
+		memset(sine->buf, 0, sine->numPackets*sizeof(float));
 	}
-	memset(audio->output, 0, audio->numPackets*sizeof(short));
+	memset(sine->output, 0, sine->numPackets*sizeof(short));
 	
     for (i=0;i<sine->numPackets;i++) {
         float a,b,f;
@@ -67,11 +67,11 @@ int Sine::stream(const char   *path,
 	lo_blob b = (lo_blob)argv[0];
     short *dp = (short *)lo_blob_dataptr(b);
 	
-	for(int i=0; i<audio->numPackets; i++){
+	for(int i=0; i<sine->numPackets; i++){
 		sine->buf[i] = *dp++ /32768.0;
 	}
 	
-	sine->render(-1, audio);
+	sine->render(-1, sine);
     return 0;
 }
 

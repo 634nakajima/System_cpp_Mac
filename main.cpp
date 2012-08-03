@@ -52,11 +52,11 @@ int main()
 	//env->sendSetMdtkn();
 	dac->sendSetMdtkn();
 
-    getchar();
-	co->connect(1, 0, "/Stream");
-	co->connect(0, 2, "/Stream");
-	co->connect(3, 4, "/Data");
-	co->connect(4, 0, "/Data");
+    //getchar();
+	//co->connect(1, 0, "/Stream");
+	//co->connect(0, 2, "/Stream");
+	//co->connect(3, 4, "/Data");
+	//co->connect(4, 0, "/Data");
 
 
 	getchar();
