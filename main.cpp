@@ -32,7 +32,6 @@ int main()
 	
     st = lo_server_thread_new("6340", NULL);
     dac = new DAC(st, "/DAC/1");
-<<<<<<< HEAD
 	//adc = new ADC(st, "/ADC/1");
     //env = new Envelope(st, "/EF/Envelope/1");
 	sine = new Sine(st, "/GN/Sine/1");
@@ -44,11 +43,6 @@ int main()
 	a1->prepareAudioResources("sound_c.wav");
 	//a2->prepareAudioResources("sound_c.wav");
 
-=======
-	adc = new ADC(st, "/ADC/1");
-    env = new Envelope(st, "/EF/Envelope/1");
-    //co = new Coordinator(st, "/Coordinator");
->>>>>>> imac2
     lo_server_thread_start(st);
     
 	Pt_Start(interval, sine->render, sine);
@@ -59,7 +53,6 @@ int main()
 	dac->sendSetMdtkn();
 
     getchar();
-<<<<<<< HEAD
 	co->connect(1, 0, "/Stream");
 	co->connect(0, 2, "/Stream");
 	co->connect(3, 4, "/Data");
@@ -77,17 +70,5 @@ int main()
 	//delete a2;
 	delete sine;
 	
-=======
-    //co->connect(7, 2, "/Stream");
-    //co->connect(2, 3, "/Stream");
-    //co->connect(6, 3, "/Stream");
-    //co->connect(4, 2, "/Data");
-    //co->connect(5, 7, "/Data");
-
-	delete dac;
-	delete adc;
-    delete env;
-    //delete co;
->>>>>>> imac2
     return 0;
 }
