@@ -11,7 +11,10 @@
 #define _Sine_h
 
 #include "Module.h"
+#ifndef	_PT_
 #include "porttime.h"
+#define _PT_
+#endif
 
 
 class Sine : public Module {

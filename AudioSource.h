@@ -11,7 +11,12 @@
 #define _AudioSource_h
 
 #include "Module.h"
+#include "portsf.h"
+
+#ifndef	_PT_
 #include "porttime.h"
+#define _PT_
+#endif
 
 class AudioSource : public Module {
 	
@@ -27,7 +32,7 @@ public:
 	float		*buf;
 	short		*output;
     int         ifd;
-
+	bool		isPlaying;
 	
 	AudioSource(lo_server_thread s, const char *osc);
 	~AudioSource();
@@ -42,6 +47,13 @@ private:
                       void         *user_data);
     
     static int data1(const char   *path, 
+                     const char   *types, 
+                     lo_arg       **argv, 
+                     int          argc,
+                     void         *data, 
+                     void         *user_data);
+
+	static int data2(const char   *path, 
                      const char   *types, 
                      lo_arg       **argv, 
                      int          argc,
