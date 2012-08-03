@@ -14,9 +14,10 @@ void Sine::render(PtTimestamp timestamp, void *userData)
 	Sine *sine = (Sine *)userData;
     
 	int i;
-	
-    memset(sine->buf, 0, sine->numPackets*sizeof(float));
-    memset(sine->output, 0, sine->numPackets*sizeof(short));
+	if (timestamp != -1) {
+		memset(audio->buf, 0, audio->numPackets*sizeof(float));
+	}
+	memset(audio->output, 0, audio->numPackets*sizeof(short));
 	
     for (i=0;i<sine->numPackets;i++) {
         float a,b,f;
@@ -61,7 +62,16 @@ int Sine::stream(const char   *path,
 				 void         *data, 
 				 void         *user_data)
 {
-
+	Sine *sine = (Sine *)user_data;
+	
+	lo_blob b = (lo_blob)argv[0];
+    short *dp = (short *)lo_blob_dataptr(b);
+	
+	for(int i=0; i<audio->numPackets; i++){
+		sine->buf[i] = *dp++ /32768.0;
+	}
+	
+	sine->render(-1, audio);
     return 0;
 }
 
@@ -95,7 +105,6 @@ Sine::Sine(lo_server_thread s, const char *osc) : Module(s, osc)
 	
 	prepareAudioResources();
 	initWave();
-	Pt_Start(interval, render, this);
 }
 
 void Sine::prepareAudioResources()
@@ -109,7 +118,7 @@ void Sine::prepareAudioResources()
     sample	= (float *)malloc(packetCount*sizeof(float));
     
     for (i=0; i<packetCount; i++) {
-        sample[i] = (float)0.5*sin(2.0*M_PI*i/(float)packetCount);
+        sample[i] = (float)0.05*sin(2.0*M_PI*i/(float)packetCount);
     }
 }
 
@@ -122,7 +131,6 @@ void Sine::initWave()
 
 Sine::~Sine()
 {
-	Pt_Stop();
 	free(buf);
 	free(output);
 }

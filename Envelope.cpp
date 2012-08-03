@@ -45,6 +45,7 @@ int Envelope::data1(const char   *path,
     Envelope *env = (Envelope *)user_data;
     
     if (argv[0]->i != -1) {
+		env->A = argv[0]->i;
         env->isPlaying = true;
     } else {
         env->isPlaying = false;
@@ -62,15 +63,8 @@ int Envelope::data2(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1) {
-        env->isPlaying = true;
-    } else {
-        env->isPlaying = false;
-    }
-    
-    if (argv[2]->i != -1)
-        env->A = argv[2]->i;
-    
+    if (argv[0]->i != -1)
+        env->D = argv[0]->i;
     return 0;
 }
 
@@ -83,17 +77,8 @@ int Envelope::data3(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1) {
-        env->isPlaying = true;
-    } else {
-        env->isPlaying = false;
-    }
-    
-    if (argv[2]->i != -1)
-        env->A = argv[2]->i;
-    
-    if (argv[4]->i != -1)
-        env->D = argv[4]->i;
+    if (argv[0]->i != -1)
+        env->S = argv[0]->i;
     
     return 0;
 }
@@ -107,53 +92,12 @@ int Envelope::data4(const char   *path,
 {
     Envelope *env = (Envelope *)user_data;
     
-    if (argv[0]->i != -1) {
-        env->isPlaying = true;
-    } else {
-        env->isPlaying = false;
-    }
-    
-    if (argv[2]->i != -1)
-        env->A = argv[2]->i;
-    
-    if (argv[4]->i != -1)
-        env->D = argv[4]->i;
-    
-    if (argv[6]->i != -1)
-        env->S = argv[6]->i;
+    if (argv[0]->i != -1)
+        env->R = argv[0]->i;
     
     return 0;
 }
 
-int Envelope::data5(const char   *path, 
-                    const char   *types, 
-                    lo_arg       **argv, 
-                    int          argc,
-                    void         *data, 
-                    void         *user_data)
-{
-    Envelope *env = (Envelope *)user_data;
-    
-    if (argv[0]->i != -1) {
-        env->isPlaying = true;
-    } else {
-        env->isPlaying = false;
-    }
-    
-    if (argv[2]->i != -1)
-        env->A = argv[0]->i;
-    
-    if (argv[4]->i != -1)
-        env->D = argv[2]->i;
-    
-    if (argv[6]->i != -1)
-        env->S = argv[4]->i;
-    
-    if (argv[8]->i != -1)
-        env->R = argv[6]->i;
-    
-    return 0;
-}
 
 Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
 {
@@ -162,8 +106,6 @@ Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
     addMethodToServer("/Data", "iiii", Envelope::data2, this);
     addMethodToServer("/Data", "iiiiii", Envelope::data3, this);
     addMethodToServer("/Data", "iiiiiiii", Envelope::data4, this);
-    addMethodToServer("/Data", "iiiiiiiiii", Envelope::data5, this);
-
 
     for (int i=0; i<128; i++) {
         vTable[i] = 1.0 - logf((float)(127-i))/logf(127.0);

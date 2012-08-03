@@ -34,8 +34,6 @@ public:
 	
 	Sine(lo_server_thread s, const char *osc);
 	~Sine();
-
-private:
     
     static int stream(const char   *path, 
                       const char   *types, 
@@ -54,6 +52,7 @@ private:
 	void prepareAudioResources();
 	void initWave();
 	static void render(PtTimestamp timestamp, void *userData);
+
 };
 
 #endif

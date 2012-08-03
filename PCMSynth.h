@@ -1,40 +1,32 @@
 /*
- *  AudioSource.h
+ *  PCMSynth.h
  *  
  *
- *  Created by kannolab on 12/07/16.
+ *  Created by kannolab on 12/08/03.
  *  Copyright 2012 __MyCompanyName__. All rights reserved.
  *
  */
 
-#ifndef _AudioSource_h
-#define _AudioSource_h
+#ifndef _PCMSynth_h
+#define _PCMSynth_h
 
 #include "Module.h"
 #include "portsf.h"
+#include "AudioSource.h"
+#include <map>
 
 #ifndef	_PT_
 #include "porttime.h"
 #define _PT_
 #endif
 
-class AudioSource : public Module {
+class PCMSynth : public Module {
 	
 public:
-	float		rate;
-	float		*sample;
-	double		location;
-	long		packetCount;
-	double		interval;
-    double		sampleRate;
-    unsigned	numPackets;
-	float		rTable[128];
-	float		*buf;
-	short		*output;
-	bool		isPlaying, isLooping, prepared;
+    std::map<int, AudioSource*>   sources;
 	
-	AudioSource(lo_server_thread s, const char *osc);
-	~AudioSource();
+	PCMSynth(lo_server_thread s, const char *osc);
+	~PCMSynth();
     
     static int stream(const char   *path, 
                       const char   *types, 
@@ -47,16 +39,16 @@ public:
                      const char   *types, 
                      lo_arg       **argv, 
                      int          argc,
-                     void         *data, 
+                     void         *data,
                      void         *user_data);
-
+	
 	static int data2(const char   *path, 
                      const char   *types, 
                      lo_arg       **argv, 
                      int          argc,
                      void         *data, 
                      void         *user_data);
-
+	
 	static int data3(const char   *path, 
                      const char   *types, 
                      lo_arg       **argv, 
