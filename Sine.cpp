@@ -83,7 +83,6 @@ int Sine::data1(const char   *path,
 				void         *user_data)
 {
     Sine *sine = (Sine *)user_data;
-    
     int f = argv[0]->i;
     if (f > 0)
         sine->freq = f;
@@ -118,7 +117,7 @@ void Sine::prepareAudioResources()
     sample	= (float *)malloc(packetCount*sizeof(float));
     
     for (i=0; i<packetCount; i++) {
-        sample[i] = (float)0.05*sin(2.0*M_PI*i/(float)packetCount);
+        sample[i] = (float)0.3*sin(2.0*M_PI*i/(float)packetCount);
     }
 }
 

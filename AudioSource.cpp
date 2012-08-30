@@ -28,8 +28,8 @@ void AudioSource::render(PtTimestamp timestamp, void *userData)
 			a = 1.0-b;
 			l = (unsigned)audio->location;
         
-			audio->buf[i] += 5.0*a*audio->sample[l];
-			audio->buf[i] += 5.0*b*audio->sample[l+1];
+			audio->buf[i] += a*audio->sample[l];
+			audio->buf[i] += b*audio->sample[l+1];
 		
 			audio->location += audio->rate;
         
@@ -93,7 +93,7 @@ int AudioSource::data1(const char   *path,
 	
 	int v = argv[0]->i;
 	
-	if (v < 64) {
+	if (v < 0) {
 		audio->isPlaying = false;
 		audio->location = 0.0;
 	} else {
@@ -118,6 +118,10 @@ int AudioSource::data2(const char   *path,
     else if (f >= 0.0) {
         audio->rate = (63.0+f)/127.0;
     }
+	else {
+		audio->rate = 1.0;
+	}
+
     return 0;
 }
 
