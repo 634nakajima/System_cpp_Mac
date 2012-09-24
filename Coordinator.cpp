@@ -25,10 +25,11 @@ int Coordinator::setMtkn(const char   *path,
                          void         *data, 
                          void         *user_data)
 {
+    int i = 0;
     Coordinator *coordinator = (Coordinator *)user_data;
     //エラー処理、既存のモジュールトークン確認
     if (coordinator->mNum >= 32) return 0;
-    for (int i=0; i<coordinator->mNum; i++) {
+    for (i=0; i<coordinator->mNum; i++) {
         if (strcmp(coordinator->mtknMap[i]->ip,(char *)argv[0])==0)
             if (strcmp(coordinator->mtknMap[i]->osc,(char *)argv[1])==0) return 0;
     }
@@ -37,12 +38,20 @@ int Coordinator::setMtkn(const char   *path,
     MToken *m = new MToken();
     strcpy(m->ip, (char *)argv[0]);
     strcpy(m->osc, (char *)argv[1]);
-    m->index = coordinator->mNum;
-
-    coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(coordinator->mNum, m));
+    for (i=0; i<coordinator->mNum; i++) {
+        MToken *tmp = coordinator->mtknMap[i];
+        if (tmp == NULL) {
+            m->index = i;
+            break;
+        }
+    }
+    if (i == coordinator->mNum) {
+        m->index = coordinator->mNum;
+        coordinator->mNum++;
+    }
+    coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(m->index, m));
     printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], coordinator->mNum);
 
-    coordinator->mNum++;
     
     return 0;
 }
