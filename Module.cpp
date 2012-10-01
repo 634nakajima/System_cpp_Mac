@@ -68,7 +68,7 @@ void Module::sendSetMdtkn()
     addr.sin_port = htons(6340);
     inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
     
-    //send
+    //send(念のため2回)
     for (int i=0; i<2; i++) {
         n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
         if (n < 1) {

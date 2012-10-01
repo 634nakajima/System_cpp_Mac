@@ -81,7 +81,7 @@ int Coordinator::deleteMtkn(const char   *path,
         }
     }
 
-    return 0;
+    return 1;
 }
 
 void Coordinator::connect(int mID1, int mID2, const char *t)
