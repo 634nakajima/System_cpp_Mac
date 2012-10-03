@@ -11,15 +11,12 @@
 
 ModuleController::ModuleController(lo_server_thread s, const char *osc) : Module(s,osc)
 {
-    addMethodToServer("/DAC", "is", dac, this);
-    addMethodToServer("/ADC", "is", adc, this);
-    addMethodToServer("/Sine", "is", sine, this);
-    addMethodToServer("/Envelope", "is", env, this);
-    addMethodToServer("/AudioSource", "is", as, this);
+    addMethodToServer("/SP/DAC", "is", dac, this);
+    addMethodToServer("/GN/ADC", "is", adc, this);
+    addMethodToServer("/GN/Sine", "is", sine, this);
+    addMethodToServer("/EF/Envelope", "is", env, this);
+    addMethodToServer("/GN/AudioSource", "is", as, this);
 
-    for (int i=0; i<5; i++) {
-        mn[i] = 0;
-    }
 }
 
 void ModuleController::sendModuleList()
@@ -35,19 +32,19 @@ void ModuleController::sendModuleList()
     for (int i=0; i<5; i++) {
         switch (i) {
             case 0:
-                strcat(p, "/DAC");
+                strcat(p, "/SP/DAC");
                 break;
             case 1:
-                strcat(p, "/ADC");
+                strcat(p, "/SP/ADC");
                 break;
             case 2:
-                strcat(p, "/Sine");
+                strcat(p, "/GN/Sine");
                 break;
             case 3:
-                strcat(p, "/Envelope");
+                strcat(p, "/EF/Envelope");
                 break;
             case 4:
-                strcat(p, "/AudioSource");
+                strcat(p, "/GN/AudioSource");
             default:
                 break;
         }
@@ -96,11 +93,13 @@ static int dac(const char   *path,
     
     if ((int)argv[0]) {//argv[0] = 1:モジュール生成 0:モジュール解放
         DAC *dac = new DAC(mc->st, p));
+        dac->sendSetMdtkn();
         mc->dacList->push_back(dac);
     }else {
         for (std::list<DAC*>::iterator iter = dacList.begin(); iter!=dacList.end(); iter++) {
             DAC* dac = (*iter);
             if (strcmp(p,dac->OSCAddr)==0) {
+                dac->sendDeleteMdtkn();
                 mc->dacList->remove(dac);
                 delete dac;
             }
@@ -125,11 +124,13 @@ static int adc(const char   *path,
     
     if ((int)argv[0]) {//argv[0] = 1:モジュール生成 0:モジュール解放
         ADC *adc = new ADC(mc->st, p));
+        adc->sendSetMdtkn();
         mc->adcList->push_back(adc);
     }else {
         for (std::list<ADC*>::iterator iter = adcList.begin(); iter!adcList.end(); iter++) {
             ADC* adc = (*iter);
             if (strcmp(p,adc->OSCAddr)==0) {
+                adc->sendDeleteMdtkn();
                 mc->adcList->remove(adc);
                 delete adc;
             }
@@ -153,11 +154,13 @@ static int sine(const char   *path,
     
     if ((int)argv[0]) {//argv[0] = 1:モジュール生成 0:モジュール解放
         Sine *sine = new Sine(mc->st, p));
+        sine->sendSetMdtkn();
         mc->sineList->push_back(sine);
     }else {
         for (std::list<Sine*>::iterator iter = sineList.begin(); iter!=sineList.end(); iter++) {
             Sine* sine = (*iter);
             if (strcmp(p,sine->OSCAddr)==0) {
+                sine->sendDeleteMdtkn();
                 mc->sineList->remove(sine);
                 delete sine;
             }
@@ -181,11 +184,13 @@ static int env(const char   *path,
     
     if ((int)argv[0]) {//argv[0] = 1:モジュール生成 0:モジュール解放
         Envelope *env = new Envelope(mc->st, p));
+        env->sendSetMdtkn();
         mc->envList->push_back(env);
     }else {
         for (std::list<Envelope*>::iterator iter = envList.begin(); iter!=envList.end(); iter++) {
             Envelope* env = (*iter);
             if (strcmp(p,env->OSCAddr)==0) {
+                env->sendDeleteMdtkn();
                 mc->envList->remove(env);
                 delete env;
             }
@@ -209,11 +214,13 @@ static int as(const char   *path,
     
     if ((int)argv[0]) {//argv[0] = 1:モジュール生成 0:モジュール解放
         AudioSource *as = new AudioSource(mc->st, p));
+        as->sendSetMdtkn();
         mc->asList->push_back(as);
     }else {
         for (std::list<AudioSource*>::iterator iter = asList.begin(); iter!=asList.end(); iter++) {
             AudioSource* as = (*iter);
             if (strcmp(p,as->OSCAddr)==0) {
+                as->sendDeleteMdtkn();
                 mc->asList->remove(as);
                 delete as;
             }

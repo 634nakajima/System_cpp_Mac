@@ -12,6 +12,7 @@
 #include "Module.h"
 #include "MToken.h"
 #include <map>
+#include <list>
 
 class Coordinator : public Module {
 
@@ -20,12 +21,15 @@ public:
     Coordinator(lo_server_thread s, const char *osc);
     ~Coordinator();
     
-    std::map<int, MToken*>   mtknMap;
+    std::map<int, MToken*>  mtknMap;
+    std::list<MToken*>      mList;
     int                     mNum, mID;
     
     void    connect(int mID1, int mID2, const char *t);
     void    disconnect(int mID1, int mID2, const char *t);
     void    display(int m);
+    void    createModule(const char *tID, MToken *ml);
+    void    deleteModule(const char *tID, MToken *ml);
     
     static int setMtkn(const char   *path, 
                        const char   *types, 
@@ -40,6 +44,13 @@ public:
                           int          argc,
                           void         *data, 
                           void         *user_data);
+    
+    static int setMList(const char   *path, 
+                        const char   *types, 
+                        lo_arg       **argv, 
+                        int          argc,
+                        void         *data, 
+                        void         *user_data);
 };
 
 #endif
