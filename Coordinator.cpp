@@ -181,11 +181,14 @@ void Coordinator::deleteModule(const char *tID, MToken *ml)
 
 Coordinator::~Coordinator()
 {
-    for (int i=0; i<mNum; i++) {
-        MToken *m = mtknMap[i];
-        delete m;
-    }
+    for (std::list<MToken*>::iterator iter = mList.begin(); iter!=mList.end(); iter++)
+		delete (*iter);
+	for (std::list<MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++)
+		delete (*iter);
+
     mtknMap.empty();
+	mList.clear();
+
 }
 
 

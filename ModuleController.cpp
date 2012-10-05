@@ -24,7 +24,7 @@ void ModuleController::sendModuleList()
     int sock, n, d_len;
     struct sockaddr_in addr;
     void *data; 
-    char path[] = "/Coordinator/ModuleList";
+    char path[] = "ModuleList/setMList";
     char p[64];
     
     strcpy(p, OSCAddr);
