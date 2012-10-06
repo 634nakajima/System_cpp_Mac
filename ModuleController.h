@@ -24,10 +24,10 @@ class ModuleController : public Module
 public:
     
     std::list<DAC*> dacMap;
-    std::map<ADC*> adcList;
-    std::map<Sine*> sineList;
-    std::map<Envelope*> envList;
-    std::map<AudioSource*> asList;
+    std::list<ADC*> adcList;
+    std::list<Sine*> sineList;
+    std::list<Envelope*> envList;
+    std::list<AudioSource*> asList;
     
     ModuleController(lo_server_thread s, const char *osc);
     ~ModuleController();

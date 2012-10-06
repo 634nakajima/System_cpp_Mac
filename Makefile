@@ -1,7 +1,7 @@
 INCLUDES 	= -Iinclude -I./include/lo
 LIBS 		= -Llib -llo -lportaudio -lpm -lpt -lportsf
 FRAMEWORKS	= -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework CoreMIDI
-SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o
+SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o
 MIDI		= MIDIMain.o
 CC          	= g++
 PROGS		= system midi
