@@ -11,12 +11,12 @@
 
 Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
 {
-    addMethodToServer("/Write", "b", sWrite, this);
+    addMethodToServer("/Stream", "b", sWrite, this);
     prepareSerial();
     threadStart();
 }
 
-void Sereal::prepareSerial
+void Serial::prepareSerial()
 {
     fd = open(MODEMDEVICE, O_RDWR | O_NOCTTY ); 
     if (fd <0) {perror(MODEMDEVICE); exit(-1); }
@@ -88,7 +88,7 @@ void Sereal::prepareSerial
     
 
 }
-void threadStart()
+void Serial::threadStart()
 {
     int result;
     
@@ -97,7 +97,7 @@ void threadStart()
         done = 0;
         
         // Create the server thread
-        result = pthread_create(&thread, NULL, (void *)&threadFunction, this);
+        result = pthread_create(&thread, NULL, threadFunction, (void *)this);
         if (result) {
             fprintf(stderr,
                     "Failed to create thread: pthread_create(), %s",
@@ -124,29 +124,31 @@ void Serial::threadStop()
     }
 }
 
-static void threadFunction(void *data)
+void *Serial::threadFunction(void *data)
 {
     int rs;
     Serial *s = (Serial *)data;
     
     while (s->active) {
-        rs = read(fd, buf, 255);
-        sendAudio((short *)buf, rs);
+        rs = read(s->fd, s->buf, 255);
+        s->sendAudio((short *)s->buf, rs);
     }    
     pthread_exit(NULL);
 }
 
-static int sWrite(const char   *path, 
-                  const char   *types, 
-                  lo_arg       **argv, 
-                  int          argc,
-                  void         *data, 
-                  void         *user_data)
+int Serial::sWrite(const char   *path, 
+           const char   *types, 
+           lo_arg       **argv, 
+           int          argc,
+           void         *data, 
+           void         *user_data)
 {
+    Serial *s = (Serial *)user_data;
+
     lo_blob b = (lo_blob)argv[0];
     void *dp = (void *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
-    write(fd, dp, size);
+    write(s->fd, dp, size);
 }
 
 Serial::~Serial()

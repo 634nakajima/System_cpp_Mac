@@ -24,8 +24,8 @@ public:
     int						t;
     std::list<MToken*>      mList;
 
-    void    createModule(int *tID, MToken *ml);
-    void    deleteModule(int *tID, MToken *ml);
+    void    createModule(const char *tID, MToken *ml);
+    void    deleteModule(const char *tID, MToken *ml);
     
     static int setMList(const char   *path, 
                         const char   *types, 

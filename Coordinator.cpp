@@ -13,8 +13,8 @@ Coordinator::Coordinator(lo_server_thread s, const char *osc) : Module(s,osc)
 {
     mID = 0;
     mNum = 0;
-    addMethodToServer("/SetMdtkn", "ss", setMtkn, this);
-    addMethodToServer("/deleteMdtkn", "ss", deleteMtkn, this);
+    addMethodToServer("/SetMdtkn", "ssi", setMtkn, this);
+    addMethodToServer("/deleteMdtkn", "ssi", deleteMtkn, this);
     addMethodToServer("/ModuleList", "ss", setMList, this);
 
 }
@@ -30,8 +30,8 @@ int Coordinator::setMtkn(const char   *path,
     Coordinator *coordinator = (Coordinator *)user_data;
     //エラー処理、既存のモジュールトークン確認
     if (coordinator->mNum >= 32) return 0;
-    for (std::map<int, MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++) {
-        MToken *tmp = (*iter);
+    for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
+        MToken *tmp = iter->second;
         if (strcmp(tmp->ip,(char *)argv[0])==0) {
             if (strcmp(tmp->osc,(char *)argv[1])==0) return 0;
         }
@@ -42,12 +42,11 @@ int Coordinator::setMtkn(const char   *path,
     strcpy(m->ip, (char *)argv[0]);
     strcpy(m->osc, (char *)argv[1]);
     
-    if (!mNum) {//mNumが0でなければ
-        m->index = coordinator->mNum;
+    if (argv[2]->i != -1) {//mIDが-1でなければ
+        m->index = argv[2]->i;
         coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(m->index, m));
     }
-    coordinator->mNum = 0;
-    printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], coordinator->mNum);
+    printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
     
     return 0;
 }
@@ -61,15 +60,14 @@ int Coordinator::deleteMtkn(const char   *path,
 {
     Coordinator *coordinator = (Coordinator *)user_data;
     
-    for (std::map<int, MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++) {
-        MToken *tmp = (*iter);
+    for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
+        MToken *tmp = iter->second;
         if (strcmp(tmp->ip,(char *)argv[0])==0) {
             if (strcmp(tmp->osc,(char *)argv[1])==0) {
-                if (mNum == tmp->index) {
-                    coordinator->mtknMap.erase(mNum);
+                if (argv[2]->i == tmp->index) {
+                    coordinator->mtknMap.erase(argv[2]->i);
                     delete tmp;
-                    printf("delete:%s,%s mID:%d\n",(char *)argv[0], (char *)argv[1], i);
-                    mNum = 0;
+                    printf("delete:%s,%s mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
                     return 0;
                 }
             }
@@ -78,17 +76,17 @@ int Coordinator::deleteMtkn(const char   *path,
     return 1;
 }
 
-static int setMList(const char   *path, 
-                    const char   *types, 
-                    lo_arg       **argv, 
-                    int          argc,
-                    void         *data, 
-                    void         *user_data)
+int Coordinator::setMList(const char   *path, 
+             const char   *types, 
+             lo_arg       **argv, 
+             int          argc,
+             void         *data, 
+             void         *user_data)
 {
     int i = 0;
     Coordinator *coordinator = (Coordinator *)user_data;
     //エラー処理、既存のモジュールリスト確認
-    for (std::list<MToken*>::iterator iter = mList.begin(); iter!=mList.end(); iter++) {
+    for (std::list<MToken*>::iterator iter = coordinator->mList.begin(); iter!=coordinator->mList.end(); iter++) {
         MToken* ml = (*iter);
         if (strcmp(ml->ip, (char *)argv[0])==0) {
             if (strcmp(ml->osc, (char *)argv[1])==0) return 0;
@@ -99,7 +97,7 @@ static int setMList(const char   *path,
     MToken *m = new MToken();
     strcpy(m->ip, (char *)argv[0]);
     strcpy(m->osc, (char *)argv[1]);
-    coordinator->mList->push_back(m);
+    coordinator->mList.push_back(m);
     
     printf("set:%s,%s\n",(char *)argv[0], (char *)argv[1]);
     
@@ -160,31 +158,39 @@ void Coordinator::disconnect(int mID1, int mID2, const char *t)
 
 void Coordinator::createModule(const char *tID, MToken *ml)
 {
-    mNum = atoi(tID);
+    char p[64];
+    
+    strcpy(p, "/Tile");
+    strcat(p, tID);
+    
     lo_send(lo_address_new(ml->ip,"6340"), 
             ml->osc,
             "is", 
             1,
-            strcat("/Tile",tID));
+            p);
 
 }
 
 void Coordinator::deleteModule(const char *tID, MToken *ml)
 {
-    mNum = atoi(tID);
+    char p[64];
+    
+    strcpy(p, "/Tile");
+    strcat(p, tID);
+    
     lo_send(lo_address_new(ml->ip,"6340"), 
             ml->osc,
             "is", 
             0,
-            strcat("/Tile",tID));
+            p);
 }
 
 Coordinator::~Coordinator()
 {
     for (std::list<MToken*>::iterator iter = mList.begin(); iter!=mList.end(); iter++)
 		delete (*iter);
-	for (std::list<MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++)
-		delete (*iter);
+	for (std::map<int, MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++)
+		delete iter->second;
 
     mtknMap.empty();
 	mList.clear();

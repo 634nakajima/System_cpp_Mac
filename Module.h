@@ -34,10 +34,12 @@ public:
     char                OSCAddr[64];
     lo_server_thread    st;
     RoutingTable        *rTable;
+    int                 mID;
     
     Module(lo_server_thread s, const char *osc);
     ~Module();
     
+    void setMID(int m);
     void setRoute(char *ip, char *osc);
     void deleteRoute(char *ip, char *osc);
     void addMethodToServer(const char *path, const char *type, lo_method_handler h, void *user_data);

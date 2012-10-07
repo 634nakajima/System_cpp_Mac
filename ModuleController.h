@@ -16,14 +16,14 @@
 #include "ADC.h"
 #include "Sine.h"
 #include "Envelope.h"
-#include "AudioSource.cpp"
+#include "AudioSource.h"
 #include <list>
 
 class ModuleController : public Module
 {
 public:
     
-    std::list<DAC*> dacMap;
+    std::list<DAC*> dacList;
     std::list<ADC*> adcList;
     std::list<Sine*> sineList;
     std::list<Envelope*> envList;
@@ -31,7 +31,9 @@ public:
     
     ModuleController(lo_server_thread s, const char *osc);
     ~ModuleController();
-    
+
+    void sendModuleList();
+
 private:
     
 	static int dac(const char   *path, 
