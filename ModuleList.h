@@ -21,8 +21,8 @@ public:
     
     ModuleList(lo_server_thread s, const char *osc);
     ~ModuleList();
-    int						t;
     std::list<MToken*>      mList;
+    int						t;
 
     void    createModule(const char *tID, MToken *ml);
     void    deleteModule(const char *tID, MToken *ml);

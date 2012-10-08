@@ -28,12 +28,14 @@ public:
     pthread_t   thread;
     struct      termios oldtio,newtio;
     char        buf[1024];
+    char        device[128];
     
     Serial(lo_server_thread s, const char *osc);
     ~Serial();
     void threadStop();
     void prepareSerial();
     void threadStart();
+    void setDevice(const char *d);
 
 private:
     static int sWrite(const char   *path, 

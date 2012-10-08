@@ -12,14 +12,25 @@
 Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/Stream", "b", sWrite, this);
+    
+    device = MODEMDEVICE;
+    prepareSerial();
+
+    threadStart();
+}
+
+void Serial::setDevice(const char *d)
+{
+    threadStop();
+    strcpy(device, d);
     prepareSerial();
     threadStart();
 }
 
 void Serial::prepareSerial()
 {
-    fd = open(MODEMDEVICE, O_RDWR | O_NOCTTY ); 
-    if (fd <0) {perror(MODEMDEVICE); exit(-1); }
+    fd = open(device, O_RDWR | O_NOCTTY ); 
+    if (fd <0) {perror(device); exit(-1); }
     
     tcgetattr(fd,&oldtio); /* 現在のシリアルポートの設定を待避させる*/
     bzero(&newtio, sizeof(newtio)); /* 新しいポートの設定の構造体をクリアする */
