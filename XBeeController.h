@@ -7,3 +7,47 @@
  *
  */
 
+#ifndef _XBeeController_h
+#define _XBeeController_h
+
+#include "Module.h"
+#include "Coordinator.h"
+#include "Serial.h"
+#include <map>
+#include <list>
+
+#define	TILE_NUM	16
+
+class XBeeController : public Module {
+	
+public:
+    
+    XBeeController(lo_server_thread s, const char *osc);
+    ~XBeeController();
+    
+    std::map<int, MToken*>  mtknMap;
+    std::list<MToken*>      mList;
+    char                    address[TILE_NUM][8];
+    Coordinator				*co;
+	Serial					*serial;
+	char					*buf[256];
+	int						rp,wp;
+	
+	void	setCoordinator(Coordinator *coordinator);
+
+	
+private:
+	void	setXBeeAddress();
+	void	parseData();
+	char	readData();
+	int		available();
+
+    static int stream(const char   *path, 
+					  const char   *types, 
+					  lo_arg       **argv, 
+					  int          argc,
+					  void         *data, 
+					  void         *user_data);
+};
+
+#endif

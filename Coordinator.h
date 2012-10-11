@@ -11,6 +11,7 @@
 
 #include "Module.h"
 #include "MToken.h"
+#include "XBeeController.h"
 #include <map>
 #include <list>
 
@@ -24,7 +25,9 @@ public:
     std::map<int, MToken*>  mtknMap;
     std::list<MToken*>      mList;
     int                     mNum, mID;
-    
+    XBeeController			*xbc;
+	
+	void	setXBC(XBeeController *xbeecontroller);
     void    connect(int mID1, int mID2, const char *t);
     void    disconnect(int mID1, int mID2, const char *t);
     void    display(int m);

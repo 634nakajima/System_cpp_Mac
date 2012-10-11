@@ -34,7 +34,7 @@ public:
     char                OSCAddr[64];
     lo_server_thread    st;
     RoutingTable        *rTable;
-    int                 mID;
+    int					mID, mColor;
     
     Module(lo_server_thread s, const char *osc);
     ~Module();
@@ -48,6 +48,9 @@ public:
     void sendAudio(short *a, unsigned long l);
     void sendSetMdtkn();
     void sendDeleteMdtkn();
+	void connectTo(Module *m, const char *t);
+	void disconnectFrom(Module *m, const char *t);
+
 private:
     void getAddr();
     void setOSCAddr(const char *osc);

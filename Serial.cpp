@@ -148,18 +148,23 @@ void *Serial::threadFunction(void *data)
 }
 
 int Serial::sWrite(const char   *path, 
-           const char   *types, 
-           lo_arg       **argv, 
-           int          argc,
-           void         *data, 
-           void         *user_data)
+				   const char   *types, 
+				   lo_arg       **argv, 
+				   int          argc,
+				   void         *data, 
+				   void         *user_data)
 {
     Serial *s = (Serial *)user_data;
 
     lo_blob b = (lo_blob)argv[0];
     void *dp = (void *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
-    write(s->fd, dp, size);
+    serialWrite(dp, size);
+}
+
+void Serial::serialWrite(void *data, int s)
+{
+	write(s->fd, data, s);
 }
 
 Serial::~Serial()

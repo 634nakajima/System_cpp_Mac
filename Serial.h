@@ -28,6 +28,7 @@ public:
     pthread_t   thread;
     struct      termios oldtio,newtio;
     char        buf[1024];
+	int			rp, wp;
     char        device[128];
     
     Serial(lo_server_thread s, const char *osc);
@@ -36,6 +37,7 @@ public:
     void prepareSerial();
     void threadStart();
     void setDevice(const char *d);
+	void serialWrite(void *data, int s);
 
 private:
     static int sWrite(const char   *path, 

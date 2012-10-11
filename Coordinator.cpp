@@ -13,8 +13,8 @@ Coordinator::Coordinator(lo_server_thread s, const char *osc) : Module(s,osc)
 {
     mID = 0;
     mNum = 0;
-    addMethodToServer("/SetMdtkn", "ssi", setMtkn, this);
-    addMethodToServer("/deleteMdtkn", "ssi", deleteMtkn, this);
+    addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);
+    addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);
     addMethodToServer("/ModuleList", "ss", setMList, this);
 
 }

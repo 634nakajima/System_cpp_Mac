@@ -49,6 +49,7 @@ Module::Module(lo_server_thread s, const char *osc)
 
     rTable = new RoutingTable();
     mID = -1;
+	mColor = -1;
 }
 
 void Module::sendSetMdtkn()
@@ -63,6 +64,7 @@ void Module::sendSetMdtkn()
     lo_message_add_string(m, IPAddr);
     lo_message_add_string(m, OSCAddr);
     lo_message_add_int32(m, mID);
+	lo_message_add_int32(m, mColor);
     
     data = lo_message_serialise(m, path, NULL, NULL);
     d_len = lo_message_length(m, path);
@@ -98,7 +100,8 @@ void Module::sendDeleteMdtkn()
     lo_message_add_string(m, IPAddr);
     lo_message_add_string(m, OSCAddr);
     lo_message_add_int32(m, mID);
-    
+	lo_message_add_int32(m, mColor);
+
     data = lo_message_serialise(m, path, NULL, NULL);
     d_len = lo_message_length(m, path);
     
@@ -273,6 +276,22 @@ void Module::setRoute(char *ip, char *osc)
 void Module::deleteRoute(char *ip, char *osc)
 {
     rTable->deleteRoute(ip, osc);
+}
+
+void Module::connectTo(Module *m, const char *t)
+{
+	char p[64];
+	strcpy(p, OSCAddr);
+    strcat(p, t);
+	setRoute(m->IPAddr, p);
+}
+
+void Module::disconnectFrom(Module *m, const char *t)
+{
+	char p[64];
+	strcpy(p, OSCAddr);
+    strcat(p, t);
+	deleteRoute(m->IPAddr, p);
 }
 
 Module::~Module()
