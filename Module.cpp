@@ -281,7 +281,7 @@ void Module::deleteRoute(char *ip, char *osc)
 void Module::connectTo(Module *m, const char *t)
 {
 	char p[64];
-	strcpy(p, OSCAddr);
+	strcpy(p, m->OSCAddr);
     strcat(p, t);
 	setRoute(m->IPAddr, p);
 }
@@ -289,7 +289,7 @@ void Module::connectTo(Module *m, const char *t)
 void Module::disconnectFrom(Module *m, const char *t)
 {
 	char p[64];
-	strcpy(p, OSCAddr);
+	strcpy(p, m->OSCAddr);
     strcat(p, t);
 	deleteRoute(m->IPAddr, p);
 }

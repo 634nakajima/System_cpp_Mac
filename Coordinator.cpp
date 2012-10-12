@@ -11,8 +11,6 @@
 
 Coordinator::Coordinator(lo_server_thread s, const char *osc) : Module(s,osc)
 {
-    mID = 0;
-    mNum = 0;
     addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);
     addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);
     addMethodToServer("/ModuleList", "ss", setMList, this);
@@ -45,8 +43,8 @@ int Coordinator::setMtkn(const char   *path,
     if (argv[2]->i != -1) {//mIDが-1でなければ
         m->index = argv[2]->i;
         coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(m->index, m));
+		printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
     }
-    printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
     
     return 0;
 }
@@ -154,35 +152,6 @@ void Coordinator::disconnect(int mID1, int mID2, const char *t)
             "ss", 
             m2->ip,
             strcat(m2OSC,t));
-}
-
-void Coordinator::createModule(const char *tID, MToken *ml)
-{
-    char p[64];
-    
-    strcpy(p, "/Tile");
-    strcat(p, tID);
-    
-    lo_send(lo_address_new(ml->ip,"6340"), 
-            ml->osc,
-            "is", 
-            1,
-            p);
-
-}
-
-void Coordinator::deleteModule(const char *tID, MToken *ml)
-{
-    char p[64];
-    
-    strcpy(p, "/Tile");
-    strcat(p, tID);
-    
-    lo_send(lo_address_new(ml->ip,"6340"), 
-            ml->osc,
-            "is", 
-            0,
-            p);
 }
 
 Coordinator::~Coordinator()

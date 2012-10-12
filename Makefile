@@ -1,14 +1,16 @@
 INCLUDES 	= -Iinclude -I./include/lo
 LIBS 		= -Llib -llo -lportaudio -lpm -lpt -lportsf
 FRAMEWORKS	= -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework CoreMIDI
-SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o
+SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o
 MIDI		= MIDIMain.o
+XBEE		= XBeeTest.o Data.o Module.o RoutingTable.o Audio.o Coordinator.o MToken.o XBeeController.o Serial.o
+ML		= MLTest.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o
 CC          	= g++
-PROGS		= system midi
+PROGS		= system midi xbee ml
 
 .PHONY: liblo pmmac porttime portsf clean
 
-all:	liblo pmmac porttime portsf system midi
+all:	liblo pmmac porttime portsf system midi xbee ml
 
 liblo:
 	cd liblo; make; make install;
@@ -30,6 +32,12 @@ midi: $(MIDI)
 
 system: $(SYSTEM)
 	$(CC) -o $@ $(SYSTEM) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
+
+xbee: $(XBEE)
+	$(CC) -o $@ $(XBEE) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
+
+ml: $(ML)
+	$(CC) -o $@ $(ML) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
 
 clean:
 	rm -f *.o   

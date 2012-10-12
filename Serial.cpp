@@ -11,11 +11,12 @@
 
 Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
 {
+	active = 0;
+	done = 0;
     addMethodToServer("/Stream", "b", sWrite, this);
-    
-    device = MODEMDEVICE;
-    prepareSerial();
 
+    strcpy(device, MODEMDEVICE);
+    prepareSerial();
     threadStart();
 }
 
@@ -102,11 +103,11 @@ void Serial::prepareSerial()
 void Serial::threadStart()
 {
     int result;
-    
+
     if (!active) {
         active = 1;
         done = 0;
-        
+
         // Create the server thread
         result = pthread_create(&thread, NULL, threadFunction, (void *)this);
         if (result) {
@@ -139,9 +140,11 @@ void *Serial::threadFunction(void *data)
 {
     int rs;
     Serial *s = (Serial *)data;
-    
+
     while (s->active) {
+		printf("Waiting...\n");
         rs = read(s->fd, s->buf, 255);
+		printf("Data Received:%d\n",rs);
         s->sendAudio((short *)s->buf, rs);
     }    
     pthread_exit(NULL);
@@ -159,12 +162,12 @@ int Serial::sWrite(const char   *path,
     lo_blob b = (lo_blob)argv[0];
     void *dp = (void *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
-    serialWrite(dp, size);
+    s->serialWrite(dp, size);
 }
 
 void Serial::serialWrite(void *data, int s)
 {
-	write(s->fd, data, s);
+	write(fd, data, s);
 }
 
 Serial::~Serial()

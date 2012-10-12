@@ -15,6 +15,7 @@
 #include <map>
 #include <list>
 
+class XBeeController;
 class Coordinator : public Module {
 
 public:

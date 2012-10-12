@@ -9,6 +9,7 @@
 #include "DAC.h"
 #include "ADC.h"
 #include "Coordinator.h"
+#include "XBeeController.h"
 #include "Envelope.h"
 #include "Sine.h"
 #include "AudioSource.h"
@@ -75,6 +76,6 @@ int main()
 	delete a2;
 	delete a3;
 	delete sine;
-	
+ 
     return 0;
 }

@@ -11,6 +11,7 @@
 #define _ModuleList_h
 
 #include "Module.h"
+#include "Serial.h"
 #include "MToken.h"
 #include <stdlib.h>
 #include <list>
@@ -22,6 +23,7 @@ public:
     ModuleList(lo_server_thread s, const char *osc);
     ~ModuleList();
     std::list<MToken*>      mList;
+	Serial					*serial;
     int						t;
 
     void    createModule(const char *tID, MToken *ml);
@@ -33,6 +35,13 @@ public:
                         int          argc,
                         void         *data, 
                         void         *user_data);
+	
+	static int stream(const char   *path, 
+					  const char   *types, 
+					  lo_arg       **argv, 
+					  int          argc,
+					  void         *data, 
+					  void         *user_data);
 };
 
 #endif

@@ -19,11 +19,10 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
-	
 }
 
 void XBeeController::setXBeeAddress()
-{
+{/*
 	address[0][0] = ;
 	address[0][1] = ;
 	address[0][2] = ;
@@ -87,10 +86,10 @@ void XBeeController::setXBeeAddress()
 	address[7][4] = ;
 	address[7][5] = ;
 	address[7][6] = ;
-	address[7][7] = ;
+	address[7][7] = ;*/
 }
 
-void XBeeController::setCoordinator(Coordinator *Coordinator)
+void XBeeController::setCoordinator(Coordinator *coordinator)
 {
 	co = coordinator;
 }
@@ -98,7 +97,8 @@ void XBeeController::setCoordinator(Coordinator *Coordinator)
 void XBeeController::parseData()
 {
 	int mode, mid1, mid2, type;
-	
+	mid1 = readData();
+	printf("%d\n",mid1);
 	if (available()!=20) return;
 	
 	if (readData() == 0x7E) {
@@ -107,10 +107,11 @@ void XBeeController::parseData()
 		}
 		
 		mode = readData();
-		from = readData();
-		to	 = readData();
+		mid1 = readData();
+		mid2 = readData();
 		type = readData();
 		readData();
+		printf("%d,%d\n",mid1,mid2);
 		
 		if (co != NULL) {
 			switch (mode) {
@@ -150,7 +151,7 @@ void XBeeController::parseData()
 char XBeeController::readData()
 {
 	char value;
-	value = data[rp];
+	value = buf[rp];
 	rp = (rp != 255 ? rp+1 : 0);
 	return value;
 }
@@ -180,4 +181,9 @@ int XBeeController::stream(const char   *path,
 		xbc->wp = (xbc->wp != 255 ? xbc->wp+1 : 0);
 	}
 	xbc->parseData();
+}
+
+XBeeController::~XBeeController()
+{
+	delete serial;
 }

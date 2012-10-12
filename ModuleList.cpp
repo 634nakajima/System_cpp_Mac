@@ -13,7 +13,9 @@
 ModuleList::ModuleList(lo_server_thread s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/setMList", "ss", setMList, this);
-	
+	addMethodToServer("/Stream", "b", stream, this);
+	serial = new Serial(s, "/Serial");
+	serial->connectTo(this, "/Stream");
 }
 
 int ModuleList::setMList(const char   *path, 
@@ -25,7 +27,6 @@ int ModuleList::setMList(const char   *path,
 {
     int i = 0;
     ModuleList *mlc = (ModuleList *)user_data;
-    
     //エラー処理、既存のモジュールリスト確認
     for (std::list<MToken*>::iterator iter = mlc->mList.begin(); iter != mlc->mList.end(); iter++) {
         MToken* ml = (*iter);
@@ -44,6 +45,26 @@ int ModuleList::setMList(const char   *path,
     
     return 0;
 	
+}
+
+int ModuleList::stream(const char   *path, 
+					   const char   *types, 
+					   lo_arg       **argv, 
+					   int          argc,
+					   void         *data, 
+					   void         *user_data)
+{
+	ModuleList *mlc = (ModuleList *)user_data;
+	lo_blob b = (lo_blob)argv[0];
+    char *dp = (char *)lo_blob_dataptr(b);
+    int size = lo_blob_datasize(b);
+	
+	mlc->t = *dp;
+	
+
+	std::list<MToken*>::iterator iter = mlc->mList.begin();
+	MToken* ml = (*iter);
+	mlc->createModule("2", ml);
 }
 
 void ModuleList::createModule(const char *tID, MToken *ml)

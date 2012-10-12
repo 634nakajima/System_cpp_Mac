@@ -13,11 +13,10 @@
 #include "Module.h"
 #include "Coordinator.h"
 #include "Serial.h"
-#include <map>
-#include <list>
 
 #define	TILE_NUM	16
 
+class Coordinator;
 class XBeeController : public Module {
 	
 public:
@@ -25,12 +24,10 @@ public:
     XBeeController(lo_server_thread s, const char *osc);
     ~XBeeController();
     
-    std::map<int, MToken*>  mtknMap;
-    std::list<MToken*>      mList;
     char                    address[TILE_NUM][8];
     Coordinator				*co;
 	Serial					*serial;
-	char					*buf[256];
+	char					buf[256];
 	int						rp,wp;
 	
 	void	setCoordinator(Coordinator *coordinator);

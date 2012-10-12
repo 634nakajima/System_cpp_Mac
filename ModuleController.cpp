@@ -24,31 +24,35 @@ void ModuleController::sendModuleList()
     int sock, n, d_len;
     struct sockaddr_in addr;
     void *data; 
-    char path[] = "ModuleList/setMList";
+    char path[] = "/ModuleList/setMList";
     char p[64];
     
     strcpy(p, OSCAddr);
-    
     for (int i=0; i<5; i++) {
         switch (i) {
             case 0:
+				strcpy(p, OSCAddr);
                 strcat(p, "/SP/DAC");
                 break;
             case 1:
+				strcpy(p, OSCAddr);
                 strcat(p, "/SP/ADC");
                 break;
             case 2:
+				strcpy(p, OSCAddr);
                 strcat(p, "/GN/Sine");
                 break;
             case 3:
+				strcpy(p, OSCAddr);
                 strcat(p, "/EF/Envelope");
                 break;
             case 4:
+				strcpy(p, OSCAddr);
                 strcat(p, "/GN/AudioSource");
+				break;
             default:
                 break;
         }
-        
         //create lo_message
         lo_message m = lo_message_new();
         lo_message_add_string(m, IPAddr);
@@ -64,9 +68,9 @@ void ModuleController::sendModuleList()
         addr.sin_family = AF_INET;
         addr.sin_port = htons(6340);
         inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
-    
+
         //send(念のため2回)
-        for (int j=0; j<2; i++) {
+        for (int j=0; j<2; j++) {
             n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
             if (n < 1) {
                 perror("sendto");
@@ -87,12 +91,13 @@ int ModuleController::dac(const char   *path,
     ModuleController *mc = (ModuleController *)user_data;
 
     char p[64] = "/Tile";
-    strcat(p, argv[1]->s);
+
+    strcat(p, &argv[1]->s);
     strcat(p, "/SP/DAC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         DAC *dac = new DAC(mc->st, p);
-        dac->setMID(atoi(argv[1]->s));
+        dac->setMID(atoi(&argv[1]->s));
         dac->sendSetMdtkn();
         mc->dacList.push_back(dac);
     }else {
@@ -119,12 +124,12 @@ int ModuleController::adc(const char   *path,
     
     char p[64] = "/Tile";
     
-    strcat(p, argv[1]->s);
+    strcat(p, &argv[1]->s);
     strcat(p, "/GN/ADC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         ADC *adc = new ADC(mc->st, p);
-        adc->setMID(atoi(argv[1]->s));
+        adc->setMID(atoi(&argv[1]->s));
         adc->sendSetMdtkn();
         mc->adcList.push_back(adc);
     }else {
@@ -150,12 +155,12 @@ int ModuleController::sine(const char   *path,
     
     char p[64] = "/Tile";
     
-    strcat(p, argv[1]->s);
+    strcat(p, &argv[1]->s);
     strcat(p, "/GN/Sine");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         Sine *sine = new Sine(mc->st, p);
-        sine->setMID(atoi(argv[1]->s));
+        sine->setMID(atoi(&argv[1]->s));
         sine->sendSetMdtkn();
         mc->sineList.push_back(sine);
     }else {
@@ -181,12 +186,12 @@ int ModuleController::env(const char   *path,
     
     char p[64] = "/Tile";
     
-    strcat(p, argv[1]->s);
+    strcat(p, &argv[1]->s);
     strcat(p, "/EF/Envelope");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         Envelope *env = new Envelope(mc->st, p);
-        env->setMID(atoi(argv[1]->s));
+        env->setMID(atoi(&argv[1]->s));
         env->sendSetMdtkn();
         mc->envList.push_back(env);
     }else {
@@ -212,12 +217,12 @@ int ModuleController::as(const char   *path,
     
     char p[64] = "/Tile";
     
-    strcat(p, argv[1]->s);
+    strcat(p, &argv[1]->s);
     strcat(p, "/GN/AudioSource");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         AudioSource *as = new AudioSource(mc->st, p);
-        as->setMID(atoi(argv[1]->s));
+        as->setMID(atoi(&argv[1]->s));
         as->sendSetMdtkn();
         mc->asList.push_back(as);
     }else {
