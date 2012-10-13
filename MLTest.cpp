@@ -32,7 +32,7 @@ int main()
 	ModuleList			*ml;
 	ModuleController	*mc;
 	lo_server_thread	st;
-	
+	int                 mColor;
 	st = lo_server_thread_new("6340", NULL);
 	ml	= new ModuleList(st, "/ModuleList");
 	mc	= new ModuleController(st, "/MC");
@@ -40,7 +40,13 @@ int main()
 	
 	lo_server_thread_start(st);
 	mc->sendModuleList();
-	getchar();
+    ml->t = '7';
+    while (1) {
+        printf("Enter Module Color\n");
+        scanf("%d", &mColor);
+        if (!mColor) break;
+        ml->createModule("7", mColor);
+    }
 	
 	return 0;
 }

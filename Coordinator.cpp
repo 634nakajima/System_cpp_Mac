@@ -25,16 +25,20 @@ int Coordinator::setMtkn(const char   *path,
                          void         *user_data)
 {
     int i = 0;
+
     Coordinator *coordinator = (Coordinator *)user_data;
     //エラー処理、既存のモジュールトークン確認
-    if (coordinator->mNum >= 32) return 0;
     for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
+        i++;
+        printf("%d\n",strcmp(tmp->osc,(char *)argv[1]));
         if (strcmp(tmp->ip,(char *)argv[0])==0) {
-            if (strcmp(tmp->osc,(char *)argv[1])==0) return 0;
+            if (strcmp(tmp->osc,(char *)argv[1])==0) {
+                return 0;
+            }
         }
     }
-    
+    printf("%d\n",i);
     //モジュールトークンの生成
     MToken *m = new MToken();
     strcpy(m->ip, (char *)argv[0]);
@@ -43,7 +47,7 @@ int Coordinator::setMtkn(const char   *path,
     if (argv[2]->i != -1) {//mIDが-1でなければ
         m->index = argv[2]->i;
         coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(m->index, m));
-		printf("set:%s,%s,mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
+		printf("set:%s, %s TileID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
     }
     
     return 0;

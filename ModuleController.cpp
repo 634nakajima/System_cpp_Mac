@@ -26,29 +26,34 @@ void ModuleController::sendModuleList()
     void *data; 
     char path[] = "/ModuleList/setMList";
     char p[64];
-    
+    int  mColor;
     strcpy(p, OSCAddr);
     for (int i=0; i<5; i++) {
         switch (i) {
             case 0:
 				strcpy(p, OSCAddr);
                 strcat(p, "/SP/DAC");
+                mColor = 1;
                 break;
             case 1:
 				strcpy(p, OSCAddr);
-                strcat(p, "/SP/ADC");
+                strcat(p, "/GN/ADC");
+                mColor = 2;
                 break;
             case 2:
 				strcpy(p, OSCAddr);
                 strcat(p, "/GN/Sine");
+                mColor = 3;
                 break;
             case 3:
 				strcpy(p, OSCAddr);
                 strcat(p, "/EF/Envelope");
+                mColor = 4;
                 break;
             case 4:
 				strcpy(p, OSCAddr);
                 strcat(p, "/GN/AudioSource");
+                mColor = 5;
 				break;
             default:
                 break;
@@ -57,6 +62,8 @@ void ModuleController::sendModuleList()
         lo_message m = lo_message_new();
         lo_message_add_string(m, IPAddr);
         lo_message_add_string(m, p);
+        lo_message_add_int32(m, mColor);
+
     
         data = lo_message_serialise(m, path, NULL, NULL);
         d_len = lo_message_length(m, path);

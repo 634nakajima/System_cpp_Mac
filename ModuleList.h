@@ -14,7 +14,7 @@
 #include "Serial.h"
 #include "MToken.h"
 #include <stdlib.h>
-#include <list>
+#include <map>
 
 class ModuleList : public Module {
 	
@@ -22,12 +22,15 @@ public:
     
     ModuleList(lo_server_thread s, const char *osc);
     ~ModuleList();
-    std::list<MToken*>      mList;
-	Serial					*serial;
-    int						t;
+    std::map<int, MToken*>      mlMap;
+	Serial                      *serial;
+    char                        t;
 
     void    createModule(const char *tID, MToken *ml);
+    void    createModule(const char *tID, int mc);
     void    deleteModule(const char *tID, MToken *ml);
+    void    deleteModule(const char *tID, int mc);
+
     
     static int setMList(const char   *path, 
                         const char   *types, 
