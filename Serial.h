@@ -30,6 +30,8 @@ public:
     char        device[128];
     
     Serial(lo_server_thread s, const char *osc);
+    Serial(lo_server_thread s, const char *osc, const char *d);
+
     ~Serial();
     void threadStop();
     void prepareSerial();

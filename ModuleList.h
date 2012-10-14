@@ -26,12 +26,15 @@ public:
 	Serial                      *serial;
     char                        t;
 
-    void    createModule(const char *tID, MToken *ml);
-    void    createModule(const char *tID, int mc);
-    void    deleteModule(const char *tID, MToken *ml);
-    void    deleteModule(const char *tID, int mc);
+    void    createModule(char *tID, MToken *ml);
+    void    deleteModule(char *tID, MToken *ml);
 
-    
+    void    createModule(char *tID, int mc);
+    void    deleteModule(char *tID, int mc);
+
+    void    createModule(int tID, int mc);
+    void    deleteModule(int tID, int mc);
+        
     static int setMList(const char   *path, 
                         const char   *types, 
                         lo_arg       **argv, 

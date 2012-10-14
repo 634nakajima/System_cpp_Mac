@@ -12,6 +12,7 @@
 #include "Module.h"
 #include "MToken.h"
 #include "XBeeController.h"
+#include "ModuleList.h"
 #include <map>
 #include <list>
 
@@ -23,18 +24,15 @@ public:
     Coordinator(lo_server_thread s, const char *osc);
     ~Coordinator();
     
-    std::map<int, MToken*>  mtknMap;
-    std::list<MToken*>      mList;
-    int                     mNum, mID;
-    XBeeController			*xbc;
+    std::map<int, MToken*>      mtknMap;
+    XBeeController              *xbc;
+    ModuleList                  *ml;
 	
 	void	setXBC(XBeeController *xbeecontroller);
     void    connect(int mID1, int mID2, const char *t);
     void    disconnect(int mID1, int mID2, const char *t);
     void    display(int m);
-    void    createModule(const char *tID, MToken *ml);
-    void    deleteModule(const char *tID, MToken *ml);
-    
+    	
     static int setMtkn(const char   *path, 
                        const char   *types, 
                        lo_arg       **argv, 
@@ -48,13 +46,7 @@ public:
                           int          argc,
                           void         *data, 
                           void         *user_data);
-    
-    static int setMList(const char   *path, 
-                        const char   *types, 
-                        lo_arg       **argv, 
-                        int          argc,
-                        void         *data, 
-                        void         *user_data);
+
 };
 
 #endif

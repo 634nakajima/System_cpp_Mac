@@ -89,11 +89,11 @@ void ModuleController::sendModuleList()
 }
 
 int ModuleController::dac(const char   *path, 
-        const char   *types, 
-        lo_arg       **argv, 
-        int          argc,
-        void         *data, 
-        void         *user_data)
+                          const char   *types, 
+                          lo_arg       **argv, 
+                          int          argc,
+                          void         *data, 
+                          void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
 
@@ -103,17 +103,31 @@ int ModuleController::dac(const char   *path,
     strcat(p, "/SP/DAC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<DAC*>::iterator iter = mc->dacList.begin(); iter != mc->dacList.end(); iter++) {
+            DAC* dac = (*iter);
+            if (strcmp(p,dac->OSCAddr)==0) {
+                if (dac->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating DAC");
+                    return 0;
+                }
+            }
+        }
+        
         DAC *dac = new DAC(mc->st, p);
-        dac->setMID(atoi(&argv[1]->s));
+        dac->setTID(atoi(&argv[1]->s));
+        dac->mColor = 1;
         dac->sendSetMdtkn();
         mc->dacList.push_back(dac);
+        printf("create DAC\n");
+
     }else {
         for (std::list<DAC*>::iterator iter = mc->dacList.begin(); iter != mc->dacList.end(); iter++) {
             DAC* dac = (*iter);
             if (strcmp(p,dac->OSCAddr)==0) {
                 dac->sendDeleteMdtkn();
-                mc->dacList.remove(dac);
                 delete dac;
+                mc->dacList.remove(dac);
+                printf("delete DAC\n");
             }
         }
     }
@@ -121,11 +135,11 @@ int ModuleController::dac(const char   *path,
 
 
 int ModuleController::adc(const char   *path, 
-        const char   *types, 
-        lo_arg       **argv, 
-        int          argc,
-        void         *data, 
-        void         *user_data)
+                          const char   *types, 
+                          lo_arg       **argv, 
+                          int          argc,
+                          void         *data, 
+                          void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
     
@@ -135,28 +149,42 @@ int ModuleController::adc(const char   *path,
     strcat(p, "/GN/ADC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<ADC*>::iterator iter = mc->adcList.begin(); iter != mc->adcList.end(); iter++) {
+            ADC* adc = (*iter);
+            if (strcmp(p,adc->OSCAddr)==0) {
+                if (adc->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating ADC");
+                    return 0;
+                }
+            }
+        }
+        
         ADC *adc = new ADC(mc->st, p);
-        adc->setMID(atoi(&argv[1]->s));
+        adc->setTID(atoi(&argv[1]->s));
+        adc->mColor = 2;
         adc->sendSetMdtkn();
         mc->adcList.push_back(adc);
+        printf("create ADC\n");
+
     }else {
         for (std::list<ADC*>::iterator iter = mc->adcList.begin(); iter != mc->adcList.end(); iter++) {
             ADC* adc = (*iter);
             if (strcmp(p,adc->OSCAddr)==0) {
                 adc->sendDeleteMdtkn();
-                mc->adcList.remove(adc);
                 delete adc;
+                mc->adcList.remove(adc);
+                printf("delete ADC\n");
             }
         }
     }
 }
 
 int ModuleController::sine(const char   *path, 
-         const char   *types, 
-         lo_arg       **argv, 
-         int          argc,
-         void         *data, 
-         void         *user_data)
+                           const char   *types, 
+                           lo_arg       **argv, 
+                           int          argc,
+                           void         *data, 
+                           void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
     
@@ -164,30 +192,45 @@ int ModuleController::sine(const char   *path,
     
     strcat(p, &argv[1]->s);
     strcat(p, "/GN/Sine");
-    
+
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
-        Sine *sine = new Sine(mc->st, p);
-        sine->setMID(atoi(&argv[1]->s));
-        sine->sendSetMdtkn();
-        mc->sineList.push_back(sine);
-    }else {
         for (std::list<Sine*>::iterator iter = mc->sineList.begin(); iter != mc->sineList.end(); iter++) {
             Sine* sine = (*iter);
             if (strcmp(p,sine->OSCAddr)==0) {
+                if (sine->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating Sine");
+                    return 0;
+                }
+            }
+        }
+        
+        Sine *sine = new Sine(mc->st, p);
+        sine->setTID(atoi(&argv[1]->s));
+        sine->mColor = 3;
+        sine->sendSetMdtkn();
+        mc->sineList.push_back(sine);
+        printf("create Sine\n");
+
+    }else {
+        for (std::list<Sine*>::iterator iter = mc->sineList.begin(); iter != mc->sineList.end(); iter++) {
+            Sine* sine = (*iter);
+
+            if (strcmp(p,sine->OSCAddr)==0) {
                 sine->sendDeleteMdtkn();
-                mc->sineList.remove(sine);
                 delete sine;
+                mc->sineList.remove(sine);
+                printf("delete Sine\n");
             }
         }
     }
 }
 
 int ModuleController::env(const char   *path, 
-        const char   *types, 
-        lo_arg       **argv, 
-        int          argc,
-        void         *data, 
-        void         *user_data)
+                          const char   *types, 
+                          lo_arg       **argv, 
+                          int          argc,
+                          void         *data, 
+                          void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
     
@@ -197,28 +240,42 @@ int ModuleController::env(const char   *path,
     strcat(p, "/EF/Envelope");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<Envelope*>::iterator iter = mc->envList.begin(); iter != mc->envList.end(); iter++) {
+            Envelope* env = (*iter);
+            if (strcmp(p,env->OSCAddr)==0) {
+                if (env->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating Envelope\n");
+                    return 0;
+                }
+            }
+        }
+        
         Envelope *env = new Envelope(mc->st, p);
-        env->setMID(atoi(&argv[1]->s));
+        env->setTID(atoi(&argv[1]->s));
+        env->mColor = 4;
         env->sendSetMdtkn();
         mc->envList.push_back(env);
+        printf("create Envelope\n");
+        
     }else {
         for (std::list<Envelope*>::iterator iter = mc->envList.begin(); iter != mc->envList.end(); iter++) {
             Envelope* env = (*iter);
             if (strcmp(p,env->OSCAddr)==0) {
                 env->sendDeleteMdtkn();
-                mc->envList.remove(env);
                 delete env;
+                mc->envList.remove(env);
+                printf("delete Envelope\n");
             }
         }
     }
 }
 
 int ModuleController::as(const char   *path, 
-       const char   *types, 
-       lo_arg       **argv, 
-       int          argc,
-       void         *data, 
-       void         *user_data)
+                         const char   *types, 
+                         lo_arg       **argv, 
+                         int          argc,
+                         void         *data, 
+                         void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
     
@@ -228,17 +285,31 @@ int ModuleController::as(const char   *path,
     strcat(p, "/GN/AudioSource");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<AudioSource*>::iterator iter = mc->asList.begin(); iter != mc->asList.end(); iter++) {
+            AudioSource* as = (*iter);
+            if (strcmp(p,as->OSCAddr)==0) {
+                if (as->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating AudioSource\n");
+                    return 0;
+                }
+            }
+        }
+        
         AudioSource *as = new AudioSource(mc->st, p);
-        as->setMID(atoi(&argv[1]->s));
+        as->setTID(atoi(&argv[1]->s));
+        as->mColor = 5;
         as->sendSetMdtkn();
         mc->asList.push_back(as);
+        printf("create AudioSource\n");
+
     }else {
         for (std::list<AudioSource*>::iterator iter = mc->asList.begin(); iter != mc->asList.end(); iter++) {
             AudioSource* as = (*iter);
             if (strcmp(p,as->OSCAddr)==0) {
                 as->sendDeleteMdtkn();
-                mc->asList.remove(as);
                 delete as;
+                mc->asList.remove(as);
+                printf("delete AudioSource\n");
             }
         }
     }

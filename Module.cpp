@@ -8,9 +8,9 @@
 
 #include "Module.h"
 
-void Module::setMID(int m)
+void Module::setTID(int t)
 {
-    mID = m;
+    tID = t;
 }
 
 int Module::setRoute(const char   *path, 
@@ -48,7 +48,7 @@ Module::Module(lo_server_thread s, const char *osc)
     addMethodToServer("/DeleteRoute", "ss", Module::deleteRoute, this);
 
     rTable = new RoutingTable();
-    mID = -1;
+    tID = -1;
 	mColor = -1;
 }
 
@@ -63,7 +63,7 @@ void Module::sendSetMdtkn()
     lo_message m = lo_message_new();
     lo_message_add_string(m, IPAddr);
     lo_message_add_string(m, OSCAddr);
-    lo_message_add_int32(m, mID);
+    lo_message_add_int32(m, tID);
 	lo_message_add_int32(m, mColor);
     
     data = lo_message_serialise(m, path, NULL, NULL);
@@ -99,7 +99,7 @@ void Module::sendDeleteMdtkn()
     lo_message m = lo_message_new();
     lo_message_add_string(m, IPAddr);
     lo_message_add_string(m, OSCAddr);
-    lo_message_add_int32(m, mID);
+    lo_message_add_int32(m, tID);
 	lo_message_add_int32(m, mColor);
 
     data = lo_message_serialise(m, path, NULL, NULL);

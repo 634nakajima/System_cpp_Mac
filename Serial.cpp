@@ -20,6 +20,17 @@ Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
     threadStart();
 }
 
+Serial::Serial(lo_server_thread s, const char *osc, const char *d) : Module(s,osc)
+{
+    active = 0;
+	done = 0;
+    addMethodToServer("/Stream", "b", sWrite, this);
+    
+    strcpy(device, d);
+    prepareSerial();
+    threadStart();
+}
+
 void Serial::setDevice(const char *d)
 {
     threadStop();

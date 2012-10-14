@@ -14,15 +14,13 @@ ModuleList::ModuleList(lo_server_thread s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/setMList", "ssi", setMList, this);
 	addMethodToServer("/Stream", "b", stream, this);
-	serial = new Serial(s, "/Serial");
-	serial->connectTo(this, "/Stream");
 }
 
 int ModuleList::setMList(const char   *path, 
                          const char   *types, 
                          lo_arg       **argv, 
                          int          argc,
-                         void         *data, 
+                         void         *data,
                          void         *user_data)
 {
     int i = 0;
@@ -64,7 +62,7 @@ int ModuleList::stream(const char   *path,
 	mlc->t = *dp;
 }
 
-void ModuleList::createModule(const char *tID, MToken *ml)
+void ModuleList::createModule(char *tID, MToken *ml)
 {
     lo_send(lo_address_new(ml->ip,"6340"), 
             ml->osc,
@@ -73,16 +71,15 @@ void ModuleList::createModule(const char *tID, MToken *ml)
             tID);
 }
 
-void ModuleList::createModule(const char *tID, int mc)
+void ModuleList::createModule(char *tID, int mc)
 {
     MToken *m = mlMap[mc];
-
     if (m != NULL) {
         createModule(tID, m);
     }
 }
 
-void ModuleList::deleteModule(const char *tID, MToken *ml)
+void ModuleList::deleteModule(char *tID, MToken *ml)
 {
     lo_send(lo_address_new(ml->ip,"6340"), 
             ml->osc,
@@ -91,11 +88,58 @@ void ModuleList::deleteModule(const char *tID, MToken *ml)
             tID);
 }
 
-void ModuleList::deleteModule(const char *tID, int mc)
+void ModuleList::deleteModule(char *tID, int mc)
 {
     MToken *m = mlMap[mc];
     if (m != NULL)
         deleteModule(tID, m);
+}
+
+void ModuleList::createModule(int tID, int mc)
+{
+    char t[4];
+    if (tID < 10) {
+        t[0] = (tID + 0x30);
+        t[1] = '\0';
+    }else if (tID < 100) {
+        t[0] = (tID/10 + 0x30);
+        t[1] = (tID%10 + 0x30);
+        t[2] = '\0';
+    }else {
+        t[0] = '1';
+        t[1] = ((tID%100)/10 + 0x30);
+        t[2] = ((tID%100)%10 + 0x30);
+        t[3] = '\0';
+    }
+    
+    MToken *m = mlMap[mc];
+    if (m != NULL) {
+        createModule(t, m);
+    }
+}
+
+void ModuleList::deleteModule(int tID, int mc)
+{
+    char t[4];
+    if (tID < 10) {
+        t[0] = (tID + 0x30);
+        t[1] = '\0';
+    }else if (tID < 100) {
+        t[0] = (tID/10 + 0x30);
+        t[1] = (tID%10 + 0x30);
+        t[2] = '\0';
+    }else {
+        t[0] = '1';
+        t[1] = ((tID%100)/10 + 0x30);
+        t[2] = ((tID%100)%10 + 0x30);
+        t[3] = '\0';
+    }
+    printf(t);
+    printf(",%d\n", mc);
+
+    MToken *m = mlMap[mc];
+    if (m != NULL)
+        deleteModule(t, m);
 }
 
 ModuleList::~ModuleList()

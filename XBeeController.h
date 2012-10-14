@@ -12,7 +12,12 @@
 
 #include "Module.h"
 #include "Coordinator.h"
+#include "Tile.h"
 #include "Serial.h"
+#ifndef	_PT_
+#include "porttime.h"
+#define _PT_
+#endif
 
 #define	TILE_NUM	16
 
@@ -25,6 +30,7 @@ public:
     ~XBeeController();
     
     char                    address[TILE_NUM][8];
+    Tile                    *tile[8];
     Coordinator				*co;
 	Serial					*serial;
 	char					buf[256];
@@ -35,9 +41,13 @@ public:
 	
 private:
 	void	setXBeeAddress();
+    void    initTile();
 	void	parseData();
 	char	readData();
 	int		available();
+
+    static void deadCheck(PtTimestamp   timestamp,
+                          void          *userData);
 
     static int stream(const char   *path, 
 					  const char   *types, 

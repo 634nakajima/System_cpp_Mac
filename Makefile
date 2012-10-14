@@ -1,10 +1,10 @@
 INCLUDES 	= -Iinclude -I./include/lo
 LIBS 		= -Llib -llo -lportaudio -lpm -lpt -lportsf
 FRAMEWORKS	= -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework CoreMIDI
-SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o
+SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o Tile.o
 MIDI		= MIDIMain.o
-XBEE		= XBeeTest.o Data.o Module.o RoutingTable.o Audio.o Coordinator.o MToken.o XBeeController.o Serial.o
-ML		= MLTest.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o
+XBEE		= XBeeTest.o Data.o Module.o RoutingTable.o Audio.o Coordinator.o MToken.o XBeeController.o Serial.o Tile.o ModuleList.o
+ML		= MLTest.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o Tile.o
 CC          	= g++
 PROGS		= system midi xbee ml
 

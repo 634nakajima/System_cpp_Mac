@@ -19,8 +19,33 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
+    
+    Pt_Start(0.1, this->deadCheck, this);
+
 }
 
+void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
+{
+    XBeeController *xbc = (XBeeController *)userData;
+    for (int i=0; i<8; i++) {
+        if(xbc->tile[i]->deadCheck() && (xbc->co != NULL)) {
+            xbc->co->ml->deleteModule((char *)xbc->tile[i]->tid, xbc->tile[i]->mColor);
+        }
+    }
+}
+
+void XBeeController::initTile()
+{
+    tile[0] = new Tile("1", address[0]);
+    tile[1] = new Tile("2", address[1]);
+    tile[2] = new Tile("3", address[2]);
+    tile[3] = new Tile("4", address[3]);
+    tile[4] = new Tile("5", address[4]);
+    tile[5] = new Tile("6", address[5]);
+    tile[6] = new Tile("7", address[6]);
+    tile[7] = new Tile("8", address[7]);
+
+}
 void XBeeController::setXBeeAddress()
 {/*
 	address[0][0] = ;
@@ -96,10 +121,10 @@ void XBeeController::setCoordinator(Coordinator *coordinator)
 
 void XBeeController::parseData()
 {
-	int mode, mid1, mid2, type;
-	mid1 = readData();
-	printf("%d\n",mid1);
-	if (available()!=20) return;
+	int mode, tid1, tid2, mColor, type;
+	tid1 = readData();
+	printf("%d\n",tid1);
+	if (available()!=21) return;
 	
 	if (readData() == 0x7E) {
 		for (int i = 0; i < 14; i++) {
@@ -107,21 +132,24 @@ void XBeeController::parseData()
 		}
 		
 		mode = readData();
-		mid1 = readData();
-		mid2 = readData();
+		tid1 = readData();
+		tid2 = readData();
+        mColor = readData();
 		type = readData();
 		readData();
-		printf("%d,%d\n",mid1,mid2);
+		printf("%d,%d, %d\n", tid1, tid2, mColor);
 		
+        tile[tid2]->isAlive();
+        
 		if (co != NULL) {
 			switch (mode) {
 				case 0x00:
 					switch (type) {
 						case 0x00:
-							co->connect(mid1, mid2, "/Data");
+							co->connect(tid1, tid2, "/Data");
 							break;
 						case 0x01:
-							co->connect(mid1, mid2, "/Stream");
+							co->connect(tid1, tid2, "/Stream");
 							break;
 						default:
 							break;
@@ -131,10 +159,10 @@ void XBeeController::parseData()
 				case 0x01:
 					switch (type) {
 						case 0x00:
-							co->disconnect(mid1, mid2, "/Data");
+							co->disconnect(tid1, tid2, "/Data");
 							break;
 						case 0x01:
-							co->disconnect(mid1, mid2, "/Stream");
+							co->disconnect(tid1, tid2, "/Stream");
 							break;
 						default:
 							break;
@@ -185,5 +213,8 @@ int XBeeController::stream(const char   *path,
 
 XBeeController::~XBeeController()
 {
+    for (int i=0; i<8; i++) {
+        delete tile[i];
+    }
 	delete serial;
 }
