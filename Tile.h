@@ -9,7 +9,7 @@
 #ifndef _Tile_h
 #define _Tile_h
 
-#define TH  10
+#define TH  50
 
 class Tile
 {

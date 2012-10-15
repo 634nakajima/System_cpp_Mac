@@ -35,7 +35,7 @@ void Tile::isAlive()
 int Tile::deadCheck()
 {
     if (dead) return 1;
-    
+
     if(deadCount++ > TH) {
         dead = 1;
         standby = 0;

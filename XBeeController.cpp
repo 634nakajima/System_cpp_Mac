@@ -14,12 +14,12 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 	co = NULL;
 	rp = 0;
 	wp = 0;
+
 	setXBeeAddress();
 	addMethodToServer("/Stream", "b", stream, this);
 	
-	serial = new Serial(s, "/Serial");
-	serial->connectTo(this, "/Stream");
-    
+	//serial = new Serial(s, "/Serial");
+	//serial->connectTo(this, "/Stream");
     Pt_Start(0.1, this->deadCheck, this);
 
 }
@@ -27,8 +27,12 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 {
     XBeeController *xbc = (XBeeController *)userData;
-    for (int i=0; i<8; i++) {
+
+    for (int i=0; i<1; i++) {
+        int d = xbc->tile[i]->deadCheck();
+        printf("dc\n");
         if(xbc->tile[i]->deadCheck() && (xbc->co != NULL)) {
+            printf("delete\n");
             xbc->co->deleteMtkn(i);
         }
     }
@@ -37,18 +41,26 @@ void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 void XBeeController::initTile()
 {
     tile[0] = new Tile("1", address[0]);
-    tile[1] = new Tile("2", address[1]);
+    /*tile[1] = new Tile("2", address[1]);
     tile[2] = new Tile("3", address[2]);
     tile[3] = new Tile("4", address[3]);
     tile[4] = new Tile("5", address[4]);
     tile[5] = new Tile("6", address[5]);
     tile[6] = new Tile("7", address[6]);
-    tile[7] = new Tile("8", address[7]);
+    tile[7] = new Tile("8", address[7]);*/
 
 }
 void XBeeController::setXBeeAddress()
-{/*
-	address[0] = ;
+{
+	address[0][0] = '0';
+	address[0][1] = '0';
+	address[0][2] = '0';
+	address[0][3] = '0';
+	address[0][4] = '0';
+	address[0][5] = '0';
+	address[0][6] = '0';
+	address[0][7] = '1';
+    /*
 	address[1][0] = ;
 	address[1][1] = ;
 	address[1][2] = ;
