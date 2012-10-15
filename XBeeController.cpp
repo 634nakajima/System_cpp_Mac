@@ -15,11 +15,10 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 	rp = 0;
 	wp = 0;
 
-	setXBeeAddress();
 	addMethodToServer("/Stream", "b", stream, this);
 	
-	//serial = new Serial(s, "/Serial");
-	//serial->connectTo(this, "/Stream");
+	serial = new Serial(s, "/Serial");
+	serial->connectTo(this, "/Stream");
     Pt_Start(0.1, this->deadCheck, this);
 
 }
@@ -28,95 +27,26 @@ void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 {
     XBeeController *xbc = (XBeeController *)userData;
 
-    for (int i=0; i<1; i++) {
-        int d = xbc->tile[i]->deadCheck();
-        printf("dc\n");
-        if(xbc->tile[i]->deadCheck() && (xbc->co != NULL)) {
-            printf("delete\n");
-            xbc->co->deleteMtkn(i);
+	for (std::map<int, Tile*>::iterator iter = xbc->tMap.begin(); iter!=xbc->tMap.end(); iter++) {
+		Tile *t = iter->second;
+        if(t->deadCheck()) {
+			if (xbc->co != NULL) {
+				xbc->co->deleteMtkn(t->tID);
+			}
         }
     }
 }
 
-void XBeeController::initTile()
+void XBeeController::initTile(int tID, char *a64, char *a16)
 {
-    tile[0] = new Tile("1", address[0]);
-    /*tile[1] = new Tile("2", address[1]);
-    tile[2] = new Tile("3", address[2]);
-    tile[3] = new Tile("4", address[3]);
-    tile[4] = new Tile("5", address[4]);
-    tile[5] = new Tile("6", address[5]);
-    tile[6] = new Tile("7", address[6]);
-    tile[7] = new Tile("8", address[7]);*/
-
-}
-void XBeeController::setXBeeAddress()
-{
-	address[0][0] = '0';
-	address[0][1] = '0';
-	address[0][2] = '0';
-	address[0][3] = '0';
-	address[0][4] = '0';
-	address[0][5] = '0';
-	address[0][6] = '0';
-	address[0][7] = '1';
-    /*
-	address[1][0] = ;
-	address[1][1] = ;
-	address[1][2] = ;
-	address[1][3] = ;
-	address[1][4] = ;
-	address[1][5] = ;
-	address[1][6] = ;
-	address[1][7] = ;
-	address[2][0] = ;
-	address[2][1] = ;
-	address[2][2] = ;
-	address[2][3] = ;
-	address[2][4] = ;
-	address[2][5] = ;
-	address[2][6] = ;
-	address[2][7] = ;
-	address[3][0] = ;
-	address[3][1] = ;
-	address[3][2] = ;
-	address[3][3] = ;
-	address[3][4] = ;
-	address[3][5] = ;
-	address[3][6] = ;
-	address[3][7] = ;
-	address[4][0] = ;
-	address[4][1] = ;
-	address[4][2] = ;
-	address[4][3] = ;
-	address[4][4] = ;
-	address[4][5] = ;
-	address[4][6] = ;
-	address[4][7] = ;
-	address[5][0] = ;
-	address[5][1] = ;
-	address[5][2] = ;
-	address[5][3] = ;
-	address[5][4] = ;
-	address[5][5] = ;
-	address[5][6] = ;
-	address[5][7] = ;
-	address[6][0] = ;
-	address[6][1] = ;
-	address[6][2] = ;
-	address[6][3] = ;
-	address[6][4] = ;
-	address[6][5] = ;
-	address[6][6] = ;
-	address[6][7] = ;
-	address[7][0] = ;
-	address[7][1] = ;
-	address[7][2] = ;
-	address[7][3] = ;
-	address[7][4] = ;
-	address[7][5] = ;
-	address[7][6] = ;
-	address[7][7] = ;*/
+	for (std::map<int, Tile*>::iterator iter = tMap.begin(); iter!=tMap.end(); iter++) {
+        Tile *tmp = iter->second;
+        if (tmp->tID == tID) return;
+    }
+	
+	Tile *tile = new Tile(tID, a64, a16);
+	tMap.insert(std::map<int, Tile*>::value_type(tID, tile));
+	printf("%d\n", tMap[tID]->tID);
 }
 
 void XBeeController::setCoordinator(Coordinator *coordinator)
@@ -127,56 +57,78 @@ void XBeeController::setCoordinator(Coordinator *coordinator)
 void XBeeController::parseData()
 {
 	int mode, tid1, tid2, mColor, type;
-	tid1 = readData();
-	printf("%d\n",tid1);
-	if (available()!=21) return;
+	char a64[8], a16[2];
 	
-	if (readData() == 0x7E) {
-		for (int i = 0; i < 14; i++) {
-			readData();
-		}
-		
-		mode = readData();
-		tid1 = readData();
-		tid2 = readData();
-        mColor = readData();
-		type = readData();
-		readData();
-		printf("%d,%d, %d\n", tid1, tid2, mColor);
-		
-        tile[tid2]->isAlive();
-        
-		if (co != NULL) {
-			switch (mode) {
-				case 0x00:
-					switch (type) {
-						case 0x00:
-							co->connect(tid1, tid2, "/Data");
-							break;
-						case 0x01:
-							co->connect(tid1, tid2, "/Stream");
-							break;
-						default:
-							break;
-					}
-					break;
-
-				case 0x01:
-					switch (type) {
-						case 0x00:
-							co->disconnect(tid1, tid2, "/Data");
-							break;
-						case 0x01:
-							co->disconnect(tid1, tid2, "/Stream");
-							break;
-						default:
-							break;
-					}
-					break;
-
-				default:
-					break;
+	printf("received %d bytes\n",available());
+	
+	if (available() > 20) {
+		if (readData() == 0x7E) {
+			for (int i = 0; i < 3; i++) {
+				readData();
 			}
+			a64[0] = readData();
+			a64[1] = readData();
+			a64[2] = readData();
+			a64[3] = readData();
+			a64[4] = readData();
+			a64[5] = readData();
+			a64[6] = readData();
+			a64[7] = readData();
+
+			a16[0] = readData();
+			a16[1] = readData();
+
+			readData();
+		
+			mode = readData();
+			tid1 = readData();
+			tid2 = readData();
+			mColor = readData();
+			type = readData();
+		
+			readData();
+		
+			printf("%d,%d,%d\n", tid1, tid2, mColor);
+		        
+			if (co != NULL) {
+				switch (mode) {
+					case 0x00:
+						switch (type) {
+							case 0x00:
+								co->connect(tid1, tid2, "/Data");
+								break;
+							case 0x01:
+								co->connect(tid1, tid2, "/Stream");
+								break;
+							default:
+								break;
+						}
+						break;
+
+					case 0x01:
+						switch (type) {
+							case 0x00:
+								co->disconnect(tid1, tid2, "/Data");
+								break;
+							case 0x01:
+								co->disconnect(tid1, tid2, "/Stream");
+								break;
+							default:
+								break;
+						}
+						break;
+					
+					case 0x02:
+						printf("initTile\n");
+						initTile(tid2, a64, a16);
+						break;
+					
+					default:
+						break;
+				}
+			}
+		if (tMap[tid2] != NULL)
+			tMap[tid2]->isAlive();
 		}
 	}
 }
@@ -200,41 +152,41 @@ int XBeeController::available()
 
 void XBeeController::setAlive(int tID, int mColor)
 {
-    tile[tID]->mColor = mColor;
-    tile[tID]->isAlive();
+	Tile *t = tMap[tID];
+    t->mColor = mColor;
+    t->isAlive();
     
     //送信フレームの作成
-    char data[25];
+    char data[19];
 
-    data[0] = '\0';
-    data[1] = '\0';
-    data[2] = '\0';
-    data[3] = '\0';
-    data[4] = '\0';
-    data[5] = '\0';
-    data[6] = '\0';
-    data[7] = '\0';
-    data[8] = '\0';
-    data[9] = '\0';
-    data[10] = '\0';
-    data[11] = '\0';
-    data[12] = '\0';
-    data[13] = '\0';
-    data[14] = '\0';
-    data[15] = '\0';
-    data[16] = '\0';
-    data[17] = '\0';
-    data[18] = '\0';
-    data[19] = '\0';
-    data[20] = '\0';
-    data[21] = '\0';
-    data[22] = '\0';
-    data[23] = '\0';
-    data[24] = '\0';
-
+    data[0] = 0x7E;
+    data[1] = 0x0;
+    data[2] = 0x0F;
+    data[3] = 0x10;
+    data[4] = 0x01;
+    data[5] = t->XBeeAddr64[0];
+    data[6] = t->XBeeAddr64[1];
+    data[7] = t->XBeeAddr64[2];
+    data[8] = t->XBeeAddr64[3];
+    data[9] = t->XBeeAddr64[4];
+    data[10] = t->XBeeAddr64[5];
+    data[11] = t->XBeeAddr64[6];
+    data[12] = t->XBeeAddr64[7];
+    data[13] = t->XBeeAddr16[0];
+    data[14] = t->XBeeAddr16[1];
+    data[15] = 0x00;
+    data[16] = 0x00;
+    data[17] = (char)mColor;
+	
+	long sum;
+	for (int i=3; i<18; i++) {
+		sum += data[i];
+	}
+	
+    data[18] = (0xFF - (sum & 0xFF));
 
     //送信
-    serial->serialWrite(data, 25);
+    //serial->serialWrite(data, 25);
 }
 
 int XBeeController::stream(const char   *path, 
@@ -257,8 +209,9 @@ int XBeeController::stream(const char   *path,
 
 XBeeController::~XBeeController()
 {
-    for (int i=0; i<8; i++) {
-        delete tile[i];
+	for (std::map<int, Tile*>::iterator iter = tMap.begin(); iter!=tMap.end(); iter++) {
+        delete iter->second;
     }
+	tMap.clear();
 	delete serial;
 }

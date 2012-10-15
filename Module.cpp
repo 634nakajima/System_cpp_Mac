@@ -246,7 +246,7 @@ void Module::getAddr()
     
     /* eth0のIPアドレスを取得 */
 
-    strncpy(ifr.ifr_name, "en0", IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, "en1", IFNAMSIZ-1);
 
     ioctl(fd, SIOCGIFADDR, &ifr);
     

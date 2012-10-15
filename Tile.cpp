@@ -9,12 +9,16 @@
 #include <iostream>
 #include "Tile.h"
 
-Tile::Tile(const char *t, char a[8])
+Tile::Tile(int t, char *a64, char *a16)
 {
     for (int i = 0; i < 8; i++) {
-        XBeeAddr[i] = a[i];
+        XBeeAddr64[i] = a64[i];
     }
-    strcpy(tid, t);
+	for (int i = 0; i < 2; i++) {
+        XBeeAddr16[i] = a16[i];
+    }
+	
+    tID = t;
     mColor = -1;
     dead = 1;
     standby = 0;
@@ -34,7 +38,7 @@ void Tile::isAlive()
 
 int Tile::deadCheck()
 {
-    if (dead) return 1;
+    if (dead) return 0;
 
     if(deadCount++ > TH) {
         dead = 1;

@@ -14,12 +14,14 @@
 #include "Coordinator.h"
 #include "Tile.h"
 #include "Serial.h"
+#include <map>
 #ifndef	_PT_
 #include "porttime.h"
 #define _PT_
 #endif
 
-#define	TILE_NUM	16
+
+#define	TILE_NUM	4
 
 class Coordinator;
 class XBeeController : public Module {
@@ -29,8 +31,7 @@ public:
     XBeeController(lo_server_thread s, const char *osc);
     ~XBeeController();
     
-    char                    address[TILE_NUM][8];
-    Tile                    *tile[8];
+	std::map<int, Tile*>    tMap;;
     Coordinator				*co;
 	Serial					*serial;
 	char					buf[256];
@@ -40,8 +41,7 @@ public:
     void    setAlive(int tID, int mColor);
 	
 private:
-	void	setXBeeAddress();
-    void    initTile();
+    void    initTile(int tID, char *a64, char *a16);
 	void	parseData();
 	char	readData();
 	int		available();

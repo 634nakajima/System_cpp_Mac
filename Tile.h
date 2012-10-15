@@ -9,22 +9,26 @@
 #ifndef _Tile_h
 #define _Tile_h
 
-#define TH  50
+#define TH  5
 
 class Tile
 {
 public:
-    char    tid[3];
+    int		tID;
     int     mColor;
-    int     deadCount;
-    int     dead, alive, standby;
-    char    XBeeAddr[8];
+    char    XBeeAddr64[8];
+	char	XBeeAddr16[2];
     
-    Tile(const char *t, char a[8]);
+    Tile(int t, char *a64, char *a16);
     ~Tile();
-    
-    void    isAlive();
+   
+	void    isAlive();
     int     deadCheck();
+	
+private:
+	int     dead, alive, standby;
+    int     deadCount;
+
 };
 
 #endif

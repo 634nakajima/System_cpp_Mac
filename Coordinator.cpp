@@ -70,14 +70,18 @@ int Coordinator::setMtkn(const char   *path,
 
 void Coordinator::deleteMtkn(int tID)
 {
-    ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
-    printf("delete:%s,%s tID:%d Module Color:%d\n",
-           mtknMap[tID]->ip, 
-           mtknMap[tID]->osc, mtknMap[tID]->tID, 
-           mtknMap[tID]->mColor);
+	MToken *mtkn = mtknMap[tID];
+	
+	if (mtkn != NULL) {
+		ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
+		printf("delete:%s,%s tID:%d Module Color:%d\n",
+			   mtknMap[tID]->ip, 
+			   mtknMap[tID]->osc, mtknMap[tID]->tID, 
+			   mtknMap[tID]->mColor);
     
-    delete mtknMap[tID];
-    mtknMap.erase(tID);
+		delete mtknMap[tID];
+		mtknMap.erase(tID);
+	}
 }
 
 int Coordinator::deleteMtkn(const char   *path,
@@ -148,7 +152,7 @@ Coordinator::~Coordinator()
 	for (std::map<int, MToken*>::iterator iter = mtknMap.begin(); iter!=mtknMap.end(); iter++)
 		delete iter->second;
 
-    mtknMap.empty();
+    mtknMap.clear();
     delete ml;
 
 }
