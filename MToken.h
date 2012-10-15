@@ -16,7 +16,7 @@ public:
 
     char    ip[16];
     char    osc[64];
-    int     index;
+    int     tID, mColor;
 };
 
 #endif

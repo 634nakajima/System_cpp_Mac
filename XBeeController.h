@@ -37,7 +37,7 @@ public:
 	int						rp,wp;
 	
 	void	setCoordinator(Coordinator *coordinator);
-
+    void    setAlive(int tID, int mColor);
 	
 private:
 	void	setXBeeAddress();

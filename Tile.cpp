@@ -26,6 +26,9 @@ void Tile::isAlive()
 {
     if (alive) {
         deadCount = 0;
+    }else {
+        dead = 0;
+        alive = 1;
     }
 }
 

@@ -36,10 +36,10 @@ int ModuleList::setMList(const char   *path,
     //モジュールリストの生成
     MToken *m = new MToken();
     if (argv[2]->i != -1) {//mColorが-1でなければ
-        m->index = argv[2]->i;
+        m->mColor = argv[2]->i;
         strcpy(m->ip, (char *)argv[0]);
         strcpy(m->osc, (char *)argv[1]);
-        mlc->mlMap.insert(std::map<int, MToken*>::value_type(m->index, m));
+        mlc->mlMap.insert(std::map<int, MToken*>::value_type(m->mColor, m));
     
         printf("set:%s,%s ModuleColor:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
     }
@@ -71,14 +71,6 @@ void ModuleList::createModule(char *tID, MToken *ml)
             tID);
 }
 
-void ModuleList::createModule(char *tID, int mc)
-{
-    MToken *m = mlMap[mc];
-    if (m != NULL) {
-        createModule(tID, m);
-    }
-}
-
 void ModuleList::deleteModule(char *tID, MToken *ml)
 {
     lo_send(lo_address_new(ml->ip,"6340"), 
@@ -86,6 +78,14 @@ void ModuleList::deleteModule(char *tID, MToken *ml)
             "is", 
             0,
             tID);
+}
+
+void ModuleList::createModule(char *tID, int mc)
+{
+    MToken *m = mlMap[mc];
+    if (m != NULL) {
+        createModule(tID, m);
+    }
 }
 
 void ModuleList::deleteModule(char *tID, int mc)
@@ -134,8 +134,6 @@ void ModuleList::deleteModule(int tID, int mc)
         t[2] = ((tID%100)%10 + 0x30);
         t[3] = '\0';
     }
-    printf(t);
-    printf(",%d\n", mc);
 
     MToken *m = mlMap[mc];
     if (m != NULL)

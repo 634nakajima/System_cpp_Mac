@@ -11,7 +11,8 @@
 
 MToken::MToken()
 {
-    index = -1;
+    tID = -1;
+    mColor = -1;
     ip[0] = NULL;
     osc[0] = NULL;
 }

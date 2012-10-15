@@ -11,9 +11,10 @@
 
 Coordinator::Coordinator(lo_server_thread s, const char *osc) : Module(s,osc)
 {
-    addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);
-    addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);
+    addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);//ip,osc,tID,mColor
+    addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);//ip,osc,tID,mColor
 
+    xbc = NULL;
     ml = new ModuleList(s, "/ModuleList");
 }
 
@@ -24,9 +25,9 @@ int Coordinator::setMtkn(const char   *path,
                          void         *data, 
                          void         *user_data)
 {
-    Coordinator *coordinator = (Coordinator *)user_data;
+    Coordinator *co = (Coordinator *)user_data;
     //エラー処理、既存のモジュールトークン確認
-    for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
+    for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
         if (strcmp(tmp->ip,(char *)argv[0])==0) {
             if (strcmp(tmp->osc,(char *)argv[1])==0) {
@@ -35,26 +36,48 @@ int Coordinator::setMtkn(const char   *path,
         }
     }
 
-    for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
+    //先にタイルに登録されているモジュールの確認
+    for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
-        if (tmp->index == argv[2]->i) {
-            coordinator->ml->deleteModule(argv[2]->i, argv[3]->i);
-            return 0;
+        if (tmp->tID == argv[2]->i) {//先に登録されていればそのモジュールを消去
+            co->deleteMtkn(tmp->tID);
+            break;
         }
     }
-    
     //モジュールトークンの生成
     MToken *m = new MToken();
     strcpy(m->ip, (char *)argv[0]);
     strcpy(m->osc, (char *)argv[1]);
-    
+
     if (argv[2]->i != -1) {//tIDが-1でなければ
-        m->index = argv[2]->i;
-        coordinator->mtknMap.insert(std::map<int, MToken*>::value_type(m->index, m));
-		printf("set:%s, %s TileID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
+        m->tID = argv[2]->i;
+        m->mColor = argv[3]->i;
+
+        co->mtknMap.insert(std::map<int, MToken*>::value_type(m->tID, m));
+		printf("set:%s, %s, TileID:%d, Module Color:%d\n",
+               (char *)argv[0], 
+               (char *)argv[1], 
+               argv[2]->i, 
+               argv[3]->i);
+        
+        if (co->xbc) {//XBCでタイルにモジュールを登録
+            co->xbc->setAlive(m->tID, m->mColor);
+        }
     }
     
     return 0;
+}
+
+void Coordinator::deleteMtkn(int tID)
+{
+    ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
+    printf("delete:%s,%s tID:%d Module Color:%d\n",
+           mtknMap[tID]->ip, 
+           mtknMap[tID]->osc, mtknMap[tID]->tID, 
+           mtknMap[tID]->mColor);
+    
+    delete mtknMap[tID];
+    mtknMap.erase(tID);
 }
 
 int Coordinator::deleteMtkn(const char   *path,
@@ -64,31 +87,19 @@ int Coordinator::deleteMtkn(const char   *path,
                             void         *data, 
                             void         *user_data)
 {
-    Coordinator *coordinator = (Coordinator *)user_data;
+    Coordinator *co = (Coordinator *)user_data;
+    co->deleteMtkn(argv[2]->i);
     
-    for (std::map<int, MToken*>::iterator iter = coordinator->mtknMap.begin(); iter!=coordinator->mtknMap.end(); iter++) {
-        MToken *tmp = iter->second;
-        if (strcmp(tmp->ip,(char *)argv[0])==0) {
-            if (strcmp(tmp->osc,(char *)argv[1])==0) {
-                if (argv[2]->i == tmp->index) {
-                    delete tmp;
-                    coordinator->mtknMap.erase(argv[2]->i);
-                    printf("delete:%s,%s mID:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
-                    return 0;
-                }
-            }
-        }
-    }
-    return 1;
+    return 0;
 }
 
-void Coordinator::connect(int mID1, int mID2, const char *t)
+void Coordinator::connect(int tID1, int tID2, const char *t)
 {
     char m1OSC[64], m2OSC[64];
     
     //モジュールトークン取得
-    MToken *m1 = mtknMap[mID1];
-    MToken *m2 = mtknMap[mID2];
+    MToken *m1 = mtknMap[tID1];
+    MToken *m2 = mtknMap[tID2];
     
     //エラー処理
     if ( m1 == NULL || m2 == NULL ) {
@@ -107,13 +118,13 @@ void Coordinator::connect(int mID1, int mID2, const char *t)
             strcat(m2OSC,t));
 }
 
-void Coordinator::disconnect(int mID1, int mID2, const char *t)
+void Coordinator::disconnect(int tID1, int tID2, const char *t)
 {
     char m1OSC[64], m2OSC[64];
     
     //モジュールトークン取得
-    MToken *m1 = mtknMap[mID1];
-    MToken *m2 = mtknMap[mID2];
+    MToken *m1 = mtknMap[tID1];
+    MToken *m2 = mtknMap[tID2];
     
     //エラー処理
     if ( m1 == NULL || m2 == NULL ) {

@@ -29,7 +29,7 @@ void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
     XBeeController *xbc = (XBeeController *)userData;
     for (int i=0; i<8; i++) {
         if(xbc->tile[i]->deadCheck() && (xbc->co != NULL)) {
-            xbc->co->ml->deleteModule((char *)xbc->tile[i]->tid, xbc->tile[i]->mColor);
+            xbc->co->deleteMtkn(i);
         }
     }
 }
@@ -48,14 +48,7 @@ void XBeeController::initTile()
 }
 void XBeeController::setXBeeAddress()
 {/*
-	address[0][0] = ;
-	address[0][1] = ;
-	address[0][2] = ;
-	address[0][3] = ;
-	address[0][4] = ;
-	address[0][5] = ;
-	address[0][6] = ;
-	address[0][7] = ;
+	address[0] = ;
 	address[1][0] = ;
 	address[1][1] = ;
 	address[1][2] = ;
@@ -191,6 +184,45 @@ int XBeeController::available()
 	}else {
 		return (256+wp-rp);
 	}
+}
+
+void XBeeController::setAlive(int tID, int mColor)
+{
+    tile[tID]->mColor = mColor;
+    tile[tID]->isAlive();
+    
+    //送信フレームの作成
+    char data[25];
+
+    data[0] = '\0';
+    data[1] = '\0';
+    data[2] = '\0';
+    data[3] = '\0';
+    data[4] = '\0';
+    data[5] = '\0';
+    data[6] = '\0';
+    data[7] = '\0';
+    data[8] = '\0';
+    data[9] = '\0';
+    data[10] = '\0';
+    data[11] = '\0';
+    data[12] = '\0';
+    data[13] = '\0';
+    data[14] = '\0';
+    data[15] = '\0';
+    data[16] = '\0';
+    data[17] = '\0';
+    data[18] = '\0';
+    data[19] = '\0';
+    data[20] = '\0';
+    data[21] = '\0';
+    data[22] = '\0';
+    data[23] = '\0';
+    data[24] = '\0';
+
+
+    //送信
+    serial->serialWrite(data, 25);
 }
 
 int XBeeController::stream(const char   *path, 

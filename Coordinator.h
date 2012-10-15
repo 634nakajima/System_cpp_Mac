@@ -29,10 +29,10 @@ public:
     ModuleList                  *ml;
 	
 	void	setXBC(XBeeController *xbeecontroller);
-    void    connect(int mID1, int mID2, const char *t);
-    void    disconnect(int mID1, int mID2, const char *t);
-    void    display(int m);
-    	
+    void    connect(int tID1, int tID2, const char *t);
+    void    disconnect(int tID1, int tID2, const char *t);
+    void    deleteMtkn(int tID);
+    
     static int setMtkn(const char   *path, 
                        const char   *types, 
                        lo_arg       **argv, 

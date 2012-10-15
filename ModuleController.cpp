@@ -11,11 +11,11 @@
 
 ModuleController::ModuleController(lo_server_thread s, const char *osc) : Module(s,osc)
 {
-    addMethodToServer("/SP/DAC", "is", dac, this);
-    addMethodToServer("/GN/ADC", "is", adc, this);
-    addMethodToServer("/GN/Sine", "is", sine, this);
-    addMethodToServer("/EF/Envelope", "is", env, this);
-    addMethodToServer("/GN/AudioSource", "is", as, this);
+    addMethodToServer("/SP/DAC", "is", dac, this);//1:create 0:delete, tID
+    addMethodToServer("/GN/ADC", "is", adc, this);//1:create 0:delete, tID
+    addMethodToServer("/GN/Sine", "is", sine, this);//1:create 0:delete, tID
+    addMethodToServer("/EF/Envelope", "is", env, this);//1:create 0:delete, tID
+    addMethodToServer("/GN/AudioSource", "is", as, this);//1:create 0:delete, tID
 
 }
 
@@ -170,7 +170,6 @@ int ModuleController::adc(const char   *path,
         for (std::list<ADC*>::iterator iter = mc->adcList.begin(); iter != mc->adcList.end(); iter++) {
             ADC* adc = (*iter);
             if (strcmp(p,adc->OSCAddr)==0) {
-                adc->sendDeleteMdtkn();
                 delete adc;
                 mc->adcList.remove(adc);
                 printf("delete ADC\n");
@@ -216,7 +215,6 @@ int ModuleController::sine(const char   *path,
             Sine* sine = (*iter);
 
             if (strcmp(p,sine->OSCAddr)==0) {
-                sine->sendDeleteMdtkn();
                 delete sine;
                 mc->sineList.remove(sine);
                 printf("delete Sine\n");
@@ -261,7 +259,6 @@ int ModuleController::env(const char   *path,
         for (std::list<Envelope*>::iterator iter = mc->envList.begin(); iter != mc->envList.end(); iter++) {
             Envelope* env = (*iter);
             if (strcmp(p,env->OSCAddr)==0) {
-                env->sendDeleteMdtkn();
                 delete env;
                 mc->envList.remove(env);
                 printf("delete Envelope\n");
@@ -280,7 +277,7 @@ int ModuleController::as(const char   *path,
     ModuleController *mc = (ModuleController *)user_data;
     
     char p[64] = "/Tile";
-    
+
     strcat(p, &argv[1]->s);
     strcat(p, "/GN/AudioSource");
     
@@ -306,7 +303,6 @@ int ModuleController::as(const char   *path,
         for (std::list<AudioSource*>::iterator iter = mc->asList.begin(); iter != mc->asList.end(); iter++) {
             AudioSource* as = (*iter);
             if (strcmp(p,as->OSCAddr)==0) {
-                as->sendDeleteMdtkn();
                 delete as;
                 mc->asList.remove(as);
                 printf("delete AudioSource\n");
