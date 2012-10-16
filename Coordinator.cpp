@@ -132,7 +132,7 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
     
     //エラー処理
     if ( m1 == NULL || m2 == NULL ) {
-        printf("err:disconnect\n");
+        //printf("err:disconnect\n");
         return;  
     }
     

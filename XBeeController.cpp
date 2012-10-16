@@ -46,7 +46,7 @@ void XBeeController::initTile(int tID, char *a64, char *a16)
 	
 	Tile *tile = new Tile(tID, a64, a16);
 	tMap.insert(std::map<int, Tile*>::value_type(tID, tile));
-	printf("%d\n", tMap[tID]->tID);
+	printf("init Tile:%d\n", tMap[tID]->tID);
 }
 
 void XBeeController::setCoordinator(Coordinator *coordinator)
@@ -119,7 +119,6 @@ void XBeeController::parseData()
 						break;
 					
 					case 0x02:
-						printf("initTile\n");
 						initTile(tid2, a64, a16);
 						break;
 					

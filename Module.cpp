@@ -78,7 +78,7 @@ void Module::sendSetMdtkn()
     inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
     
     //send(念のため2回)
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<3; i++) {
         n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
         if (n < 1) {
             perror("sendto");
@@ -114,9 +114,12 @@ void Module::sendDeleteMdtkn()
     inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
     
     //send
-    n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
-    if (n < 1) {
-        perror("sendto");
+    for (int i=0; i<3; i++) {
+        n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
+        if (n < 1) {
+            perror("sendto");
+        }
+        usleep(1000);
     }
     close(sock);
     usleep(10000);
@@ -246,7 +249,7 @@ void Module::getAddr()
     
     /* eth0のIPアドレスを取得 */
 
-    strncpy(ifr.ifr_name, "en1", IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, "en0", IFNAMSIZ-1);
 
     ioctl(fd, SIOCGIFADDR, &ifr);
     
@@ -296,6 +299,6 @@ void Module::disconnectFrom(Module *m, const char *t)
 
 Module::~Module()
 {
-    sendDeleteMdtkn();
+    //sendDeleteMdtkn();
     delete rTable;
 }

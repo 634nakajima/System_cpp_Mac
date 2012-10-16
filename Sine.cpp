@@ -70,7 +70,6 @@ int Sine::stream(const char   *path,
 	for(int i=0; i<sine->numPackets; i++){
 		sine->buf[i] = *dp++ /32768.0;
 	}
-	
 	sine->render(-1, sine);
     return 0;
 }

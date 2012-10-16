@@ -76,8 +76,8 @@ void ModuleController::sendModuleList()
         addr.sin_port = htons(6340);
         inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
 
-        //send(念のため2回)
-        for (int j=0; j<2; j++) {
+        //send(念のため3回)
+        for (int j=0; j<3; j++) {
             n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
             if (n < 1) {
                 perror("sendto");
