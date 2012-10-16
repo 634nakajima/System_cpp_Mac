@@ -60,9 +60,8 @@ int Coordinator::setMtkn(const char   *path,
                argv[2]->i, 
                argv[3]->i);
         
-        if (co->xbc) {//XBCでタイルにモジュールを登録
+        if (co->xbc)//XBCでタイルにモジュールを登録
             co->xbc->setAlive(m->tID, m->mColor);
-        }
     }
     
     return 0;
@@ -70,18 +69,17 @@ int Coordinator::setMtkn(const char   *path,
 
 void Coordinator::deleteMtkn(int tID)
 {
+	if (!mtknMap.count(tID)) return;
 	MToken *mtkn = mtknMap[tID];
 	
-	if (mtkn != NULL) {
-		ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
-		printf("delete:%s,%s tID:%d Module Color:%d\n",
-			   mtknMap[tID]->ip, 
-			   mtknMap[tID]->osc, mtknMap[tID]->tID, 
-			   mtknMap[tID]->mColor);
+	ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
+	printf("delete:%s,%s tID:%d Module Color:%d\n",
+		   mtknMap[tID]->ip, 
+		   mtknMap[tID]->osc, mtknMap[tID]->tID, 
+		   mtknMap[tID]->mColor);
     
-		delete mtknMap[tID];
-		mtknMap.erase(tID);
-	}
+	delete mtknMap[tID];
+	mtknMap.erase(tID);
 }
 
 int Coordinator::deleteMtkn(const char   *path,
@@ -101,15 +99,17 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
 {
     char m1OSC[64], m2OSC[64];
     
+	//エラー処理
+    if (!mtknMap.count(tID1) || !mtknMap.count(tID2)) {
+        printf("err:connect\n");
+        return;  
+    }
+	
     //モジュールトークン取得
     MToken *m1 = mtknMap[tID1];
     MToken *m2 = mtknMap[tID2];
     
-    //エラー処理
-    if ( m1 == NULL || m2 == NULL ) {
-        printf("err:connect\n");
-        return;  
-    }
+
     
     //モジュールに対して接続するルートのアドレスを送信
     strcpy(m1OSC, m1->osc);
@@ -126,15 +126,15 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
 {
     char m1OSC[64], m2OSC[64];
     
+	//エラー処理
+	if (!mtknMap.count(tID1) || !mtknMap.count(tID2)) {
+        printf("err:connect\n");
+        return;  
+    }
+	
     //モジュールトークン取得
     MToken *m1 = mtknMap[tID1];
     MToken *m2 = mtknMap[tID2];
-    
-    //エラー処理
-    if ( m1 == NULL || m2 == NULL ) {
-        //printf("err:disconnect\n");
-        return;  
-    }
     
     //モジュールに対して切断するルートのアドレスを送信
     strcpy(m1OSC, m1->osc);

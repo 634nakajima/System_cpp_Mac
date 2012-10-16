@@ -153,9 +153,7 @@ void *Serial::threadFunction(void *data)
     Serial *s = (Serial *)data;
 
     while (s->active) {
-		printf("Waiting...\n");
         rs = read(s->fd, s->buf, 255);
-		printf("Data Received:%d\n",rs);
         s->sendAudio((short *)s->buf, rs);
     }    
     pthread_exit(NULL);
@@ -178,6 +176,7 @@ int Serial::sWrite(const char   *path,
 
 void Serial::serialWrite(void *data, int s)
 {
+	
 	write(fd, data, s);
 }
 

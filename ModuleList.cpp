@@ -82,21 +82,24 @@ void ModuleList::deleteModule(char *tID, MToken *ml)
 
 void ModuleList::createModule(char *tID, int mc)
 {
+	if (!mlMap.count(mc)) return;
+	
     MToken *m = mlMap[mc];
-    if (m != NULL) {
-        createModule(tID, m);
-    }
+	createModule(tID, m);
 }
 
 void ModuleList::deleteModule(char *tID, int mc)
 {
+	if (!mlMap.count(mc)) return;
+
     MToken *m = mlMap[mc];
-    if (m != NULL)
-        deleteModule(tID, m);
+	deleteModule(tID, m);
 }
 
 void ModuleList::createModule(int tID, int mc)
 {
+	if (!mlMap.count(mc)) return;
+
     char t[4];
     if (tID < 10) {
         t[0] = (tID + 0x30);
@@ -113,13 +116,13 @@ void ModuleList::createModule(int tID, int mc)
     }
     
     MToken *m = mlMap[mc];
-    if (m != NULL) {
-        createModule(t, m);
-    }
+	createModule(t, m);
 }
 
 void ModuleList::deleteModule(int tID, int mc)
 {
+	if (!mlMap.count(mc)) return;
+
     char t[4];
     if (tID < 10) {
         t[0] = (tID + 0x30);
@@ -136,8 +139,7 @@ void ModuleList::deleteModule(int tID, int mc)
     }
 
     MToken *m = mlMap[mc];
-    if (m != NULL)
-        deleteModule(t, m);
+	deleteModule(t, m);
 }
 
 ModuleList::~ModuleList()

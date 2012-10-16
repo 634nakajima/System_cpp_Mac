@@ -19,7 +19,7 @@ public:
     char    XBeeAddr64[8];
 	char	XBeeAddr16[2];
     
-    Tile(int t, char *a64, char *a16);
+    Tile(int t, unsigned char *a64, unsigned char *a16);
     ~Tile();
    
 	void    isAlive();

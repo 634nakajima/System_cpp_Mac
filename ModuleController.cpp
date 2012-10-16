@@ -221,6 +221,7 @@ int ModuleController::sine(const char   *path,
             }
         }
     }
+	printf("a\n");
 }
 
 int ModuleController::env(const char   *path, 

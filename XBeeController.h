@@ -41,7 +41,7 @@ public:
     void    setAlive(int tID, int mColor);
 	
 private:
-    void    initTile(int tID, char *a64, char *a16);
+    void    initTile(int tID, unsigned char *a64, unsigned char *a16);
 	void	parseData();
 	char	readData();
 	int		available();

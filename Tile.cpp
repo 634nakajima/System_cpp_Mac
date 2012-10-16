@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Tile.h"
 
-Tile::Tile(int t, char *a64, char *a16)
+Tile::Tile(int t, unsigned char *a64, unsigned char *a16)
 {
     for (int i = 0; i < 8; i++) {
         XBeeAddr64[i] = a64[i];

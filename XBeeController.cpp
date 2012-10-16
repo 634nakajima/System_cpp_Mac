@@ -20,31 +20,29 @@ XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, 
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
     Pt_Start(0.1, this->deadCheck, this);
-
 }
 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 {
     XBeeController *xbc = (XBeeController *)userData;
-
 	for (std::map<int, Tile*>::iterator iter = xbc->tMap.begin(); iter!=xbc->tMap.end(); iter++) {
 		Tile *t = iter->second;
-        if(t->deadCheck()) {
+		if(t->deadCheck()) {
 			if (xbc->co != NULL) {
 				xbc->co->deleteMtkn(t->tID);
 			}
-        }
+		}
     }
 }
 
-void XBeeController::initTile(int tID, char *a64, char *a16)
+void XBeeController::initTile(int tID, unsigned char *a64, unsigned char *a16)
 {
 	for (std::map<int, Tile*>::iterator iter = tMap.begin(); iter!=tMap.end(); iter++) {
-        Tile *tmp = iter->second;
-        if (tmp->tID == tID) return;
+        Tile *t = iter->second;
+		if (t->tID == tID) return;
     }
-	
 	Tile *tile = new Tile(tID, a64, a16);
+
 	tMap.insert(std::map<int, Tile*>::value_type(tID, tile));
 	printf("init Tile:%d\n", tMap[tID]->tID);
 }
@@ -56,11 +54,9 @@ void XBeeController::setCoordinator(Coordinator *coordinator)
 
 void XBeeController::parseData()
 {
-	int mode, tid1, tid2, mColor, type;
-	char a64[8], a16[2];
-	
-	printf("received %d bytes\n",available());
-	
+	unsigned int mode, tid1, tid2, mColor, type;
+	unsigned char a64[8], a16[2], s;
+		
 	if (available() > 20) {
 		if (readData() == 0x7E) {
 			for (int i = 0; i < 3; i++) {
@@ -85,10 +81,8 @@ void XBeeController::parseData()
 			tid2 = readData();
 			mColor = readData();
 			type = readData();
-		
+
 			readData();
-		
-			printf("%d,%d,%d\n", tid1, tid2, mColor);
 		        
 			if (co != NULL) {
 				switch (mode) {
@@ -126,8 +120,11 @@ void XBeeController::parseData()
 						break;
 				}
 			}
-		if (tMap[tid2] != NULL)
-			tMap[tid2]->isAlive();
+			if (tMap.count(tid2)) {
+				tMap[tid2]->isAlive();
+			}else {
+				printf("%d,%d,%d\n", tid1, tid2, mColor);
+			}
 		}
 	}
 }
@@ -151,18 +148,19 @@ int XBeeController::available()
 
 void XBeeController::setAlive(int tID, int mColor)
 {
+	if (!tMap.count(tID)) return;
+	
 	Tile *t = tMap[tID];
     t->mColor = mColor;
     t->isAlive();
-    
     //送信フレームの作成
-    char data[19];
+    unsigned char data[19];
 
     data[0] = 0x7E;
     data[1] = 0x0;
     data[2] = 0x0F;
     data[3] = 0x10;
-    data[4] = 0x01;
+    data[4] = 0x00;
     data[5] = t->XBeeAddr64[0];
     data[6] = t->XBeeAddr64[1];
     data[7] = t->XBeeAddr64[2];
@@ -183,9 +181,13 @@ void XBeeController::setAlive(int tID, int mColor)
 	}
 	
     data[18] = (0xFF - (sum & 0xFF));
-
+	for (int i=0; i<19; i++) {
+		printf("%x\n",data[i]);
+		serial->serialWrite(&data[i], 1);
+	}
+	printf("\n");
     //送信
-    //serial->serialWrite(data, 25);
+    //serial->serialWrite(data, 19);
 }
 
 int XBeeController::stream(const char   *path, 

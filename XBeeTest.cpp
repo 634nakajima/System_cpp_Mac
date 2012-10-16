@@ -26,10 +26,15 @@
 int main()
 {
 	XBeeController *xbc;
+	Coordinator	*co;
 	lo_server_thread st;
 	
 	st = lo_server_thread_new("6340", NULL);
 	xbc = new XBeeController(st, "/XBC");
+	co = new Coordinator(st, "/Coordinator");
+
+	co->xbc = xbc;
+	xbc->co = co;
 	
 	lo_server_thread_start(st);
 	
