@@ -66,7 +66,10 @@ int Sine::stream(const char   *path,
 	
 	lo_blob b = (lo_blob)argv[0];
     short *dp = (short *)lo_blob_dataptr(b);
-	
+    int size = lo_blob_datasize(b)/sizeof(short);
+
+    sine->numPackets = size;
+
 	for(int i=0; i<sine->numPackets; i++){
 		sine->buf[i] = *dp++ /32768.0;
 	}
