@@ -128,7 +128,7 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
     
 	//エラー処理
 	if (!mtknMap.count(tID1) || !mtknMap.count(tID2)) {
-        printf("err:connect\n");
+        printf("err:disconnect\n");
         return;  
     }
 	

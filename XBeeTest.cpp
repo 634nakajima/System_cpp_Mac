@@ -25,20 +25,26 @@
 
 int main()
 {
-	XBeeController *xbc;
-	Coordinator	*co;
+	//XBeeController *xbc;
+	//Coordinator	*co;
+	Serial *se;
+	char a = 'a';
 	lo_server_thread st;
 	
 	st = lo_server_thread_new("6340", NULL);
-	xbc = new XBeeController(st, "/XBC");
-	co = new Coordinator(st, "/Coordinator");
-
-	co->xbc = xbc;
-	xbc->co = co;
+	//xbc = new XBeeController(st, "/XBC");
+	//co = new Coordinator(st, "/Coordinator");
+	se = new Serial(st,"/se");
+	//co->xbc = xbc;
+	//xbc->co = co;
+	
 	
 	lo_server_thread_start(st);
 	
+	while (1) {
 	getchar();
+		se->serialWrite(&a, 1);
+	}
 	
 	return 0;
 }

@@ -62,6 +62,7 @@ void XBeeController::parseData()
 			for (int i = 0; i < 3; i++) {
 				readData();
 			}
+			
 			a64[0] = readData();
 			a64[1] = readData();
 			a64[2] = readData();
@@ -79,8 +80,8 @@ void XBeeController::parseData()
 			mode = readData();
 			tid1 = readData();
 			tid2 = readData();
-			mColor = readData();
 			type = readData();
+			mColor = readData();
 
 			readData();
 		        
@@ -175,19 +176,14 @@ void XBeeController::setAlive(int tID, int mColor)
     data[16] = 0x00;
     data[17] = (char)mColor;
 	
-	long sum;
+	long sum = 0;
 	for (int i=3; i<18; i++) {
 		sum += data[i];
 	}
 	
     data[18] = (0xFF - (sum & 0xFF));
-	for (int i=0; i<19; i++) {
-		printf("%x\n",data[i]);
-		serial->serialWrite(&data[i], 1);
-	}
-	printf("\n");
     //送信
-    //serial->serialWrite(data, 19);
+    serial->serialWrite(data, 19);
 }
 
 int XBeeController::stream(const char   *path, 
