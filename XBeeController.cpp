@@ -56,7 +56,7 @@ void XBeeController::parseData()
 {
 	unsigned int mode, tid1, tid2, mColor, type;
 	unsigned char a64[8], a16[2], s;
-		
+
 	if (available() > 20) {
 		if (readData() == 0x7E) {
 			for (int i = 0; i < 3; i++) {
@@ -124,8 +124,9 @@ void XBeeController::parseData()
 			if (tMap.count(tid2)) {
 				tMap[tid2]->isAlive();
 			}else {
-				printf("%d,%d,%d\n", tid1, tid2, mColor);
+				printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
 			}
+			//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
 		}
 	}
 }
