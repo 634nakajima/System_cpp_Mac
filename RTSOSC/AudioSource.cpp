@@ -148,7 +148,7 @@ int AudioSource::data3(const char   *path,
 	return 0;
 }
 
-AudioSource::AudioSource(lo_server_thread s, const char *osc) : Module(s, osc)
+AudioSource::AudioSource(Server *s, const char *osc) : Module(s, osc)
 {
 	addMethodToServer("/Stream", "b", AudioSource::stream, this);
     addMethodToServer("/Data", "ii", AudioSource::data1, this);
@@ -179,7 +179,7 @@ int AudioSource::prepareAudioResources(const char *sound)
     
 	ifd  = psf_sndOpen(sound,&props,0);
 	if(ifd < 0){
-		printf("Unable to open infile %s\n","sound_c.wav");
+		printf("Unable to open infile %s\n",sound);
 		return 1;
 	}
 

@@ -32,7 +32,7 @@ public:
 	float		*buf;
 	short		*output;
 	
-	Sine(lo_server_thread s, const char *osc);
+	Sine(Server *s, const char *osc);
 	~Sine();
     
     static int stream(const char   *path, 

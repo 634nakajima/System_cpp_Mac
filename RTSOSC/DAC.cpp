@@ -123,7 +123,7 @@ int DAC::data2(const char   *path,
     return 0;
 }
 
-DAC::DAC(lo_server_thread s, const char *osc) : Module(s, osc)
+DAC::DAC(Server *s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", DAC::stream, this);
     addMethodToServer("/Data", "ii", DAC::data1, this);

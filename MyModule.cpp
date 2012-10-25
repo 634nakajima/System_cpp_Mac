@@ -1,15 +1,6 @@
-/*
- *  odore.cpp
- *  
- *
- *  Created by kannolab on 12/10/25.
- *  Copyright 2012 __MyCompanyName__. All rights reserved.
- *
- */
-
 #include "MyModule.h"
 
-MyModule::MyModule(lo_server_thread s, const char *osc) : Module(s,osc) {
+MyModule::MyModule(Server *s, const char *osc) : Module(s,osc) {
     
 	addMethodToServer("/Stream", "b", stream, this);
     addMethodToServer("/Data", "ii", data, this);

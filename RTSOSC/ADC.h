@@ -26,7 +26,7 @@ public:
     short *buf;
     bool isPlaying;
     
-    ADC(lo_server_thread s, const char *osc);
+    ADC(Server *s, const char *osc);
     ~ADC();
     
 private:

@@ -33,7 +33,7 @@ public:
 	short		*output;
 	bool		isPlaying, isLooping, prepared;
 	
-	AudioSource(lo_server_thread s, const char *osc);
+	AudioSource(Server *s, const char *osc);
 	~AudioSource();
     
     static int stream(const char   *path, 

@@ -23,7 +23,7 @@ public:
     unsigned	numPackets;
 	short		*output;
 	
-	AudioClock(lo_server_thread s, const char *osc);
+	AudioClock(Server *s, const char *osc);
 	~AudioClock();
     
     static int data1(const char   *path, 

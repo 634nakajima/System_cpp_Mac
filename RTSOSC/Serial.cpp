@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Serial.h"
 
-Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
+Serial::Serial(Server *s, const char *osc) : Module(s,osc)
 {
 	active = 0;
 	done = 0;
@@ -20,7 +20,7 @@ Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
         threadStart();
 }
 
-Serial::Serial(lo_server_thread s, const char *osc, const char *d) : Module(s,osc)
+Serial::Serial(Server *s, const char *osc, const char *d) : Module(s,osc)
 {
     active = 0;
 	done = 0;

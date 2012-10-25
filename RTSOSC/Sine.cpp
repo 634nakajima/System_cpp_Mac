@@ -92,7 +92,7 @@ int Sine::data1(const char   *path,
     return 0;
 }
 
-Sine::Sine(lo_server_thread s, const char *osc) : Module(s, osc)
+Sine::Sine(Server *s, const char *osc) : Module(s, osc)
 {
 	addMethodToServer("/Stream", "b", Sine::stream, this);
     addMethodToServer("/Data", "ii", Sine::data1, this);

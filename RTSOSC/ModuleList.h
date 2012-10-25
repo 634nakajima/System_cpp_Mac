@@ -20,7 +20,7 @@ class ModuleList : public Module {
 	
 public:
     
-    ModuleList(lo_server_thread s, const char *osc);
+    ModuleList(Server *s, const char *osc);
     ~ModuleList();
     std::map<int, MToken*>      mlMap;
 	Serial                      *serial;

@@ -32,7 +32,7 @@ public:
     float           vol, vTable[128];
     int             vVal;
     
-    DAC(lo_server_thread s, const char *osc);
+    DAC(Server *s, const char *osc);
     ~DAC();
     
 private:

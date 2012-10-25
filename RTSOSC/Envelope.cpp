@@ -99,7 +99,7 @@ int Envelope::data4(const char   *path,
 }
 
 
-Envelope::Envelope(lo_server_thread s, const char *osc) : Module(s, osc)
+Envelope::Envelope(Server *s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", Envelope::stream, this);
     addMethodToServer("/Data", "ii", Envelope::data1, this);

@@ -38,7 +38,7 @@ int Module::deleteRoute(const char   *path,
     return 0;
 }
 
-Module::Module(lo_server_thread s, const char *osc)
+Module::Module(Server *s, const char *osc)
 {
     st = s;
     getAddr();
@@ -348,7 +348,7 @@ void Module::addMethodToServer(const char *path, const char *type, lo_method_han
     char p[64];
     strcpy(p, OSCAddr);
     strcat(p, path);
-    lo_server_thread_add_method(st, p, type, h, user_data);
+    lo_server_thread_add_method(st->st, p, type, h, user_data);
 }
 
 void Module::setRoute(char *ip, char *osc)

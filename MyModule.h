@@ -12,14 +12,12 @@
 #define _MyModule_h
 
 #include "rtsosc.h"
-#include <stdlib.h>
-#include <map>
 
 class MyModule : public Module {
 	
 public:
     
-    MyModule(lo_server_thread s, const char *osc);
+    MyModule(Server *s, const char *osc);
     ~MyModule();
 	AudioClock	*ac;
 	AudioSource	*a1;

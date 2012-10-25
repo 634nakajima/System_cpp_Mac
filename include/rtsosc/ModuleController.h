@@ -29,7 +29,7 @@ public:
     std::list<Envelope*> envList;
     std::list<AudioSource*> asList;
     
-    ModuleController(lo_server_thread s, const char *osc);
+    ModuleController(Server *s, const char *osc);
     ~ModuleController();
 
     void sendModuleList();

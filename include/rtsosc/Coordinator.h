@@ -21,7 +21,7 @@ class Coordinator : public Module {
 
 public:
     
-    Coordinator(lo_server_thread s, const char *osc);
+    Coordinator(Server *s, const char *osc);
     ~Coordinator();
     
     std::map<int, MToken*>      mtknMap;

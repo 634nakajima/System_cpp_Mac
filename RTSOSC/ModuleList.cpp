@@ -10,7 +10,7 @@
 #include "ModuleList.h"
 #include <iostream>
 
-ModuleList::ModuleList(lo_server_thread s, const char *osc) : Module(s,osc)
+ModuleList::ModuleList(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/setMList", "ssi", setMList, this);
 	addMethodToServer("/Stream", "b", stream, this);

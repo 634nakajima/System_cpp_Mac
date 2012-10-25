@@ -16,6 +16,7 @@
 #include "Serial.h"
 #include "ModuleList.h"
 #include "ModuleController.h"
+#include "Server.h"
 #include "lo.h"
 #ifndef	_PT_
 #define _PT_

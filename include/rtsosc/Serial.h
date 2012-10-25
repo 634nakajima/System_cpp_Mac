@@ -29,12 +29,12 @@ public:
 	int			rp, wp;
     char        device[128];
     
-    Serial(lo_server_thread s, const char *osc);
-    Serial(lo_server_thread s, const char *osc, const char *d);
+    Serial(Server *s, const char *osc);
+    Serial(Server *s, const char *osc, const char *d);
 
     ~Serial();
     void threadStop();
-    void prepareSerial();
+    bool prepareSerial();
     void threadStart();
     void setDevice(const char *d);
 	void serialWrite(void *data, int s);

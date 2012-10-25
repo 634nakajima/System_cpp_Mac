@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Coordinator.h"
 
-Coordinator::Coordinator(lo_server_thread s, const char *osc) : Module(s,osc)
+Coordinator::Coordinator(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);//ip,osc,tID,mColor
     addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);//ip,osc,tID,mColor

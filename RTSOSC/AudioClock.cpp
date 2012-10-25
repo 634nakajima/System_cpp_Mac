@@ -57,7 +57,7 @@ int AudioClock::data2(const char   *path,
     return 0;
 }
 
-AudioClock::AudioClock(lo_server_thread s, const char *osc) : Module(s, osc)
+AudioClock::AudioClock(Server *s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Data", "ii", AudioClock::data1, this);
     addMethodToServer("/Data", "iiii", AudioClock::data2, this);

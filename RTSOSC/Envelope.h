@@ -23,7 +23,7 @@ public:
     bool    isPlaying;
     short   *output;
     
-    Envelope(lo_server_thread s, const char *osc);
+    Envelope(Server *s, const char *osc);
     ~Envelope();
     
 private:

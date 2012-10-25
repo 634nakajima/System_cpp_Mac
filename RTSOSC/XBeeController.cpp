@@ -9,7 +9,7 @@
 
 #include "XBeeController.h"
 
-XBeeController::XBeeController(lo_server_thread s, const char *osc) : Module(s, osc)
+XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
 {	
 	co = NULL;
 	rp = 0;

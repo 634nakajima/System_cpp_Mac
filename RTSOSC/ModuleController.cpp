@@ -9,7 +9,7 @@
 #include <iostream>
 #include "ModuleController.h"
 
-ModuleController::ModuleController(lo_server_thread s, const char *osc) : Module(s,osc)
+ModuleController::ModuleController(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/SP/DAC", "is", dac, this);//1:create 0:delete, tID
     addMethodToServer("/GN/ADC", "is", adc, this);//1:create 0:delete, tID

@@ -24,6 +24,7 @@
 #include "RoutingTable.h"
 #include "Data.h"
 #include "Audio.h"
+#include "Server.h"
 
 #define SAMPLE_RATE	44100.0
 
@@ -32,11 +33,11 @@ class Module
 public:
     char                IPAddr[16];
     char                OSCAddr[64];
-    lo_server_thread    st;
+    Server              *st;
     RoutingTable        *rTable;
     int					tID, mColor;
     
-    Module(lo_server_thread s, const char *osc);
+    Module(Server *s, const char *osc);
     ~Module();
     
     void setTID(int t);

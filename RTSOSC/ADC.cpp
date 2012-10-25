@@ -50,7 +50,7 @@ int ADC::data1(const char   *path,
     return 0;
 }
 
-ADC::ADC(lo_server_thread s, const char *osc) : Module(s, osc)
+ADC::ADC(Server *s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", ADC::stream, this);
     addMethodToServer("/Data", "ii", ADC::data1, this);

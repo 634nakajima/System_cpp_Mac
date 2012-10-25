@@ -29,8 +29,8 @@ public:
 	int			rp, wp;
     char        device[128];
     
-    Serial(lo_server_thread s, const char *osc);
-    Serial(lo_server_thread s, const char *osc, const char *d);
+    Serial(Server *s, const char *osc);
+    Serial(Server *s, const char *osc, const char *d);
 
     ~Serial();
     void threadStop();

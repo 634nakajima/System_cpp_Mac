@@ -1,4 +1,4 @@
-POBJS		= Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o Tile.o AudioClock.o AudioClock.o
+POBJS		= Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o Tile.o AudioClock.o AudioClock.o Server.o
 CFLAGS = -I ../include -I../include/lo
 
 CC          	= g++
