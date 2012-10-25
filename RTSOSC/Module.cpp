@@ -127,97 +127,177 @@ void Module::sendDeleteMdtkn()
 
 void Module::sendData(Data *d, lo_arg **argv, int argc)
 {
-    switch (argc) {
-        case 0:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "ii", 
-                        d->value,
-                        d->dataID);
-            }
-            break;
+    if (d) {
+        switch (argc) {
+            case 0:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "ii", 
+                            d->value,
+                            d->dataID);
+                }
+                break;
             
-        case 2:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "iiii",
-                        argv[0]->i,
-                        argv[1]->i,
-                        d->value,
-                        d->dataID);
-            } 
-            break;
+            case 2:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            d->value,
+                            d->dataID);
+                } 
+                break;
             
-        case 4:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "iiiiii",
-                        argv[0]->i,
-                        argv[1]->i,
-                        argv[2]->i,
-                        argv[3]->i,
-                        d->value,
-                        d->dataID);
-            } 
-            break;
-            
-        case 6:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "iiiiiiii",
+            case 4:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiii",
                         argv[0]->i,
                         argv[1]->i,
                         argv[2]->i,
                         argv[3]->i,
-                        argv[4]->i,
-                        argv[5]->i,
                         d->value,
                         d->dataID);
             } 
             break;
+            
+            case 6:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiiiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i,
+                            d->value,
+                            d->dataID);
+                } 
+                break;
         
-        case 8:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "iiiiiiiiii",
-                        argv[0]->i,
-                        argv[1]->i,
-                        argv[2]->i,
-                        argv[3]->i,
-                        argv[4]->i,
-                        argv[5]->i,
-                        argv[6]->i,
-                        argv[7]->i,
-                        d->value,
-                        d->dataID);
-            } 
-            break;
+            case 8:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiiiiiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i,
+                            argv[6]->i,
+                            argv[7]->i,
+                            d->value,
+                            d->dataID);
+                } 
+                break;
         
-        case 10:
-            for (int i=0; i<rTable->aNum; i++) {
-                lo_send(rTable->loAddr[i], 
-                        rTable->oscAddr[i],
-                        "iiiiiiiiii",
-                        argv[2]->i,
-                        argv[3]->i,
-                        argv[4]->i,
-                        argv[5]->i,
-                        argv[6]->i,
-                        argv[7]->i,
-                        argv[8]->i,
-                        argv[9]->i,
-                        d->value,
-                        d->dataID);
-            } 
-            break;
+            case 10:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiiiiiii",
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i,
+                            argv[6]->i,
+                            argv[7]->i,
+                            argv[8]->i,
+                            argv[9]->i,
+                            d->value,
+                            d->dataID);
+                } 
+                break;
             
-        default:
-            break;
+            default:
+                break;
+        }
+    }else {
+        switch (argc) {
+            case 2:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "ii", 
+                            argv[0]->i,
+                            argv[1]->i);
+                }
+                break;
+                
+            case 4:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i);
+                } 
+                break;
+                
+            case 6:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i);
+                } 
+                break;
+                
+            case 8:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiiiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i,
+                            argv[6]->i,
+                            argv[7]->i);
+                } 
+                break;
+                
+            case 10:
+                for (int i=0; i<rTable->aNum; i++) {
+                    lo_send(rTable->loAddr[i], 
+                            rTable->oscAddr[i],
+                            "iiiiiiiiii",
+                            argv[0]->i,
+                            argv[1]->i,
+                            argv[2]->i,
+                            argv[3]->i,
+                            argv[4]->i,
+                            argv[5]->i,
+                            argv[6]->i,
+                            argv[7]->i,
+                            argv[8]->i,
+                            argv[9]->i);
+                } 
+                break;
+                
+            case 0: 
+                break;
+                
+            default:
+                break;
+        }
     }
 }
 

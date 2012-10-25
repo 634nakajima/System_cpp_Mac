@@ -38,14 +38,14 @@ CHANGE LOG
 #define FALSE 0
 
 static int time_started_flag = FALSE;
-static struct timeb time_offset = {0, 0, 0, 0};
+static struct timeval time_offset = {0, 0};
 static pthread_t pt_thread_pid;
 static int pt_thread_created = FALSE;
 
 /* note that this is static data -- we only need one copy */
 typedef struct {
     int id;
-    int resolution;
+    double resolution;
     PtCallback *callback;
     void *userData;
 } pt_callback_parameters;
@@ -63,10 +63,11 @@ static void *Pt_CallbackProc(void *p)
     while (pt_callback_proc_id == parameters->id) {
         /* wait for a multiple of resolution ms */
         struct timeval timeout;
-        int delay = mytime++ * parameters->resolution - Pt_Time();
+        
+        int delay = mytime++ * parameters->resolution*1000000 - Pt_Time();
         if (delay < 0) delay = 0;
         timeout.tv_sec = 0;
-        timeout.tv_usec = delay * 1000;
+        timeout.tv_usec = delay;
         select(0, NULL, NULL, NULL, &timeout);
         (*(parameters->callback))(Pt_Time(), parameters->userData);
     }
@@ -76,10 +77,11 @@ static void *Pt_CallbackProc(void *p)
 }
 
 
-PtError Pt_Start(int resolution, PtCallback *callback, void *userData)
+PtError Pt_Start(double resolution, PtCallback *callback, void *userData)
 {
     if (time_started_flag) return ptNoError;
-    ftime(&time_offset); /* need this set before process runs */
+    timerclear(time_offset);
+    gettimeofday(&time_offset, NULL); /* need this set before process runs */
     if (callback) {
         int res;
         pt_callback_parameters *parms = (pt_callback_parameters *) 
@@ -118,20 +120,21 @@ int Pt_Started()
 }
 
 
-PtTimestamp Pt_Time()
+long long Pt_Time()
 {
-    long seconds, milliseconds;
-    struct timeb now;
-    ftime(&now);
-    seconds = now.time - time_offset.time;
-    milliseconds = now.millitm - time_offset.millitm;
-    return seconds * 1000 + milliseconds;
+    long seconds, microseconds;
+    struct timeval now;
+    timerclear(&now);
+    gettimeofday(&now);
+    seconds = now.tv_sec - time_offset.tv_sec;
+    microseconds = now.tv_usec - time_offset.tv_usec;
+    return seconds * 1000000 + microseconds;
 }
 
 
 void Pt_Sleep(int32_t duration)
 {
-    usleep(duration * 1000);
+    usleep(duration);
 }
 
 

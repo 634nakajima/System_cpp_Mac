@@ -101,6 +101,7 @@ int AudioSource::data1(const char   *path,
 	} else {
 		audio->isPlaying = true;
 	}
+    audio->sendData(NULL, argv, argc);
 	return 0;
 }
 int AudioSource::data2(const char   *path, 
@@ -123,7 +124,7 @@ int AudioSource::data2(const char   *path,
 	else {
 		audio->rate = 1.0;
 	}
-
+    audio->sendData(NULL, argv, argc);
     return 0;
 }
 
@@ -143,6 +144,7 @@ int AudioSource::data3(const char   *path,
 	} else {
 		audio->isLooping = true;
 	}
+    audio->sendData(NULL, argv, argc);
 	return 0;
 }
 
