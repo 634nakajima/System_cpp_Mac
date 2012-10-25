@@ -60,6 +60,8 @@ int ModuleList::stream(const char   *path,
     int size = lo_blob_datasize(b);
 	
 	mlc->t = *dp;
+	return 0;
+
 }
 
 void ModuleList::createModule(char *tID, MToken *ml)

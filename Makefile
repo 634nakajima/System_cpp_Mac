@@ -5,12 +5,13 @@ SYSTEM		= main.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coor
 MIDI		= MIDIMain.o
 XBEE		= XBeeTest.o Data.o Module.o RoutingTable.o Audio.o Coordinator.o MToken.o XBeeController.o Serial.o Tile.o ModuleList.o AudioClock.o
 ML		= MLTest.o Data.o Module.o RoutingTable.o Audio.o Delay.o DAC.o ADC.o Coordinator.o MToken.o Envelope.o Sine.o AudioSource.o ModuleController.o ModuleList.o Serial.o XBeeController.o Tile.o AudioClock.o
+ODORE		= DAC.o Data.o Module.o RoutingTable.o Audio.o AudioSource.o Serial.o AudioClock.o odore.o odoremain.o
 CC          	= g++
-PROGS		= system midi xbee ml
+PROGS		= system midi xbee ml odore
 
 .PHONY: liblo pmmac porttime portsf clean
 
-all:	liblo pmmac porttime portsf system midi xbee ml
+all:	liblo pmmac porttime portsf system midi xbee ml odore
 
 liblo:
 	cd liblo; make; make install;
@@ -38,6 +39,9 @@ xbee: $(XBEE)
 
 ml: $(ML)
 	$(CC) -o $@ $(ML) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
+
+odore: $(ODORE)
+	$(CC) -o $@ $(ODORE) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
 
 clean:
 	rm -f *.o   

@@ -172,6 +172,7 @@ int Serial::sWrite(const char   *path,
     void *dp = (void *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
     s->serialWrite(dp, size);
+	return 0;
 }
 
 void Serial::serialWrite(void *data, int s)
