@@ -7,28 +7,19 @@
  *
  */
 
-#include <iostream>
-#include "DAC.h"
-#include "AudioSource.h"
-#include "AudioClock.h"
-#include "Serial.h"
-#include "odore.h"
-#include "lo.h"
-#ifndef	_PT_
-#include "porttime.h"
-#define _PT_
-#endif
+#include "rtsosc.h"
+#include "MyModule.h"
 
 int main()
 {
-	Odore	*o;
-	Serial	*se;
+	MyModule    *o;
+	Serial      *se;
 	lo_server_thread	st;
     
 	st = lo_server_thread_new("6340", NULL);
     lo_server_thread_start(st);
 	
-    o = new Odore(st, "/Odore");
+    o = new MyModule(st, "/Odore");
 	se	= new Serial(st, "/Serial");
 
 	se->connectTo(o, "/Stream");

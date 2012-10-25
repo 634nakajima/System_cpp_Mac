@@ -8,22 +8,19 @@
  */
 
 
-#ifndef _Odore_h
-#define _Odore_h
+#ifndef _MyModule_h
+#define _MyModule_h
 
-#include "Module.h"
-#include "AudioSource.h"
-#include "AudioClock.h"
-#include "DAC.h"
+#include "rtsosc.h"
 #include <stdlib.h>
 #include <map>
 
-class Odore : public Module {
+class MyModule : public Module {
 	
 public:
     
-    Odore(lo_server_thread s, const char *osc);
-    ~Odore();
+    MyModule(lo_server_thread s, const char *osc);
+    ~MyModule();
 	AudioClock	*ac;
 	AudioSource	*a1;
 	AudioSource	*a2;
@@ -37,6 +34,13 @@ public:
 					  int          argc,
 					  void         *data, 
 					  void         *user_data);
+    
+    static int data(const char   *path, 
+                    const char   *types, 
+                    lo_arg       **argv, 
+                    int          argc,
+                    void         *data, 
+                    void         *user_data);
 };
 
 #endif

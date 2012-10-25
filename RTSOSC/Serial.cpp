@@ -16,8 +16,8 @@ Serial::Serial(lo_server_thread s, const char *osc) : Module(s,osc)
     addMethodToServer("/Stream", "b", sWrite, this);
 
     strcpy(device, MODEMDEVICE);
-    prepareSerial();
-    threadStart();
+    if(prepareSerial())
+        threadStart();
 }
 
 Serial::Serial(lo_server_thread s, const char *osc, const char *d) : Module(s,osc)
@@ -27,8 +27,8 @@ Serial::Serial(lo_server_thread s, const char *osc, const char *d) : Module(s,os
     addMethodToServer("/Stream", "b", sWrite, this);
     
     strcpy(device, d);
-    prepareSerial();
-    threadStart();
+    if(prepareSerial())
+        threadStart();
 }
 
 void Serial::setDevice(const char *d)
@@ -39,10 +39,10 @@ void Serial::setDevice(const char *d)
     threadStart();
 }
 
-void Serial::prepareSerial()
+bool Serial::prepareSerial()
 {
     fd = open(device, O_RDWR | O_NOCTTY ); 
-    if (fd <0) {perror(device); exit(-1); }
+    if (fd <0) {printf("error:serial device\n"); return false;}
     
     tcgetattr(fd,&oldtio); /* 現在のシリアルポートの設定を待避させる*/
     bzero(&newtio, sizeof(newtio)); /* 新しいポートの設定の構造体をクリアする */
@@ -108,9 +108,9 @@ void Serial::prepareSerial()
     /*
      端末の設定終了．入力を処理するできるようになった．
      */
-    
-
+    return true;
 }
+
 void Serial::threadStart()
 {
     int result;

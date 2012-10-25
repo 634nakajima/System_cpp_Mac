@@ -7,11 +7,13 @@
  *
  */
 
-#include "odore.h"
+#include "MyModule.h"
 
-Odore::Odore(lo_server_thread s, const char *osc) : Module(s,osc) {
+MyModule::MyModule(lo_server_thread s, const char *osc) : Module(s,osc) {
+    
 	addMethodToServer("/Stream", "b", stream, this);
-	
+    addMethodToServer("/Data", "ii", data, this);
+
 	a1 = new AudioSource(s, "/A1");
 	a2 = new AudioSource(s, "/A2");
 	ac = new AudioClock(s, "/AC");
@@ -37,14 +39,14 @@ Odore::Odore(lo_server_thread s, const char *osc) : Module(s,osc) {
 
 }
 
-int Odore::stream(const char   *path, 
-				  const char   *types, 
-				  lo_arg       **argv, 
-				  int          argc,
-				  void         *data, 
-				  void         *user_data) {
+int MyModule::stream(const char   *path, 
+                     const char   *types, 
+                     lo_arg       **argv, 
+                     int          argc,
+                     void         *data, 
+                     void         *user_data) {
 
-	Odore *o = (Odore *)user_data;
+	MyModule *o = (MyModule *)user_data;
 	
 	lo_blob b = (lo_blob)argv[0];
     unsigned char *dp = (unsigned char *)lo_blob_dataptr(b);
@@ -65,5 +67,16 @@ int Odore::stream(const char   *path,
 	return 0;
 }
 
-Odore::~Odore() {
+int MyModule::data(const char   *path, 
+                   const char   *types, 
+                   lo_arg       **argv, 
+                   int          argc,
+                   void         *data, 
+                   void         *user_data) {
+
+	return 0;
 }
+
+MyModule::~MyModule() {
+}
+

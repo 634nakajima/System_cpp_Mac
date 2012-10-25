@@ -34,7 +34,7 @@ public:
 
     ~Serial();
     void threadStop();
-    bool prepareSerial();
+    void prepareSerial();
     void threadStart();
     void setDevice(const char *d);
 	void serialWrite(void *data, int s);
