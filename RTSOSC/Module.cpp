@@ -85,6 +85,7 @@ void Module::sendSetMdtkn()
         }
         usleep(1000);
     }
+    lo_message_free(m);
     close(sock);
 }
 
