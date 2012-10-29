@@ -49,6 +49,8 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
 						*out++ = dac->buf[dac->rp]*dac->vol;
 						break;
 					default:
+                        *out++ = 0;
+                        *out++ = 0;
 						break;
 				}
                 dac->buf[dac->rp] = 0;

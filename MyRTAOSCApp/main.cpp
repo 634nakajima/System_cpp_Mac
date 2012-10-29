@@ -12,7 +12,8 @@ int main()
 	sine = new Sine(s, "/Sine");
 	ac = new AudioClock(s, "/AC");
 	dac = new DAC(s, "/DAC");
-	dac->ch = 0;
+	dac->ch = 2;
+    dac->bs = 128;
 	ac->connectTo(sine, "/Stream");
 	sine->connectTo(dac, "/Stream");
 	
