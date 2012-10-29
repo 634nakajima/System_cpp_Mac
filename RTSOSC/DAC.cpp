@@ -34,13 +34,31 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
         if (dac->isPlaying) {
             if (d-- > 0) {
                 dac->vol = 0.005*dac->vTable[dac->vVal] + 0.995*dac->vol;
-                *out++ = dac->buf[dac->rp]*dac->vol;
+				
+				switch (dac->ch) {
+					case 0:
+						*out++ = dac->buf[dac->rp]*dac->vol;
+						*out++ = 0;
+						break;
+					case 1:
+						*out++ = 0;
+						*out++ = dac->buf[dac->rp]*dac->vol;
+						break;
+					case 2:
+						*out++ = dac->buf[dac->rp]*dac->vol;
+						*out++ = dac->buf[dac->rp]*dac->vol;
+						break;
+					default:
+						break;
+				}
                 dac->buf[dac->rp] = 0;
                 dac->rp = (dac->rp != MAX_PACKET-1 ? dac->rp+1 : 0);
             } else {
                 dac->isPlaying = false;
                 printf("stop\n");
                 *out++ = 0;
+				*out++ = 0;
+
             }
             
         } else {
@@ -139,6 +157,7 @@ DAC::DAC(Server *s, const char *osc) : Module(s, osc)
     rp          = 0;
     wp          = 0;
     bs          = 32*48;
+	ch			= 0;
     buf         = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(buf, 0, sizeof(short)*MAX_PACKET);
     if(preparePa()) printf("err_preparePa\n");
@@ -159,7 +178,7 @@ int DAC::preparePa()
         return 1;
     }
     
-    outputParameters.channelCount = 1;       // モノラルアウトプット
+    outputParameters.channelCount = 2;       // モノラルアウトプット
     outputParameters.sampleFormat = PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;

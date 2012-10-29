@@ -84,8 +84,8 @@ void ModuleController::sendModuleList()
             }
             usleep(1000);
         }
+		lo_message_free(m);
     }
-    lo_message_free(m);
     close(sock);
 }
 

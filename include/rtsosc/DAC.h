@@ -31,7 +31,7 @@ public:
     unsigned long   bs,rp,wp,loop;
     float           vol, vTable[128];
     int             vVal;
-    
+    int				ch;//L:0 R:1 Stereo:2
     DAC(Server *s, const char *osc);
     ~DAC();
     

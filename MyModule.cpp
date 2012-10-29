@@ -8,15 +8,22 @@ MyModule::MyModule(Server *s, const char *osc) : Module(s,osc) {
 	a1 = new AudioSource(s, "/A1");
 	a2 = new AudioSource(s, "/A2");
 	ac = new AudioClock(s, "/AC");
-	dac = new DAC(s, "/DAC");
-	dac->bs = 128;
 	
+	dac1 = new DAC(s, "/DACL");
+	dac1->bs = 128;
+	dac1->ch = 0;//Left
+	
+	dac2 = new DAC(s, "/DACR");
+	dac2->bs = 128;
+	dac2->ch = 1;//Right
+
 	a1->prepareAudioSource("mi.wav");
 	a2->prepareAudioSource("mi.wav");
 
 	ac->connectTo(a1, "/Stream");
-	a1->connectTo(a2, "/Stream");
-	a2->connectTo(dac, "/Stream");
+	ac->connectTo(a2, "/Stream");
+	a1->connectTo(dac1, "/Stream");
+	a2->connectTo(dac2, "/Stream");
 	
 	l = 0;
 	r = 0;
