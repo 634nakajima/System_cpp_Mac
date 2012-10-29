@@ -18,6 +18,7 @@
 #include "ModuleController.h"
 #include "Server.h"
 #include "lo.h"
+#include "portaudio.h"
 #ifndef	_PT_
 #define _PT_
 #include "porttime.h"

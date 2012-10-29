@@ -16,14 +16,10 @@ all:	libportsf.a
 clean:
 	-rm -f $(POBJS)
 	rm -f libportsf.a;
-	cd sfrewind; make clean;
-	cd sfreverse; make clean;
 
 veryclean:
 	-rm -f $(POBJS)
 	rm -f libportsf.a;
-	cd sfrewind; make clean;
-	cd sfreverse; make clean;
 	cd ../lib; rm -f libportsf.a;
 
 libportsf.a:	$(POBJS)
