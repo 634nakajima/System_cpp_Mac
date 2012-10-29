@@ -1,33 +1,32 @@
 //
-//  Delay.h
+//  LPF.h
 //  
 //
-//  Created by NAKAJIMA Musashi on 12/05/28.
+//  Created by NAKAJIMA Musashi on 12/10/29.
 //  Copyright 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef _Delay_h
-#define _Delay_h
+#ifndef _LPF_h
+#define _LPF_h
 
 #include "rtsosc.h"
 
-class Delay : public Module {
+class LPF : public Module {
 	
 public:
     
-    Delay(Server *s, const char *osc);
-    ~Delay();
+    LPF(Server *s, const char *osc);
+    ~LPF();
     
-    float           *buf;
+    float           buf[3];
     short           *output;
-    unsigned long   dp;
-    float           t,g;
-    int             ps,maxbs;
+    float           q,freq;
+    float           a1, a2, b0, b1, b2;
     bool            isBypassing;
 	
     void bypass(int data);
-    void setDt(int data);
-    void setGain(int data);
+    void setQ(int data);
+    void setFreq(int data);
     
 	static int stream(const char   *path, 
 					  const char   *types, 

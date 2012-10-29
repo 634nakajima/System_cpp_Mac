@@ -65,6 +65,7 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
             
         } else {
             *out++ = 0;
+            *out++ = 0;
         }
     }
 
@@ -180,7 +181,7 @@ int DAC::preparePa()
         return 1;
     }
     
-    outputParameters.channelCount = 2;       // モノラルアウトプット
+    outputParameters.channelCount = 2;       // ステレオアウトプット
     outputParameters.sampleFormat = PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;

@@ -9,13 +9,6 @@ public:
     
     MyModule(Server *s, const char *osc);
     ~MyModule();
-	AudioClock	*ac;
-	AudioSource	*a1;
-	AudioSource	*a2;
-	DAC			*dac1;
-	DAC			*dac2;
-    float		melody[7];
-	int			l, r;
 	
 	static int stream(const char   *path, 
 					  const char   *types, 

@@ -68,9 +68,9 @@ int ADC::preparePa()
         return 1;
     }
     int c = Pa_GetDeviceCount();
-	printf("%d\n",c);
+	printf("All Devices: %d\n",c);
     inputParameters.device = Pa_GetDefaultInputDevice(); // デフォルトインプットデバイス
-	printf("%d\n",inputParameters.device);
+	printf("Default InputDevice: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice) {
         printf("Error: No default input device.\n");
         Pa_Terminate();

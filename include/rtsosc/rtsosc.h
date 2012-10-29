@@ -17,6 +17,7 @@
 #include "ModuleList.h"
 #include "ModuleController.h"
 #include "Server.h"
+#include "LPF.h"
 #include "lo.h"
 #include "portaudio.h"
 #ifndef	_PT_
