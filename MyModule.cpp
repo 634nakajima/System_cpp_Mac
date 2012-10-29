@@ -9,9 +9,10 @@ MyModule::MyModule(Server *s, const char *osc) : Module(s,osc) {
 	a2 = new AudioSource(s, "/A2");
 	ac = new AudioClock(s, "/AC");
 	dac = new DAC(s, "/DAC");
+	dac->bs = 128;
 	
-	a1->prepareAudioResources("mi.wav");
-	a2->prepareAudioResources("mi.wav");
+	a1->prepareAudioSource("mi.wav");
+	a2->prepareAudioSource("mi.wav");
 
 	ac->connectTo(a1, "/Stream");
 	a1->connectTo(a2, "/Stream");

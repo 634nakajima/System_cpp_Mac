@@ -1,13 +1,3 @@
-/*
- *  odore.h
- *  
- *
- *  Created by kannolab on 12/10/25.
- *  Copyright 2012 __MyCompanyName__. All rights reserved.
- *
- */
-
-
 #ifndef _MyModule_h
 #define _MyModule_h
 

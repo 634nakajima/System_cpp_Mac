@@ -41,8 +41,6 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
                 dac->isPlaying = false;
                 printf("stop\n");
                 *out++ = 0;
-
-
             }
             
         } else {

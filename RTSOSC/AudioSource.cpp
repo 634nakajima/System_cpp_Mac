@@ -165,7 +165,7 @@ AudioSource::AudioSource(Server *s, const char *osc) : Module(s, osc)
 	initAudioInfo();
 }
 
-int AudioSource::prepareAudioResources(const char *sound)
+int AudioSource::prepareAudioSource(const char *sound)
 {
 		
 	int ifd = -1;

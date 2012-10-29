@@ -64,7 +64,7 @@ public:
                      void         *data, 
                      void         *user_data);
 	
-	int			prepareAudioResources(const char *sound);
+	int			prepareAudioSource(const char *sound);
 	void		initAudioInfo();
 	static void render(PtTimestamp timestamp, void *userData);
 };
