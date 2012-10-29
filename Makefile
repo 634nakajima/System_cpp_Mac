@@ -1,13 +1,9 @@
 INCLUDES 	= -Iinclude -I./include/lo -I./include/rtsosc
-LIBS 		= -Llib -llo -lportaudio -lpm -lpt -lportsf -lrtsosc
-FRAMEWORKS	= -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework CoreMIDI
 CC          	= g++
-RTSOSCAPP	= MyModule.o main.o
-PROGS		= myApp
 
-.PHONY: liblo pmmac porttime portsf rtsosc clean
+.PHONY: liblo pmmac porttime portsf rtsosc clean veryclean
 
-all:	liblo pmmac porttime portsf rtsosc myApp
+all:	liblo pmmac porttime portsf rtsosc
 
 liblo:
 	cd liblo; make; make install;
@@ -24,20 +20,17 @@ portsf:
 rtsosc:
 	cd RTSOSC; make; make install;
 
-.cpp.o:
-	$(CC) $(INCLUDES) -c $<
-
-myApp: $(RTSOSCAPP)
-	$(CC) -o $@ $(RTSOSCAPP) $(LIBS) $(INCLUDES) $(FRAMEWORKS)
-
 clean:
-	rm -f *.o   
-	rm -f $(PROGS)
-	cd liblo; make clean; cd ../
-	cd pm_mac; make clean; cd ../
-	cd porttime; make clean; cd ../
-	cd portsf; make clean; cd ../
-	cd RTSOSC; make clean; cd ../
+	cd liblo; make clean;
+	cd pm_mac; make clean;
+	cd porttime; make clean;
+	cd portsf; make clean;
+	cd RTSOSC; make clean;
 
-
+veryclean:
+	cd liblo; make veryclean;
+	cd pm_mac; make veryclean;
+	cd porttime; make veryclean;
+	cd portsf; make veryclean;
+	cd RTSOSC; make veryclean;
 	

@@ -13,6 +13,10 @@ all:	librtsosc.a
 clean:
 	rm -f $(POBJS)   
 	rm -f librtsosc.a;
+
+veryclean:
+	rm -f $(POBJS)   
+	rm -f librtsosc.a;
 	cd ../lib; rm -f librtsosc.a;
 
 librtsosc.a:	$(POBJS)

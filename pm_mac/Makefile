@@ -5,13 +5,17 @@ CFLAGS = -I ../include
 
 CC=gcc
 
-.PHONY:	clean
+.PHONY:	clean veryclean
 
 all:	libpm.a
 
 .c.o:	$(CC) -c $(CFLAGS) $< -o $@ 
 
 clean:
+	rm -f $(POBJS) 
+	rm -f libpm.a;
+
+veryclean:
 	rm -f $(POBJS) 
 	rm -f libpm.a;
 	cd ../lib; rm -f libpm.a;

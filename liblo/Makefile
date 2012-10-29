@@ -13,6 +13,10 @@ all:	liblo.a
 clean:
 	rm -f $(POBJS) 
 	rm -f liblo.a;
+
+veryclean:
+	rm -f $(POBJS) 
+	rm -f liblo.a;
 	cd ../lib; rm -f liblo.a;
 
 liblo.a:	$(POBJS)
