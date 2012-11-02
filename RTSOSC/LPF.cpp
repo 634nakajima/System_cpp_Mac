@@ -20,15 +20,6 @@ LPF::LPF(Server *s, const char *osc) : Module(s,osc) {
     isBypassing = false;
     output = (short *)calloc(4192,sizeof(short));
 
-    double w = tan(M_PI*freq/44100.0);
-    double a = sin(w)/q;
-                   
-    b0 = 0.1;//(float)((1.0-cos(w))/2*(1+a));
-    b1 = 0.45;//(float)((1.0-cos(w))/(1+a));
-    b2 = b1;
-    a1 = 0.0;//(float)(2*cos(w)/(1-a));
-    a2 = 0.0;//(float)((a-1)/(a+1));
-
 }
 
 int LPF::stream(const char   *path, 

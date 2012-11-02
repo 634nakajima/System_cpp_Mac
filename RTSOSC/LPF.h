@@ -21,7 +21,7 @@ public:
     float           buf[3];
     short           *output;
     float           q,freq;
-    float           a1, a2, b0, b1, b2;
+    float           a[3], b[3];
     bool            isBypassing;
 	
     void bypass(int data);
