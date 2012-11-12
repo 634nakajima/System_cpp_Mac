@@ -61,7 +61,10 @@ int MyModule::stream(const char   *path,
 		o->r = (o->r != 6 ? o->r+1 : 0);
 		o->a2->location = 0.0;
 		o->a2->isPlaying = true;
+	}else {
+		printf("!");
 	}
+
 	
 	return 0;
 }
