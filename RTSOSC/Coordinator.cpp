@@ -70,7 +70,6 @@ int Coordinator::setMtkn(const char   *path,
 void Coordinator::deleteMtkn(int tID)
 {
 	if (!mtknMap.count(tID)) return;
-	MToken *mtkn = mtknMap[tID];
 	
 	ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
 	printf("delete:%s,%s tID:%d Module Color:%d\n",

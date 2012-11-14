@@ -132,6 +132,7 @@ int ModuleController::dac(const char   *path,
             }
         }
     }
+    return 0;
 }
 
 
@@ -177,6 +178,7 @@ int ModuleController::adc(const char   *path,
             }
         }
     }
+    return 0;
 }
 
 int ModuleController::sine(const char   *path, 
@@ -222,6 +224,7 @@ int ModuleController::sine(const char   *path,
             }
         }
     }
+    return 0;
 }
 
 int ModuleController::env(const char   *path, 
@@ -266,6 +269,7 @@ int ModuleController::env(const char   *path,
             }
         }
     }
+    return 0;
 }
 
 int ModuleController::as(const char   *path, 
@@ -310,6 +314,7 @@ int ModuleController::as(const char   *path,
             }
         }
     }
+    return 0;
 }
 
 ModuleController::~ModuleController()
