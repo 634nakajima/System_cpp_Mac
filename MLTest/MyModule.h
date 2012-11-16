@@ -17,7 +17,6 @@ class MyModule : public Module {
 	
 public:
     int tID;
-    int cc;
     
     MyModule(Server *s, const char *osc);
     ~MyModule();
@@ -35,10 +34,6 @@ public:
                     int          argc,
                     void         *data, 
                     void         *user_data);
-    
-    static void connectCheck(PtTimestamp    timestamp, 
-                             void           *userData);
-
 };
 
 #endif

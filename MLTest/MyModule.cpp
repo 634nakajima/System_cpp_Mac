@@ -5,12 +5,6 @@ MyModule::MyModule(Server *s, const char *osc) : Module(s,osc) {
 	addMethodToServer("/Stream", "b", stream, this);
     addMethodToServer("/Data", "ii", data, this);
     tID = 0;
-    cc = 0;
-    Pa_Start(0.1, this->connectCheck, this);
-}
-
-void MyModule::connectCheck(PtTimestamp timestamp, void *userData) {
-    if(cc++ > 5)    tID = 0;
 }
 
 int MyModule::stream(const char   *path, 
@@ -27,7 +21,6 @@ int MyModule::stream(const char   *path,
     int size = lo_blob_datasize(b);
 
     tID = *dp;
-    cc = 0;
     
 	return 0;
 }
