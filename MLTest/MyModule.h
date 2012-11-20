@@ -34,10 +34,7 @@ public:
                     int          argc,
                     void         *data, 
                     void         *user_data);
-<<<<<<< HEAD
-=======
 
->>>>>>> imac
 };
 
 #endif
