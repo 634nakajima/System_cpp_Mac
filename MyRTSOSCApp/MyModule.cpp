@@ -61,7 +61,7 @@ int MyModule::data(const char   *path,
 	return 0;
 }
 
-//デコンストラクタ
+//デストラクタ
 MyModule::~MyModule() {
 }
 
