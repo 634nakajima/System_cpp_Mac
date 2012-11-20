@@ -29,6 +29,8 @@ class XBeeController : public Module {
 public:
     
     XBeeController(Server *s, const char *osc);
+	XBeeController(Server *s, const char *osc, const char *d);
+
     ~XBeeController();
     
 	std::map<int, Tile*>    tMap;;

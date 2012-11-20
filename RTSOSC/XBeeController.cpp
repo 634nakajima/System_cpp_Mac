@@ -22,6 +22,19 @@ XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
     Pt_Start(0.1, this->deadCheck, this);
 }
 
+XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Module(s, osc)
+{	
+	co = NULL;
+	rp = 0;
+	wp = 0;
+
+	addMethodToServer("/Stream", "b", stream, this);
+	serial = new Serial(s, "/Serial", d);
+
+	serial->connectTo(this, "/Stream");
+    Pt_Start(0.1, this->deadCheck, this);
+}
+
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 {
     XBeeController *xbc = (XBeeController *)userData;

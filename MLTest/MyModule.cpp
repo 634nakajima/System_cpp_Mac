@@ -20,8 +20,16 @@ int MyModule::stream(const char   *path,
     unsigned char *dp = (unsigned char *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
 
+<<<<<<< HEAD
     tID = *dp;
     
+=======
+	if (o->tID != *dp) {
+		o->tID = *dp;
+		printf("tID:%d\n", o->tID);
+	}
+	
+>>>>>>> imac
 	return 0;
 }
 

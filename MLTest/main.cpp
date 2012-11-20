@@ -12,10 +12,10 @@ int main()
 	int                 mColor;
     
 	s = new Server();
-    xbc = new XBeeController(s, "/XBC");
+    xbc = new XBeeController(s, "/XBC", "/dev/cu.usbserial-A50178PJ");
 	mc	= new ModuleController(s, "/MC");
 	co	= new Coordinator(s, "/Coordinator");
-    se  = new Serial(s, "/Serial");
+    se  = new Serial(s, "/Serial", "/dev/cu.usbserial-A600afyl");
 	mm  = new MyModule(s, "/MM");
     
 	mc->sendModuleList();

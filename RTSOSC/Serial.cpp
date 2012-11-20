@@ -25,7 +25,7 @@ Serial::Serial(Server *s, const char *osc, const char *d) : Module(s,osc)
     active = 0;
 	done = 0;
     addMethodToServer("/Stream", "b", sWrite, this);
-    
+
     strcpy(device, d);
     if(prepareSerial())
         threadStart();
@@ -41,9 +41,9 @@ void Serial::setDevice(const char *d)
 
 bool Serial::prepareSerial()
 {
-    fd = open(device, O_RDWR | O_NOCTTY ); 
+    fd = open(device, O_RDWR | O_NOCTTY );
     if (fd <0) {printf("error:serial device\n"); return false;}
-    
+
     tcgetattr(fd,&oldtio); /* 現在のシリアルポートの設定を待避させる*/
     bzero(&newtio, sizeof(newtio)); /* 新しいポートの設定の構造体をクリアする */
     
