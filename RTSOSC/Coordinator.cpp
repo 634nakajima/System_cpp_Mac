@@ -100,7 +100,7 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
     
 	//エラー処理
     if (!mtknMap.count(tID1) || !mtknMap.count(tID2)) {
-        printf("err:connect\n");
+        printf("err:connect tid1:%d, tid2:%d\n",tID1, tID2);
         return;  
     }
 	
@@ -144,6 +144,28 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
             "ss", 
             m2->ip,
             strcat(m2OSC,t));
+}
+
+void Coordinator::disconnectAll(int tID, const char *t)
+{
+    char m1OSC[64];
+    
+	//エラー処理
+	if (!mtknMap.count(tID)) {
+        //printf("err:disconnect\n");
+        return;  
+    }
+	
+    //モジュールトークン取得
+    MToken *m1 = mtknMap[tID];
+    
+    //モジュールに対して切断するルートのアドレスを送信
+    strcpy(m1OSC, m1->osc);
+    
+    lo_send(lo_address_new(m1->ip,"6340"), 
+            strcat(m1OSC,"/DeleteAllRoute"),
+            "s", 
+            t);
 }
 
 Coordinator::~Coordinator()

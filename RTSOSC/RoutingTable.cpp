@@ -66,6 +66,29 @@ void RoutingTable::deleteRoute(char *ip, char *osc)
     }
 }
 
+void RoutingTable::deleteAllRoute(char *osc)
+{
+    for (int i=0; i<aNum; i++) {        
+        //対象のアドレス検索
+        if (strstr(oscAddr[i], osc)) {
+			printf("delete!%s\n", oscAddr[i]);
+
+            //対象のアドレス解放、アドレス数デクリメント
+            lo_address_free(loAddr[i]);
+            memset(oscAddr[i], 0, sizeof(char)*64);
+            aNum--;
+            
+            //ルートのアドレスをずらす
+            for (int j=i; j<aNum; j++) {
+                loAddr[j] = loAddr[j+1];
+                strcpy(oscAddr[j], oscAddr[j+1]);
+            }
+            loAddr[aNum] = NULL;
+            memset(oscAddr[aNum], 0, sizeof(char)*64);
+        }
+    }
+}
+
 RoutingTable::~RoutingTable()
 {
     for (int i=0; i<MAX_ANUM; i++) {

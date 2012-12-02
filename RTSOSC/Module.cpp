@@ -38,6 +38,18 @@ int Module::deleteRoute(const char   *path,
     return 0;
 }
 
+int Module::deleteAllRoute(const char   *path, 
+						   const char   *types, 
+						   lo_arg       **argv, 
+						   int          argc,
+						   void         *data, 
+						   void         *user_data)
+{
+    Module *mod = (Module *)user_data;
+    mod->rTable->deleteAllRoute((char *)argv[0]);
+    return 0;
+}
+
 Module::Module(Server *s, const char *osc)
 {
     st = s;
@@ -46,6 +58,8 @@ Module::Module(Server *s, const char *osc)
     
     addMethodToServer("/SetRoute", "ss", Module::setRoute, this);
     addMethodToServer("/DeleteRoute", "ss", Module::deleteRoute, this);
+	addMethodToServer("/DeleteAllRoute", "s", Module::deleteAllRoute, this);
+
 
     rTable = new RoutingTable();
     tID = -1;
@@ -357,9 +371,14 @@ void Module::setRoute(char *ip, char *osc)
     rTable->setRoute(ip, osc);
 }
 
-void Module::deleteRoute(char *ip, char *osc)
+void Module::deleteRoute(char *ip,char *osc)
 {
     rTable->deleteRoute(ip, osc);
+}
+
+void Module::deleteAllRoute(char *osc)
+{
+    rTable->deleteAllRoute(osc);
 }
 
 void Module::connectTo(Module *m, const char *t)

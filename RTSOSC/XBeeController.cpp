@@ -19,7 +19,7 @@ XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.1, this->deadCheck, this);
+    Pt_Start(0.2, this->deadCheck, this);
 }
 
 XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Module(s, osc)
@@ -32,7 +32,7 @@ XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Modu
 	serial = new Serial(s, "/Serial", d);
 
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.1, this->deadCheck, this);
+    Pt_Start(0.2, this->deadCheck, this);
 }
 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
@@ -103,10 +103,10 @@ void XBeeController::parseData()
 					case 0x00:
 						switch (type) {
 							case 0x00:
-								co->connect(tid1, tid2, "/Data");
+								co->connect(tid2, tid1, "/Data");
 								break;
 							case 0x01:
-								co->connect(tid1, tid2, "/Stream");
+								co->connect(tid2, tid1, "/Stream");
 								break;
 							default:
 								break;
@@ -116,10 +116,10 @@ void XBeeController::parseData()
 					case 0x01:
 						switch (type) {
 							case 0x00:
-								co->disconnect(tid1, tid2, "/Data");
+								co->disconnectAll(tid2, "/Data");
 								break;
 							case 0x01:
-								co->disconnect(tid1, tid2, "/Stream");
+								co->disconnectAll(tid2, "/Stream");
 								break;
 							default:
 								break;
@@ -164,7 +164,6 @@ int XBeeController::available()
 void XBeeController::setAlive(int tID, int mColor)
 {
 	if (!tMap.count(tID)) return;
-	
 	Tile *t = tMap[tID];
     t->mColor = mColor;
     t->isAlive();

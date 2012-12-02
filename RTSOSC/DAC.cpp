@@ -32,6 +32,13 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
     for(i = 0; i< framesPerBuffer; i++){
         
         if (dac->isPlaying) {
+			
+			if (d < 32)	{
+				dac->vVal = 0;
+			} else { 
+				dac->vVal = dac->vValcpy;
+			}
+			
             if (d-- > 0) {
                 dac->vol = 0.005*dac->vTable[dac->vVal] + 0.995*dac->vol;
 				
@@ -109,6 +116,7 @@ int DAC::stream(const char   *path,
             dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
         }
         if (d+size > dac->bs && !dac->isPlaying) {
+			dac->vVal = dac->vValcpy;
             dac->start();
             printf("start\n");
         }
@@ -125,6 +133,8 @@ int DAC::data1(const char   *path,
 {
     DAC *dac = (DAC *)user_data;
     dac->vVal = argv[0]->i;
+    dac->vValcpy = argv[0]->i;
+
     return 0;
 }
 
@@ -137,6 +147,7 @@ int DAC::data2(const char   *path,
 {
     DAC *dac = (DAC *)user_data;
     dac->vVal = argv[0]->i;
+	dac->vValcpy = argv[0]->i;
 	dac->bs = 32*argv[2]->i;
 
     return 0;
@@ -154,6 +165,7 @@ DAC::DAC(Server *s, const char *osc) : Module(s, osc)
     
     vTable[127] = 1.0;
     vVal        = 127;
+	vValcpy		= 127;
     vol         = 1.0;
     isPlaying   = false;
     sampleRate  = 44100.0;
@@ -219,6 +231,7 @@ int DAC::stop()
 
 DAC::~DAC()
 {
+	//lo_server_thread_del_method(st->st, "/Stream", "b");
 	free(buf);
     stop();
     Pa_CloseStream( paStream );

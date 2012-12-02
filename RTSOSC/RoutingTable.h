@@ -22,6 +22,7 @@ public:
     
     void setRoute(char *ip, char *osc);
     void deleteRoute(char *ip, char *osc);
+    void deleteAllRoute(char *osc);
 
     lo_address  loAddr[MAX_ANUM];
     char        *oscAddr[MAX_ANUM];
