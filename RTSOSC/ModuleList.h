@@ -34,7 +34,9 @@ public:
 
     void    createModule(int tID, int mc);
     void    deleteModule(int tID, int mc);
-        
+	
+	void	requestML();
+	
     static int setMList(const char   *path, 
                         const char   *types, 
                         lo_arg       **argv, 

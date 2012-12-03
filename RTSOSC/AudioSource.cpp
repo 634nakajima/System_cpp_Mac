@@ -215,4 +215,9 @@ AudioSource::~AudioSource()
 	free(output);
 	if (prepared)
 		free(sample);
+	
+	deleteMethodFromServer("/Stream", "b");
+	deleteMethodFromServer("/Data", "ii");
+	deleteMethodFromServer("/Data", "iiii");
+	deleteMethodFromServer("/Data", "iiiiii");
 }

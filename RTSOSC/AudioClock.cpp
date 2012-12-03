@@ -75,4 +75,7 @@ AudioClock::~AudioClock()
 {
     Pt_Stop();
 	free(output);
+    deleteMethodFromServer("/Data", "ii");
+	deleteMethodFromServer("/Data", "iiii");
+
 }

@@ -16,7 +16,10 @@
 #include "ADC.h"
 #include "Sine.h"
 #include "Envelope.h"
+#include "AudioClock.h"
 #include "AudioSource.h"
+#include "Delay.h"
+
 #include <list>
 
 class ModuleController : public Module
@@ -28,7 +31,9 @@ public:
     std::list<Sine*> sineList;
     std::list<Envelope*> envList;
     std::list<AudioSource*> asList;
-    
+	std::list<Delay*> delayList;
+	std::list<AudioClock*> acList;
+
     ModuleController(Server *s, const char *osc);
     ~ModuleController();
 
@@ -70,7 +75,27 @@ private:
                   int          argc,
                   void         *data, 
                   void         *user_data);
-
+	
+	static int delay(const char   *path, 
+					 const char   *types, 
+					 lo_arg       **argv, 
+					 int          argc,
+					 void         *data, 
+					 void         *user_data);
+	
+	static int ac(const char   *path, 
+                  const char   *types, 
+                  lo_arg       **argv, 
+                  int          argc,
+                  void         *data, 
+                  void         *user_data);
+	
+	static int requestML(const char   *path, 
+						 const char   *types, 
+						 lo_arg       **argv, 
+						 int          argc,
+						 void         *data, 
+						 void         *user_data);	
 };
 
 

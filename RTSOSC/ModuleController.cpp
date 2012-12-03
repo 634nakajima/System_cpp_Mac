@@ -13,9 +13,12 @@ ModuleController::ModuleController(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/SP/DAC", "is", dac, this);//1:create 0:delete, tID
     addMethodToServer("/GN/ADC", "is", adc, this);//1:create 0:delete, tID
+	addMethodToServer("/EF/Delay", "is", delay, this);//1:create 0:delete, tID
+	addMethodToServer("/GN/AudioClock", "is", ac, this);//1:create 0:delete, tID
     addMethodToServer("/GN/Sine", "is", sine, this);//1:create 0:delete, tID
     addMethodToServer("/EF/Envelope", "is", env, this);//1:create 0:delete, tID
     addMethodToServer("/GN/AudioSource", "is", as, this);//1:create 0:delete, tID
+    addMethodToServer("/RequestML", "i", requestML, this);
 
 }
 
@@ -28,7 +31,7 @@ void ModuleController::sendModuleList()
     char p[64];
     int  mColor;
     strcpy(p, OSCAddr);
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<7; i++) {
         switch (i) {
             case 0:
 				strcpy(p, OSCAddr);
@@ -54,6 +57,16 @@ void ModuleController::sendModuleList()
 				strcpy(p, OSCAddr);
                 strcat(p, "/GN/AudioSource");
                 mColor = 5;
+				break;
+			case 5:
+				strcpy(p, OSCAddr);
+                strcat(p, "/EF/Delay");
+                mColor = 6;
+				break;
+			case 6:
+				strcpy(p, OSCAddr);
+                strcat(p, "/GN/AudioClock");
+                mColor = 7;
 				break;
             default:
                 break;
@@ -317,6 +330,109 @@ int ModuleController::as(const char   *path,
     return 0;
 }
 
+int ModuleController::delay(const char   *path, 
+							const char   *types, 
+							lo_arg       **argv, 
+							int          argc,
+							void         *data, 
+							void         *user_data)
+{
+	ModuleController *mc = (ModuleController *)user_data;
+    
+    char p[64] = "/Tile";
+	
+    strcat(p, &argv[1]->s);
+    strcat(p, "/EF/Delay");
+    
+    if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<Delay*>::iterator iter = mc->delayList.begin(); iter != mc->delayList.end(); iter++) {
+            Delay *delay = (*iter);
+            if (strcmp(p,delay->OSCAddr)==0) {
+                if (delay->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating Delay\n");
+                    return 0;
+                }
+            }
+        }
+        
+        Delay *delay = new Delay(mc->st, p);
+        delay->setTID(atoi(&argv[1]->s));
+        delay->mColor = 6;
+        delay->sendSetMdtkn();
+        mc->delayList.push_back(delay);
+        printf("create Delay\n");
+		
+    }else {
+        for (std::list<Delay*>::iterator iter = mc->delayList.begin(); iter != mc->delayList.end(); iter++) {
+            Delay* delay = (*iter);
+            if (strcmp(p,delay->OSCAddr)==0) {
+                delete delay;
+                mc->delayList.remove(delay);
+                printf("delete Delay\n");
+            }
+        }
+    }
+    return 0;
+}
+
+int ModuleController::ac(const char   *path, 
+						 const char   *types, 
+						 lo_arg       **argv, 
+						 int          argc,
+						 void         *data, 
+						 void         *user_data)
+{
+	ModuleController *mc = (ModuleController *)user_data;
+    
+    char p[64] = "/Tile";
+	
+    strcat(p, &argv[1]->s);
+    strcat(p, "/GN/AudioClock");
+    
+    if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
+        for (std::list<AudioClock*>::iterator iter = mc->acList.begin(); iter != mc->acList.end(); iter++) {
+            AudioClock* ac = (*iter);
+            if (strcmp(p,ac->OSCAddr)==0) {
+                if (ac->tID == atoi(&argv[1]->s)) {
+                    printf("err: Creating AudioClock\n");
+                    return 0;
+                }
+            }
+        }
+        
+        AudioClock *ac = new AudioClock(mc->st, p);
+        ac->setTID(atoi(&argv[1]->s));
+        ac->mColor = 7;
+        ac->sendSetMdtkn();
+        mc->acList.push_back(ac);
+        printf("create AudioClock\n");
+		
+    }else {
+        for (std::list<AudioClock*>::iterator iter = mc->acList.begin(); iter != mc->acList.end(); iter++) {
+            AudioClock* ac = (*iter);
+            if (strcmp(p,ac->OSCAddr)==0) {
+                delete ac;
+                mc->acList.remove(ac);
+                printf("delete AudioClock\n");
+            }
+        }
+    }
+    return 0;
+}
+
+int ModuleController::requestML(const char   *path, 
+								const char   *types, 
+								lo_arg       **argv, 
+								int          argc,
+								void         *data, 
+								void         *user_data)
+{
+    ModuleController *mc = (ModuleController *)user_data;
+	mc->sendModuleList();
+	
+	return 0;
+}
+
 ModuleController::~ModuleController()
 {
     for (std::list<DAC*>::iterator iter = dacList.begin(); iter != dacList.end(); iter++) {
@@ -348,5 +464,14 @@ ModuleController::~ModuleController()
         asList.remove(as);
         delete as;
     }
+	deleteMethodFromServer("/SP/DAC", "is");
+    deleteMethodFromServer("/GN/ADC", "is");
+    deleteMethodFromServer("/GN/Sine", "is");
+    deleteMethodFromServer("/EF/Envelope", "is");
+    deleteMethodFromServer("/GN/AudioSource", "is");
+	deleteMethodFromServer("/EF/Delay", "is");
+    deleteMethodFromServer("/GN/AudioClock", "is");
+	deleteMethodFromServer("/RequestML", "i");
 }
+
 

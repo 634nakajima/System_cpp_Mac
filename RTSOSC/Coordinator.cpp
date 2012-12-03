@@ -176,6 +176,8 @@ Coordinator::~Coordinator()
     mtknMap.clear();
     delete ml;
 
+	deleteMethodFromServer("/SetMdtkn", "ssii");
+    deleteMethodFromServer("/deleteMdtkn", "ssii");
 }
 
 

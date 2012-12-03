@@ -134,4 +134,6 @@ Sine::~Sine()
 {
 	free(buf);
 	free(output);
+	deleteMethodFromServer("/Stream", "b");
+    deleteMethodFromServer("/Data", "ii");
 }

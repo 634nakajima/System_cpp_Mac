@@ -9,7 +9,7 @@
 #ifndef _Delay_h
 #define _Delay_h
 
-#include "rtsosc.h"
+#include "Module.h"
 
 class Delay : public Module {
 	

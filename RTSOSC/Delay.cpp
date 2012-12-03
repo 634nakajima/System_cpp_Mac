@@ -138,5 +138,10 @@ void Delay::setGain(int data) {
 Delay::~Delay() {
     free(buf);
     free(output);
+	
+	deleteMethodFromServer("/Stream", "b");
+    deleteMethodFromServer("/Data", "ii");
+	deleteMethodFromServer("/Data", "iiii");
+    deleteMethodFromServer("/Data", "iiiiii");
 }
 

@@ -19,7 +19,7 @@ XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.2, this->deadCheck, this);
+    Pt_Start(0.1, this->deadCheck, this);
 }
 
 XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Module(s, osc)
@@ -29,10 +29,10 @@ XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Modu
 	wp = 0;
 
 	addMethodToServer("/Stream", "b", stream, this);
-	serial = new Serial(s, "/Serial", d);
 
+	serial = new Serial(s, "/Serial", d);
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.2, this->deadCheck, this);
+    Pt_Start(0.1, this->deadCheck, this);
 }
 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
@@ -224,4 +224,5 @@ XBeeController::~XBeeController()
     }
 	tMap.clear();
 	delete serial;
+	deleteMethodFromServer("/Stream", "b");
 }

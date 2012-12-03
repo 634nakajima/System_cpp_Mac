@@ -45,6 +45,7 @@ public:
     void deleteRoute(char *ip, char *osc);
 	void deleteAllRoute(char *osc);
     void addMethodToServer(const char *path, const char *type, lo_method_handler h, void *user_data);
+	void deleteMethodFromServer(const char *path, const char *type);
     void sendData(Data *d, lo_arg **argv, int argc);
     void sendAudio(Audio *a);
     void sendAudio(short *a, unsigned long l);

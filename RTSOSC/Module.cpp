@@ -366,6 +366,14 @@ void Module::addMethodToServer(const char *path, const char *type, lo_method_han
     lo_server_thread_add_method(st->st, p, type, h, user_data);
 }
 
+void Module::deleteMethodFromServer(const char *path, const char *type)
+{
+    char p[64];
+    strcpy(p, OSCAddr);
+    strcat(p, path);
+    lo_server_thread_del_method(st->st, p, type);
+}
+
 void Module::setRoute(char *ip, char *osc)
 {
     rTable->setRoute(ip, osc);
@@ -400,5 +408,8 @@ void Module::disconnectFrom(Module *m, const char *t)
 Module::~Module()
 {
     //sendDeleteMdtkn();
+	deleteMethodFromServer("/SetRoute", "ss");
+    deleteMethodFromServer("/DeleteRoute", "ss");
+	deleteMethodFromServer("/DeleteAllRoute", "s");
     delete rTable;
 }

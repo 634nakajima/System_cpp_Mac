@@ -144,11 +144,52 @@ void ModuleList::deleteModule(int tID, int mc)
 	deleteModule(t, m);
 }
 
+void ModuleList::requestML()
+{
+	int sock, n, d_len;
+    struct sockaddr_in addr;
+    void *data; 
+    char path[] = "/ModuleManager/requestML";
+    char p[64];
+    int  mColor;
+    strcpy(p, OSCAddr);
+	
+	//create lo_message
+	lo_message m = lo_message_new();
+	lo_message_add_int32(m, 0);
+	
+	
+	data = lo_message_serialise(m, path, NULL, NULL);
+	d_len = lo_message_length(m, path);
+	
+	//create socket
+	int opt = 1;
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &opt, sizeof(int));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(6340);
+	inet_pton(AF_INET, "255.255.255.255", &addr.sin_addr.s_addr);
+	
+	//send(念のため3回)
+	for (int j=0; j<3; j++) {
+		n = sendto(sock, data, d_len, 0, (struct sockaddr *)&addr, sizeof(addr));
+		if (n < 1) {
+			perror("sendto");
+		}
+		usleep(1000);
+	}
+	
+	lo_message_free(m);
+    close(sock);	
+}
+
 ModuleList::~ModuleList()
 {
     for (std::map<int, MToken*>::iterator iter = mlMap.begin(); iter!=mlMap.end(); iter++)
 		delete iter->second;
 	mlMap.empty();
+	deleteMethodFromServer("/setMList", "ssi");
+	deleteMethodFromServer("/Stream", "b");
 }
 
 

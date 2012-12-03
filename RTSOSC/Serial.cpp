@@ -185,6 +185,7 @@ Serial::~Serial()
 {
     threadStop();
     tcsetattr(fd,TCSANOW,&oldtio);
+	deleteMethodFromServer("/Stream", "b");
 }
 
 

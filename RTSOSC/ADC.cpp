@@ -125,4 +125,6 @@ ADC::~ADC()
     stop();
     Pa_CloseStream( paStream );
     Pa_Terminate();
+	deleteMethodFromServer("/Stream", "b");
+    deleteMethodFromServer("/Data", "ii");
 }

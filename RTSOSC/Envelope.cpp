@@ -154,6 +154,11 @@ void Envelope::updatevVal()
 Envelope::~Envelope()
 {
     free(output);
+	deleteMethodFromServer("/Stream", "b");
+    deleteMethodFromServer("/Data", "ii");
+    deleteMethodFromServer("/Data", "iiii");
+    deleteMethodFromServer("/Data", "iiiiii");
+    deleteMethodFromServer("/Data", "iiiiiiii");
 }
 
 
