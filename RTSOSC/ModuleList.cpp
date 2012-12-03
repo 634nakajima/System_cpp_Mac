@@ -23,6 +23,7 @@ int ModuleList::setMList(const char   *path,
                          void         *data,
                          void         *user_data)
 {
+	printf("!!\n");
     int i = 0;
     ModuleList *mlc = (ModuleList *)user_data;
     //エラー処理、既存のモジュールリスト確認

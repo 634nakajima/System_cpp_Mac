@@ -15,7 +15,8 @@ int main()
 	mm  = new MyModule(s, "/MM");
         
     se->connectTo(mm, "/Stream");
-    
+    ml->requestML();
+	
     while (1) {
         printf("Enter Module Color\n");
         scanf("%d", &mColor);
