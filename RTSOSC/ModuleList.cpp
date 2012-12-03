@@ -23,7 +23,6 @@ int ModuleList::setMList(const char   *path,
                          void         *data,
                          void         *user_data)
 {
-	printf("!!\n");
     int i = 0;
     ModuleList *mlc = (ModuleList *)user_data;
     //エラー処理、既存のモジュールリスト確認
@@ -150,7 +149,7 @@ void ModuleList::requestML()
 	int sock, n, d_len;
     struct sockaddr_in addr;
     void *data; 
-    char path[] = "/ModuleManager/requestML";
+    char path[] = "/ModuleManager/RequestML";
     char p[64];
     int  mColor;
     strcpy(p, OSCAddr);

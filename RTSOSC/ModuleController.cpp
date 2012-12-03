@@ -427,7 +427,6 @@ int ModuleController::requestML(const char   *path,
 								void         *data, 
 								void         *user_data)
 {
-	printf("!\n");
     ModuleController *mc = (ModuleController *)user_data;
 	mc->sendModuleList();
 	
