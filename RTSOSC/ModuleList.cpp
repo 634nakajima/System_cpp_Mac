@@ -84,6 +84,44 @@ void ModuleList::deleteModule(char *tID, MToken *ml)
             tID);
 }
 
+void ModuleList::createModule(int tID, MToken *ml)
+{
+	char t[4];
+    if (tID < 10) {
+        t[0] = (tID + 0x30);
+        t[1] = '\0';
+    }else if (tID < 100) {
+        t[0] = (tID/10 + 0x30);
+        t[1] = (tID%10 + 0x30);
+        t[2] = '\0';
+    }else {
+        t[0] = '1';
+        t[1] = ((tID%100)/10 + 0x30);
+        t[2] = ((tID%100)%10 + 0x30);
+        t[3] = '\0';
+    }
+	createModule(t, ml);
+}
+
+void ModuleList::deleteModule(int tID, MToken *ml)
+{
+	char t[4];
+    if (tID < 10) {
+        t[0] = (tID + 0x30);
+        t[1] = '\0';
+    }else if (tID < 100) {
+        t[0] = (tID/10 + 0x30);
+        t[1] = (tID%10 + 0x30);
+        t[2] = '\0';
+    }else {
+        t[0] = '1';
+        t[1] = ((tID%100)/10 + 0x30);
+        t[2] = ((tID%100)%10 + 0x30);
+        t[3] = '\0';
+    }
+	deleteModule(t, ml);
+}
+
 void ModuleList::createModule(char *tID, int mc)
 {
 	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {

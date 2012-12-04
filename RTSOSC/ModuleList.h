@@ -29,6 +29,9 @@ public:
     void    createModule(char *tID, MToken *ml);
     void    deleteModule(char *tID, MToken *ml);
 
+	void    createModule(int tID, MToken *ml);
+    void    deleteModule(int tID, MToken *ml);
+	
     void    createModule(char *tID, int mc);
     void    deleteModule(char *tID, int mc);
 
