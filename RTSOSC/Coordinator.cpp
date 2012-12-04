@@ -71,7 +71,7 @@ void Coordinator::deleteMtkn(int tID)
 {
 	if (!mtknMap.count(tID)) return;
 	
-	ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]->mColor);
+	ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]);
 	printf("delete:%s,%s tID:%d Module Color:%d\n",
 		   mtknMap[tID]->ip, 
 		   mtknMap[tID]->osc, mtknMap[tID]->tID, 

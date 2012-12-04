@@ -21,7 +21,7 @@ int main()
         printf("Enter Module Color\n");
         scanf("%d", &mColor);
         if (!mColor) break;
-		
+		if (mColor == 99) ml->requestML();
         if (mm->tID) 
             ml->createModule(mm->tID, mColor);
     }	

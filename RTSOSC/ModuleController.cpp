@@ -121,7 +121,7 @@ int ModuleController::dac(const char   *path,
             DAC* dac = (*iter);
             if (strcmp(p,dac->OSCAddr)==0) {
                 if (dac->tID == atoi(&argv[1]->s)) {
-                    printf("err: Creating DAC");
+                    printf("err: Creating DAC\n");
                     return 0;
                 }
             }
@@ -168,7 +168,7 @@ int ModuleController::adc(const char   *path,
             ADC* adc = (*iter);
             if (strcmp(p,adc->OSCAddr)==0) {
                 if (adc->tID == atoi(&argv[1]->s)) {
-                    printf("err: Creating ADC");
+                    printf("err: Creating ADC\n");
                     return 0;
                 }
             }
@@ -213,7 +213,7 @@ int ModuleController::sine(const char   *path,
             Sine* sine = (*iter);
             if (strcmp(p,sine->OSCAddr)==0) {
                 if (sine->tID == atoi(&argv[1]->s)) {
-                    printf("err: Creating Sine");
+                    printf("err: Creating Sine\n");
                     return 0;
                 }
             }
