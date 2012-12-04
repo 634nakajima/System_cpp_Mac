@@ -14,7 +14,7 @@
 #include "Serial.h"
 #include "MToken.h"
 #include <stdlib.h>
-#include <map>
+#include <list>
 
 class ModuleList : public Module {
 	
@@ -22,7 +22,7 @@ public:
     
     ModuleList(Server *s, const char *osc);
     ~ModuleList();
-    std::map<int, MToken*>      mlMap;
+    std::list<MToken*>			mList;
 	Serial                      *serial;
     char                        t;
 

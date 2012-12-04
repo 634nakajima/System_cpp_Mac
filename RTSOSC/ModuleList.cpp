@@ -23,25 +23,27 @@ int ModuleList::setMList(const char   *path,
                          void         *data,
                          void         *user_data)
 {
-    int i = 0;
+    int i = 1;
     ModuleList *mlc = (ModuleList *)user_data;
     //エラー処理、既存のモジュールリスト確認
-    for (std::map<int, MToken*>::iterator iter = mlc->mlMap.begin(); iter != mlc->mlMap.end(); iter++) {
-        MToken* ml = iter->second;
+    for (std::list<MToken*>::iterator iter = mlc->mList.begin(); iter != mlc->mList.end(); iter++) {
+        MToken* ml = (*iter);
         if (strcmp(ml->ip, (char *)argv[0])==0) {
             if (strcmp(ml->osc, (char *)argv[1])==0) return 0;
         }
+		i++;
     }
     
     //モジュールリストの生成
     MToken *m = new MToken();
     if (argv[2]->i != -1) {//mColorが-1でなければ
         m->mColor = argv[2]->i;
+		m->tID = i;
         strcpy(m->ip, (char *)argv[0]);
         strcpy(m->osc, (char *)argv[1]);
-        mlc->mlMap.insert(std::map<int, MToken*>::value_type(m->mColor, m));
+        mlc->mList.push_back(m);
     
-        printf("set:%s,%s ModuleColor:%d\n",(char *)argv[0], (char *)argv[1], argv[2]->i);
+        printf("set:%s,%s ModuleIndex:%d\n",(char *)argv[0], (char *)argv[1], i);
     }
     return 0;
 	
@@ -84,25 +86,29 @@ void ModuleList::deleteModule(char *tID, MToken *ml)
 
 void ModuleList::createModule(char *tID, int mc)
 {
-	if (!mlMap.count(mc)) return;
-	
-    MToken *m = mlMap[mc];
-	createModule(tID, m);
+	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (mc == ml->tID) {
+			createModule(tID, ml);
+			break;
+		}
+    }
 }
 
 void ModuleList::deleteModule(char *tID, int mc)
 {
-	if (!mlMap.count(mc)) return;
-
-    MToken *m = mlMap[mc];
-	deleteModule(tID, m);
+	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (mc == ml->tID) {
+			createModule(tID, ml);
+			break;
+		}
+    }
 }
 
 void ModuleList::createModule(int tID, int mc)
 {
-	if (!mlMap.count(mc)) return;
-
-    char t[4];
+	char t[4];
     if (tID < 10) {
         t[0] = (tID + 0x30);
         t[1] = '\0';
@@ -116,16 +122,19 @@ void ModuleList::createModule(int tID, int mc)
         t[2] = ((tID%100)%10 + 0x30);
         t[3] = '\0';
     }
-    
-    MToken *m = mlMap[mc];
-	createModule(t, m);
+	
+	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (mc == ml->tID) {
+			createModule(t, ml);
+			break;
+		}
+    }
 }
 
 void ModuleList::deleteModule(int tID, int mc)
-{
-	if (!mlMap.count(mc)) return;
-
-    char t[4];
+{	
+	char t[4];
     if (tID < 10) {
         t[0] = (tID + 0x30);
         t[1] = '\0';
@@ -139,9 +148,14 @@ void ModuleList::deleteModule(int tID, int mc)
         t[2] = ((tID%100)%10 + 0x30);
         t[3] = '\0';
     }
-
-    MToken *m = mlMap[mc];
-	deleteModule(t, m);
+	
+	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (mc == ml->tID) {
+			deleteModule(t, ml);
+			break;
+		}
+    }	
 }
 
 void ModuleList::requestML()
@@ -185,9 +199,10 @@ void ModuleList::requestML()
 
 ModuleList::~ModuleList()
 {
-    for (std::map<int, MToken*>::iterator iter = mlMap.begin(); iter!=mlMap.end(); iter++)
-		delete iter->second;
-	mlMap.empty();
+    for (std::list<MToken*>::iterator iter = mList.begin(); iter!=mList.end(); iter++) {
+		mList.remove(*iter);
+		delete (*iter);
+	}
 	deleteMethodFromServer("/setMList", "ssi");
 	deleteMethodFromServer("/Stream", "b");
 }
