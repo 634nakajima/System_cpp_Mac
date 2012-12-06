@@ -71,10 +71,43 @@ void Coordinator::deleteMtkn(int tID)
 {
 	if (!mtknMap.count(tID)) return;
 	
-	ml->deleteModule(mtknMap[tID]->tID, mtknMap[tID]);
+	char t[4];
+    if (tID < 10) {
+        t[0] = (tID + 0x30);
+        t[1] = '\0';
+    }else if (tID < 100) {
+        t[0] = (tID/10 + 0x30);
+        t[1] = (tID%10 + 0x30);
+        t[2] = '\0';
+    }else {
+        t[0] = '1';
+        t[1] = ((tID%100)/10 + 0x30);
+        t[2] = ((tID%100)%10 + 0x30);
+        t[3] = '\0';
+    }
+	char p[64];
+	char *pp, *op;
+	
+	pp = p;
+	op = mtknMap[tID]->osc;
+	
+	char *end = strstr(mtknMap[tID]->osc, "/Tile");
+	
+	while (op != end) {
+		*pp++ = *op++;
+	}
+	*pp = '\0';
+	printf("%s\n",p);
+	
+	lo_send(lo_address_new(mtknMap[tID]->ip,"6340"), 
+            p,
+            "is", 
+            0,
+            t);
+	
 	printf("delete:%s,%s tID:%d Module Color:%d\n",
 		   mtknMap[tID]->ip, 
-		   mtknMap[tID]->osc, mtknMap[tID]->tID, 
+		   p, mtknMap[tID]->tID, 
 		   mtknMap[tID]->mColor);
     
 	delete mtknMap[tID];
@@ -107,8 +140,6 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
     //モジュールトークン取得
     MToken *m1 = mtknMap[tID1];
     MToken *m2 = mtknMap[tID2];
-    
-
     
     //モジュールに対して接続するルートのアドレスを送信
     strcpy(m1OSC, m1->osc);

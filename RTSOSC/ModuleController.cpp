@@ -110,11 +110,8 @@ int ModuleController::dac(const char   *path,
                           void         *user_data)
 {
     ModuleController *mc = (ModuleController *)user_data;
-
-    char p[64] = "/Tile";
-
+    char p[64] = "/ModuleManager/SP/DAC/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/SP/DAC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<DAC*>::iterator iter = mc->dacList.begin(); iter != mc->dacList.end(); iter++) {
@@ -158,10 +155,8 @@ int ModuleController::adc(const char   *path,
 {
     ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-    
+    char p[64] = "/ModuleManager/GN/ADC/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/GN/ADC");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<ADC*>::iterator iter = mc->adcList.begin(); iter != mc->adcList.end(); iter++) {
@@ -203,10 +198,8 @@ int ModuleController::sine(const char   *path,
 {
     ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-    
+    char p[64] = "/ModuleManager/GN/Sine/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/GN/Sine");
 
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<Sine*>::iterator iter = mc->sineList.begin(); iter != mc->sineList.end(); iter++) {
@@ -249,10 +242,8 @@ int ModuleController::env(const char   *path,
 {
     ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-    
+    char p[64] = "/ModuleManager/EF/Envelope/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/EF/Envelope");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<Envelope*>::iterator iter = mc->envList.begin(); iter != mc->envList.end(); iter++) {
@@ -294,10 +285,8 @@ int ModuleController::as(const char   *path,
 {
     ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-
+    char p[64] = "/ModuleManager/GN/AudioSource/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/GN/AudioSource");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<AudioSource*>::iterator iter = mc->asList.begin(); iter != mc->asList.end(); iter++) {
@@ -339,10 +328,8 @@ int ModuleController::delay(const char   *path,
 {
 	ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-	
+    char p[64] = "/ModuleManager/EF/Delay/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/EF/Delay");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<Delay*>::iterator iter = mc->delayList.begin(); iter != mc->delayList.end(); iter++) {
@@ -384,10 +371,8 @@ int ModuleController::ac(const char   *path,
 {
 	ModuleController *mc = (ModuleController *)user_data;
     
-    char p[64] = "/Tile";
-	
+    char p[64] = "/ModuleManager/GN/AudioClock/Tile";
     strcat(p, &argv[1]->s);
-    strcat(p, "/GN/AudioClock");
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<AudioClock*>::iterator iter = mc->acList.begin(); iter != mc->acList.end(); iter++) {
