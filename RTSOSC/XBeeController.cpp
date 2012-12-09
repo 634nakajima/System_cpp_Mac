@@ -19,7 +19,7 @@ XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.1, this->deadCheck, this);
+    Pt_Start(0.25, this->deadCheck, this);
 }
 
 XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Module(s, osc)
@@ -32,7 +32,7 @@ XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Modu
 
 	serial = new Serial(s, "/Serial", d);
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.1, this->deadCheck, this);
+    Pt_Start(0.25, this->deadCheck, this);
 }
 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
@@ -121,7 +121,7 @@ void XBeeController::parseData()
 								break;
 							case 0x01:
 								if (tMap.count(tid2)) {
-									if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
+									if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {
 										co->connect(tid2, tid1, "/Stream");
 										tMap[tid2]->stream = tid1;
 									}else {

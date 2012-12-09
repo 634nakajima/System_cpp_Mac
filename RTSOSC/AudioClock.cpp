@@ -69,6 +69,7 @@ AudioClock::AudioClock(Server *s, const char *osc) : Module(s, osc)
 	output		= (short *)malloc(numPackets*sizeof(short));
     memset(output, 0, numPackets*sizeof(short));
     Pt_Start(interval, this->render, this);
+
 }
 
 AudioClock::~AudioClock()
