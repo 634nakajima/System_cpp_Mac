@@ -43,6 +43,7 @@ void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 		if(t->deadCheck()) {
 			if (xbc->co != NULL) {
 				xbc->co->deleteMtkn(t->tID);
+				xbc->setAlive(t->tID, 0);
 			}
 		}
     }
@@ -101,7 +102,7 @@ void XBeeController::parseData()
 			if (tMap.count(tid2)) {
 				tMap[tid2]->isAlive();
 			}else {
-				printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+				//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
 			}
 			
 			if (co != NULL) {
@@ -188,7 +189,8 @@ void XBeeController::setAlive(int tID, int mColor)
 	if (!tMap.count(tID)) return;
 	Tile *t = tMap[tID];
     t->mColor = mColor;
-    t->isAlive();
+	if (mColor) 
+		t->isAlive();
     //送信フレームの作成
     unsigned char data[19];
 

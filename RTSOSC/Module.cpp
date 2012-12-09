@@ -377,6 +377,7 @@ void Module::deleteMethodFromServer(const char *path, const char *type)
 void Module::setRoute(char *ip, char *osc)
 {
     rTable->setRoute(ip, osc);
+	printf("setRoute:%s,%s\n",ip, osc);
 }
 
 void Module::deleteRoute(char *ip,char *osc)
