@@ -24,7 +24,7 @@ public:
    
 	void    isAlive();
     int     deadCheck();
-	
+	int		data, stream;
 private:
 	int     dead, alive, standby;
     int     deadCount;

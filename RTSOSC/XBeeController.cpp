@@ -97,16 +97,36 @@ void XBeeController::parseData()
 			mColor = readData();
 
 			readData();
-		        
+			
+			if (tMap.count(tid2)) {
+				tMap[tid2]->isAlive();
+			}else {
+				printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+			}
+			
 			if (co != NULL) {
 				switch (mode) {
 					case 0x00:
 						switch (type) {
 							case 0x00:
-								co->connect(tid2, tid1, "/Data");
+								if (tMap.count(tid2)) {
+									if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
+										co->connect(tid2, tid1, "/Data");
+										tMap[tid2]->data = tid1;
+									}else {
+										tMap[tid2]->data = tid1;
+									}
+								}
 								break;
 							case 0x01:
-								co->connect(tid2, tid1, "/Stream");
+								if (tMap.count(tid2)) {
+									if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
+										co->connect(tid2, tid1, "/Stream");
+										tMap[tid2]->stream = tid1;
+									}else {
+										tMap[tid2]->stream = tid1;
+									}
+								}
 								break;
 							default:
 								break;
@@ -116,10 +136,16 @@ void XBeeController::parseData()
 					case 0x01:
 						switch (type) {
 							case 0x00:
-								co->disconnectAll(tid2, "/Data");
+								if (tMap.count(tid2)) {
+									co->disconnectAll(tid2, "/Data");
+									tMap[tid2]->data = 0;
+								}
 								break;
 							case 0x01:
-								co->disconnectAll(tid2, "/Stream");
+								if (tMap.count(tid2)) {
+									co->disconnectAll(tid2, "/Stream");
+									tMap[tid2]->stream = 0;
+								}
 								break;
 							default:
 								break;
@@ -134,11 +160,7 @@ void XBeeController::parseData()
 						break;
 				}
 			}
-			if (tMap.count(tid2)) {
-				tMap[tid2]->isAlive();
-			}else {
-				printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
-			}
+			
 			//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
 		}
 	}

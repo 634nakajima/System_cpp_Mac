@@ -24,6 +24,8 @@ Tile::Tile(int t, unsigned char *a64, unsigned char *a16)
     standby = 0;
     alive = 0;
     deadCount = 0;
+	data = 0;
+	stream = 0;
 }
 
 void Tile::isAlive()
@@ -46,6 +48,8 @@ int Tile::deadCheck()
         alive = 0;
         mColor = -1;
         deadCount = 0;
+		data = 0;
+		stream = 0;
         return 1;
     }
     return 0;
