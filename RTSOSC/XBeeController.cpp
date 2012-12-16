@@ -121,11 +121,7 @@ void XBeeController::parseData()
 								break;
 							case 0x01:
 								if (tMap.count(tid2)) {
-<<<<<<< HEAD
-									if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {
-=======
 									if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {					
->>>>>>> imac
 										co->connect(tid2, tid1, "/Stream");
 										tMap[tid2]->stream = tid1;
 
