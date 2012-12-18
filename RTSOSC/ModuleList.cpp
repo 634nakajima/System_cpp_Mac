@@ -230,9 +230,16 @@ void ModuleList::requestML()
 		}
 		usleep(1000);
 	}
-	
 	lo_message_free(m);
     close(sock);	
+}
+
+void ModuleList::displayModules()
+{
+    for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
+        MToken* ml = (*iter);
+        printf("ip:%s osc:%s\n",ml->ip,ml->osc);
+    }
 }
 
 ModuleList::~ModuleList()

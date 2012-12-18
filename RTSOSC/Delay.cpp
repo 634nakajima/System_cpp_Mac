@@ -119,7 +119,7 @@ int Delay::data3(const char   *path,
 void Delay::bypass(int data) {
     if (data == -1) return;
     
-    isBypassing = (data < 64 ? true : false);
+    isBypassing = (data < 1 ? true : false);
     memset(buf, 0, maxbs);
 }
 

@@ -95,7 +95,7 @@ int AudioSource::data1(const char   *path,
 	
 	int v = argv[0]->i;
 	
-	if (v < 0) {
+	if (v < 1) {
 		audio->isPlaying = false;
 		audio->location = 0.0;
 	} else {
@@ -118,7 +118,7 @@ int AudioSource::data2(const char   *path,
 	if (f > 64.0) {
         audio->rate = f/64.0;
     }
-    else if (f >= 0.0) {
+    else if (f > 0.0) {
         audio->rate = (63.0+f)/127.0;
     }
 	else {

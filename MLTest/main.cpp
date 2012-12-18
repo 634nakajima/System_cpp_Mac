@@ -1,36 +1,42 @@
 #include "rtsosc.h"
 #include "MyModule.h"
+#include "ModuleManager.h"
 
 int main()
 {
     Server              *s;
     Coordinator			*co;
-	ModuleController	*mc;
+	ModuleManager       *mm;
     XBeeController      *xbc;
 	Serial              *se;
-    MyModule            *mm;
-	int                 mColor;
+    MyModule            *mym;
+	int                 mIndex;
     
 	s = new Server();
     xbc = new XBeeController(s, "/XBC", "/dev/cu.usbserial-A50178PJ");
-	mc	= new ModuleController(s, "/ModuleManager");
+	mm	= new ModuleManager(s, "/ModuleManager");
 	co	= new Coordinator(s, "/Coordinator");
     se  = new Serial(s, "/Serial", "/dev/cu.usbserial-A600afyl");
-	mm  = new MyModule(s, "/MM");
+	mym = new MyModule(s, "/MM");
     
-	mc->sendModuleList();
+	mm->sendModuleList();
     xbc->co = co;
     co->xbc = xbc;
     
-    se->connectTo(mm, "/Stream");
+    se->connectTo(mym, "/Stream");
     
     while (1) {
-        printf("Enter Module Color\n");
-        scanf("%d", &mColor);
-        if (!mColor) break;
-
-        if (mm->tID) 
-            co->ml->createModule(mm->tID, mColor);
+        printf("Enter Module Index\n");
+        scanf("%d", &mIndex);
+        if (!mIndex) break;
+        
+        if (mIndex == -1) {
+            co->ml->requestML();
+            co->ml->displayModules();
+        }
+        
+        if (mym->tID) 
+            co->ml->createModule(mym->tID, mIndex);
 
     }	
 
