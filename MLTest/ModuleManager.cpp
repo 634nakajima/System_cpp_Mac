@@ -16,7 +16,7 @@ ModuleManager::ModuleManager(Server *s, const char *osc) : Module(s,osc)
     addMethodToServer("/GN/ADC", "is", adc, this);//1:create 0:delete, tID
 	addMethodToServer("/EF/Delay", "is", delay, this);//1:create 0:delete, tID
     addMethodToServer("/GN/A1", "is", a1, this);//1:create 0:delete, tID
-    addMethodToServer("/EF/A2", "is", a2, this);//1:create 0:delete, tID
+    addMethodToServer("/GN/A2", "is", a2, this);//1:create 0:delete, tID
     addMethodToServer("/RequestML", "i", requestML, this);
     
 }
@@ -255,7 +255,7 @@ int ModuleManager::a1(const char   *path,
         AudioSource *a1 = new AudioSource(mm->st, p);
         a1->setTID(atoi(&argv[1]->s));
         a1->mColor = 2;
-        a1->prepareAudioSource("mi.wav");
+        a1->prepareAudioSource("beat.wav");
         a1->sendSetMdtkn();
         mm->a1List.push_back(a1);
         printf("create A1\n");
@@ -300,7 +300,7 @@ int ModuleManager::a2(const char   *path,
         AudioSource *a2 = new AudioSource(mm->st, p);
         a2->setTID(atoi(&argv[1]->s));
         a2->mColor = 2;
-        a2->prepareAudioSource("mi.wav");
+        a2->prepareAudioSource("pad.wav");
         a2->sendSetMdtkn();
         mm->a2List.push_back(a2);
         printf("create A2\n");
