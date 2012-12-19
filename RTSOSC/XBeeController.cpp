@@ -72,99 +72,102 @@ void XBeeController::parseData()
 	unsigned char a64[8], a16[2], s;
 
 	if (available() > 20) {
-		if (readData() == 0x7E) {
-			for (int i = 0; i < 3; i++) {
-				readData();
-			}
-			
-			a64[0] = readData();
-			a64[1] = readData();
-			a64[2] = readData();
-			a64[3] = readData();
-			a64[4] = readData();
-			a64[5] = readData();
-			a64[6] = readData();
-			a64[7] = readData();
+        while (available() > 0) {
+            if (readData() == 0x7E) {
+                for (int i = 0; i < 3; i++) {
+                    readData();
+                }
+                
+                a64[0] = readData();
+                a64[1] = readData();
+                a64[2] = readData();
+                a64[3] = readData();
+                a64[4] = readData();
+                a64[5] = readData();
+                a64[6] = readData();
+                a64[7] = readData();
+                
+                a16[0] = readData();
+                a16[1] = readData();
+                
+                readData();
+                
+                mode = readData();
+                tid1 = readData();
+                tid2 = readData();
+                type = readData();
+                mColor = readData();
+                
+                readData();
+                
+                if (tMap.count(tid2)) {
+                    tMap[tid2]->isAlive();
+                }else {
+                    //printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+                }
+                
+                if (co != NULL) {
+                    switch (mode) {
+                        case 0x00:
+                            switch (type) {
+                                case 0x00:
+                                    if (tMap.count(tid2)) {
+                                        if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
+                                            co->connect(tid2, tid1, "/Data");
+                                            tMap[tid2]->data = tid1;
+                                        }else {
+                                            tMap[tid2]->data = tid1;
+                                        }
+                                    }
+                                    break;
+                                case 0x01:
+                                    if (tMap.count(tid2)) {
+                                        if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {					
+                                            co->connect(tid2, tid1, "/Stream");
+                                            tMap[tid2]->stream = tid1;
+                                            
+                                        }else {
+                                            tMap[tid2]->stream = tid1;
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                            
+                        case 0x01:
+                            switch (type) {
+                                case 0x00:
+                                    if (tMap.count(tid2)) {
+                                        co->disconnectAll(tid2, "/Data");
+                                        tMap[tid2]->data = 0;
+                                    }
+                                    break;
+                                case 0x01:
+                                    if (tMap.count(tid2)) {
+                                        co->disconnectAll(tid2, "/Stream");
+                                        tMap[tid2]->stream = 0;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                            
+                        case 0x02:
+                            initTile(tid2, a64, a16);
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                }
+                break;
+                //printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+            }
+        }
 
-			a16[0] = readData();
-			a16[1] = readData();
-
-			readData();
-		
-			mode = readData();
-			tid1 = readData();
-			tid2 = readData();
-			type = readData();
-			mColor = readData();
-
-			readData();
-			
-			if (tMap.count(tid2)) {
-				tMap[tid2]->isAlive();
-			}else {
-				//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
-			}
-			
-			if (co != NULL) {
-				switch (mode) {
-					case 0x00:
-						switch (type) {
-							case 0x00:
-								if (tMap.count(tid2)) {
-									if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
-										co->connect(tid2, tid1, "/Data");
-										tMap[tid2]->data = tid1;
-									}else {
-										tMap[tid2]->data = tid1;
-									}
-								}
-								break;
-							case 0x01:
-								if (tMap.count(tid2)) {
-									if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {					
-										co->connect(tid2, tid1, "/Stream");
-										tMap[tid2]->stream = tid1;
-
-									}else {
-										tMap[tid2]->stream = tid1;
-									}
-								}
-								break;
-							default:
-								break;
-						}
-						break;
-
-					case 0x01:
-						switch (type) {
-							case 0x00:
-								if (tMap.count(tid2)) {
-									co->disconnectAll(tid2, "/Data");
-									tMap[tid2]->data = 0;
-								}
-								break;
-							case 0x01:
-								if (tMap.count(tid2)) {
-									co->disconnectAll(tid2, "/Stream");
-									tMap[tid2]->stream = 0;
-								}
-								break;
-							default:
-								break;
-						}
-						break;
-					
-					case 0x02:
-						initTile(tid2, a64, a16);
-						break;
-					
-					default:
-						break;
-				}
-			}
-			
-			//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
-		}
 	}
 }
 

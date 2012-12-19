@@ -30,6 +30,7 @@ public:
 	
 	void	setXBC(XBeeController *xbeecontroller);
     void    connect(int tID1, int tID2, const char *t);
+    void    addConnection(int tID1, int tID2, const char *t);
     void    disconnect(int tID1, int tID2, const char *t);
 	void    disconnectAll(int tID, const char *t);
     void    deleteMtkn(int tID);

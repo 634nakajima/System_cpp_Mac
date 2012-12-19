@@ -152,6 +152,31 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
             strcat(m2OSC,t));
 }
 
+void Coordinator::addConnection(int tID1, int tID2, const char *t)
+{
+    char m1OSC[64], m2OSC[64];
+    
+	//エラー処理
+    if (!mtknMap.count(tID1) || !mtknMap.count(tID2)) {
+        printf("err:connect tid1:%d, tid2:%d\n",tID1, tID2);
+        return;  
+    }
+	
+    //モジュールトークン取得
+    MToken *m1 = mtknMap[tID1];
+    MToken *m2 = mtknMap[tID2];
+    
+    //モジュールに対して接続するルートのアドレスを送信
+    strcpy(m1OSC, m1->osc);
+    strcpy(m2OSC, m2->osc);
+    
+    lo_send(lo_address_new(m1->ip,"6340"), 
+            strcat(m1OSC,"/AddRoute"),
+            "ss", 
+            m2->ip,
+            strcat(m2OSC,t));
+}
+
 void Coordinator::disconnect(int tID1, int tID2, const char *t)
 {
     char m1OSC[64], m2OSC[64];
