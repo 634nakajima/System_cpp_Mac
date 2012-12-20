@@ -71,7 +71,7 @@ int Delay::data1(const char   *path,
     }
     
     d->setDt(dval[0]);
-
+	printf("!");
 	return 0;
 }
 

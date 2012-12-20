@@ -116,9 +116,11 @@ int AudioSource::data2(const char   *path,
     float f = (float)argv[0]->i;
 	
 	if (f > 64.0) {
+		if (!audio->isPlaying) audio->isPlaying = true;
         audio->rate = f/64.0;
     }
     else if (f > 0.0) {
+		if (!audio->isPlaying) audio->isPlaying = true;
         audio->rate = (63.0+f)/127.0;
     }
 	else {
