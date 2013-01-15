@@ -12,10 +12,49 @@
 Coordinator::Coordinator(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/SetMdtkn", "ssii", setMtkn, this);//ip,osc,tID,mColor
-    addMethodToServer("/deleteMdtkn", "ssii", deleteMtkn, this);//ip,osc,tID,mColor
+    addMethodToServer("/DeleteMdtkn", "ssii", deleteMtkn, this);//ip,osc,tID,mColor
+	addMethodToServer("/TileState", "iss", tileState, this);//tID
 
     xbc = NULL;
     ml = new ModuleList(s, "/ModuleList");
+}
+
+int Coordinator::tileState(const char   *path, 
+							const char   *types, 
+							lo_arg       **argv, 
+							int          argc,
+							void         *data, 
+							void         *user_data)
+{
+    Coordinator *co = (Coordinator *)user_data;
+
+	for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
+        MToken *tmp = iter->second;
+        if (tmp->tID == argv[0]->i) {
+			for (int i; i<3; i++) {
+				lo_send(lo_address_new((char *)argv[1],"6340"), 
+						(char *)argv[2],
+						"ssii", 
+						tmp->ip,
+						tmp->osc,
+						tmp->tID,
+						tmp->mColor);
+				usleep(10000);
+			}
+            return 0;
+        }
+    }
+	
+    for (int i; i<3; i++) {
+		lo_send(lo_address_new((char *)argv[1],"6340"), 
+				(char *)argv[2],
+				"ssi", 
+				NULL,
+				NULL,
+				0);
+		usleep(10000);
+	}
+    return 0;
 }
 
 int Coordinator::setMtkn(const char   *path, 
@@ -233,7 +272,9 @@ Coordinator::~Coordinator()
     delete ml;
 
 	deleteMethodFromServer("/SetMdtkn", "ssii");
-    deleteMethodFromServer("/deleteMdtkn", "ssii");
+    deleteMethodFromServer("/DeleteMdtkn", "ssii");
+	deleteMethodFromServer("/TileState", "iss");
+
 }
 
 

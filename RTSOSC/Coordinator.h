@@ -49,6 +49,12 @@ public:
                           void         *data, 
                           void         *user_data);
 
+	static int tileState(const char   *path, 
+						 const char   *types, 
+						 lo_arg       **argv, 
+						 int          argc,
+						 void         *data, 
+						 void         *user_data);
 };
 
 #endif

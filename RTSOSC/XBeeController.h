@@ -21,7 +21,7 @@
 #endif
 
 
-#define	TILE_NUM	4
+#define	TILE_NUM	40
 
 class Coordinator;
 class XBeeController : public Module {
