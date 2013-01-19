@@ -71,7 +71,6 @@ int Delay::data1(const char   *path,
     }
     
     d->setDt(dval[0]);
-	printf("!");
 	return 0;
 }
 
@@ -91,7 +90,7 @@ int Delay::data2(const char   *path,
     
     //d->setDt(dval[2]);
     d->setGain(dval[0]);
-
+    printf("!!\n");
 	return 0;
 }
 
