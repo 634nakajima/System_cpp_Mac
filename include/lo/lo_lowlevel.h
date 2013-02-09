@@ -853,6 +853,8 @@ void lo_method_pp_prefix(lo_method m, const char *p);
 void lo_server_thread_pp(lo_server_thread st);
 /** @} */
 
+struct sockaddr* lo_server_get_addr(lo_server s);
+
 #ifdef __cplusplus
 }
 #endif

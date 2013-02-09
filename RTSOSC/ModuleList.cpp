@@ -14,14 +14,15 @@ ModuleList::ModuleList(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/setMList", "ssi", setMList, this);
 	addMethodToServer("/Stream", "b", stream, this);
+	addMethodToServer("/TileState", "ssi", tileState, this);
 }
 
-int ModuleList::setMList(const char   *path, 
-                         const char   *types, 
-                         lo_arg       **argv, 
-                         int          argc,
-                         void         *data,
-                         void         *user_data)
+int ModuleList::tileState(const char   *path, 
+						  const char   *types, 
+						  lo_arg       **argv, 
+						  int          argc,
+						  void         *data,
+						  void         *user_data)
 {
     int i = 1;
     ModuleList *mlc = (ModuleList *)user_data;
@@ -42,9 +43,56 @@ int ModuleList::setMList(const char   *path,
         strcpy(m->ip, (char *)argv[0]);
         strcpy(m->osc, (char *)argv[1]);
         mlc->mList.push_back(m);
-    
+		
         printf("set:%s,%s ModuleIndex:%d\n",(char *)argv[0], (char *)argv[1], i);
     }
+	
+    return 0;
+	
+}
+
+int ModuleList::setMList(const char   *path, 
+                         const char   *types, 
+                         lo_arg       **argv, 
+                         int          argc,
+                         void         *data,
+                         void         *user_data)
+{
+	ModuleList *mlc = (ModuleList *)user_data;
+
+	lo_server_thread st = (lo_server_thread )mlc->st->st;
+	lo_server s = lo_server_thread_get_server(st);
+	struct sockaddr_in *test = (struct sockaddr_in *)lo_server_get_addr(s);
+	printf("itsumono:%s, s->addr:%s\n",
+		   (char *)argv[0], 
+		   inet_ntoa(test->sin_addr));
+	
+	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
+	strcpy(ip, inet_ntoa(test->sin_addr));
+	
+    int i = 1;
+	
+    //エラー処理、既存のモジュールリスト確認
+    for (std::list<MToken*>::iterator iter = mlc->mList.begin(); iter != mlc->mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (strcmp(ml->ip, ip)==0) {
+            if (strcmp(ml->osc, (char *)argv[1])==0) return 0;
+        }
+		i++;
+    }
+    
+    //モジュールリストの生成
+    MToken *m = new MToken();
+    if (argv[2]->i != -1) {//mColorが-1でなければ
+        m->mColor = argv[2]->i;
+		m->tID = i;
+        strcpy(m->ip, ip);
+        strcpy(m->osc, (char *)argv[1]);
+        mlc->mList.push_back(m);
+    
+        printf("set:%s,%s ModuleIndex:%d\n",ip, (char *)argv[1], i);
+    }
+
     return 0;
 	
 }
@@ -250,6 +298,8 @@ ModuleList::~ModuleList()
 	}
 	deleteMethodFromServer("/setMList", "ssi");
 	deleteMethodFromServer("/Stream", "b");
+	deleteMethodFromServer("/TileState", "ssi");
+
 }
 
 

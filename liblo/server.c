@@ -54,8 +54,8 @@
 
 #include "lo_types_internal.h"
 #include "lo_internal.h"
-#include "lo/lo.h"
-#include "lo/lo_throw.h"
+#include "lo.h"
+#include "lo_throw.h"
 
 #define LO_HOST_SIZE 1024
 
@@ -575,7 +575,7 @@ void *lo_server_recv_raw_stream(lo_server s, size_t *size)
         if (s->sockets[i].revents) {
             sock = s->sockets[i].fd;
 
-#else
+//#else
 #ifdef HAVE_SELECT
     if(!initWSock()) return NULL;
 
@@ -1305,6 +1305,15 @@ int lo_server_get_port(lo_server s)
     }
 
     return s->port;
+}
+		
+struct sockaddr* lo_server_get_addr(lo_server s)
+{
+	if (!s) {
+		return NULL;
+	}
+
+	return (struct sockaddr *)&s->addr;
 }
 
 int lo_server_get_protocol(lo_server s)
