@@ -27,7 +27,7 @@ int Coordinator::tileState(const char   *path,
 							void         *user_data)
 {
     Coordinator *co = (Coordinator *)user_data;
-
+	
 	for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
         if (tmp->tID == argv[0]->i) {
@@ -65,10 +65,21 @@ int Coordinator::setMtkn(const char   *path,
                          void         *user_data)
 {
     Coordinator *co = (Coordinator *)user_data;
+	
+	lo_server_thread st = (lo_server_thread )co->st->st;
+	lo_server s = lo_server_thread_get_server(st);
+	struct sockaddr_in *sin = (struct sockaddr_in *)lo_server_get_addr(s);
+	printf("itsumono:%s, s->addr:%s\n",
+		   (char *)argv[0], 
+		   inet_ntoa(sin->sin_addr));
+	
+	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
+	strcpy(ip, inet_ntoa(sin->sin_addr));
+	
     //エラー処理、既存のモジュールトークン確認
     for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
-        if (strcmp(tmp->ip,(char *)argv[0])==0) {
+        if (strcmp(tmp->ip,ip)==0) {
             if (strcmp(tmp->osc,(char *)argv[1])==0) {
                 return 0;
             }
@@ -85,7 +96,7 @@ int Coordinator::setMtkn(const char   *path,
     }
     //モジュールトークンの生成
     MToken *m = new MToken();
-    strcpy(m->ip, (char *)argv[0]);
+    strcpy(m->ip, ip);
     strcpy(m->osc, (char *)argv[1]);
 
     if (argv[2]->i != -1) {//tIDが-1でなければ
@@ -94,7 +105,7 @@ int Coordinator::setMtkn(const char   *path,
 
         co->mtknMap.insert(std::map<int, MToken*>::value_type(m->tID, m));
 		printf("set:%s, %s, TileID:%d, Module Color:%d\n",
-               (char *)argv[0], 
+               ip, 
                (char *)argv[1], 
                argv[2]->i, 
                argv[3]->i);
