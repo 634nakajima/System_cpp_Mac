@@ -195,11 +195,13 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    lo_send(lo_address_new(m1->ip,"6340"), 
-            strcat(m1OSC,"/SetRoute"),
-            "ss", 
-            m2->ip,
-            strcat(m2OSC,t));
+    for (int i; i<3; i++) {
+        lo_send(lo_address_new(m1->ip,"6340"), 
+                strcat(m1OSC,"/SetRoute"),
+                "ss", 
+                m2->ip,
+                strcat(m2OSC,t));
+    }
 }
 
 void Coordinator::addConnection(int tID1, int tID2, const char *t)
@@ -220,11 +222,13 @@ void Coordinator::addConnection(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    lo_send(lo_address_new(m1->ip,"6340"), 
-            strcat(m1OSC,"/AddRoute"),
-            "ss", 
-            m2->ip,
-            strcat(m2OSC,t));
+    for (int i; i<3; i++) {
+        lo_send(lo_address_new(m1->ip,"6340"), 
+                strcat(m1OSC,"/AddRoute"),
+                "ss", 
+                m2->ip,
+                strcat(m2OSC,t));
+    }
 }
 
 void Coordinator::disconnect(int tID1, int tID2, const char *t)
@@ -245,11 +249,13 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    lo_send(lo_address_new(m1->ip,"6340"), 
-            strcat(m1OSC,"/DeleteRoute"),
-            "ss", 
-            m2->ip,
-            strcat(m2OSC,t));
+    for (int i; i<3; i++) {
+        lo_send(lo_address_new(m1->ip,"6340"), 
+                strcat(m1OSC,"/DeleteRoute"),
+                "ss", 
+                m2->ip,
+                strcat(m2OSC,t));
+    }
 }
 
 void Coordinator::disconnectAll(int tID, const char *t)
@@ -268,10 +274,12 @@ void Coordinator::disconnectAll(int tID, const char *t)
     //モジュールに対して切断するルートのアドレスを送信
     strcpy(m1OSC, m1->osc);
     
-    lo_send(lo_address_new(m1->ip,"6340"), 
-            strcat(m1OSC,"/DeleteAllRoute"),
-            "s", 
-            t);
+    for (int i; i<3; i++) {
+        lo_send(lo_address_new(m1->ip,"6340"), 
+                strcat(m1OSC,"/DeleteAllRoute"),
+                "s", 
+                t);
+    }
 }
 
 Coordinator::~Coordinator()
