@@ -47,7 +47,14 @@ public:
                         int          argc,
                         void         *data, 
                         void         *user_data);
-	
+
+    static int deleteMList(const char   *path, 
+                        const char   *types, 
+                        lo_arg       **argv, 
+                        int          argc,
+                        void         *data, 
+                        void         *user_data);
+    
 	static int stream(const char   *path, 
 					  const char   *types, 
 					  lo_arg       **argv, 

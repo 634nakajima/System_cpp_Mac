@@ -49,6 +49,10 @@ public:
 	void deleteMethodFromServer(const char *path, const char *type);
     void sendData(Data *d, lo_arg **argv, int argc);
     void sendAudio(Audio *a);
+    void sendAudio(Audio *a1, Audio *a2);
+    void sendAudio(Audio *a1, Audio *a2, Audio *a3);
+    void sendAudio(Audio *a1, Audio *a2, Audio *a3, Audio *a4);
+
     void sendAudio(short *a, unsigned long l);
     void sendSetMdtkn();
     void sendDeleteMdtkn();

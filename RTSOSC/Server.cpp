@@ -7,10 +7,12 @@
 //
 
 #include "Server.h"
+#include <stdio.h>
 
 Server::Server() {
     st = lo_server_thread_new("6340", NULL);
-    lo_server_thread_start(st);
+    if (st) lo_server_thread_start(st);
+    else { printf("err: starting Server\n"); while(1);}
 }
 
 Server::~Server(){}

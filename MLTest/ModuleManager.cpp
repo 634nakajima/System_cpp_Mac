@@ -17,7 +17,7 @@ ModuleManager::ModuleManager(Server *s, const char *osc) : Module(s,osc)
 	addMethodToServer("/EF/Delay", "is", delay, this);//1:create 0:delete, tID
     addMethodToServer("/GN/A1", "is", a1, this);//1:create 0:delete, tID
     addMethodToServer("/GN/A2", "is", a2, this);//1:create 0:delete, tID
-    addMethodToServer("/RequestML", "i", requestML, this);
+    lo_server_thread_add_method(st->st, "/ModuleManager/RequestML", "i", requestML, this);
     
 }
 
@@ -104,9 +104,13 @@ int ModuleManager::dacL(const char   *path,
                         void         *user_data)
 {
     ModuleManager *mm = (ModuleManager *)user_data;
-    char p[64] = "/ModuleManager/SP/DACL/Tile";
-    strcat(p, &argv[1]->s);
-    
+
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/SP/DACL");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
+
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<DAC*>::iterator iter = mm->dacLList.begin(); iter != mm->dacLList.end(); iter++) {
             DAC* dac = (*iter);
@@ -149,8 +153,11 @@ int ModuleManager::dacR(const char   *path,
                         void         *user_data)
 {
     ModuleManager *mm = (ModuleManager *)user_data;
-    char p[64] = "/ModuleManager/SP/DACR/Tile";
-    strcat(p, &argv[1]->s);
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/SP/DACR");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
     
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<DAC*>::iterator iter = mm->dacRList.begin(); iter != mm->dacRList.end(); iter++) {
@@ -195,9 +202,11 @@ int ModuleManager::adc(const char   *path,
 {
     ModuleManager *mm = (ModuleManager *)user_data;
     
-    char p[64] = "/ModuleManager/GN/ADC/Tile";
-    strcat(p, &argv[1]->s);
-    
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/GN/ADC");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<ADC*>::iterator iter = mm->adcList.begin(); iter != mm->adcList.end(); iter++) {
             ADC* adc = (*iter);
@@ -237,10 +246,12 @@ int ModuleManager::a1(const char   *path,
                       void         *user_data)
 {
     ModuleManager *mm = (ModuleManager *)user_data;
-    
-    char p[64] = "/ModuleManager/GN/A1/Tile";
-    strcat(p, &argv[1]->s);
-    
+
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/GN/A1");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<AudioSource*>::iterator iter = mm->a1List.begin(); iter != mm->a1List.end(); iter++) {
             AudioSource* a1 = (*iter);
@@ -282,10 +293,12 @@ int ModuleManager::a2(const char   *path,
                       void         *user_data)
 {
     ModuleManager *mm = (ModuleManager *)user_data;
-    
-    char p[64] = "/ModuleManager/GN/A2/Tile";
-    strcat(p, &argv[1]->s);
-    
+
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/GN/A2");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<AudioSource*>::iterator iter = mm->a2List.begin(); iter != mm->a2List.end(); iter++) {
             AudioSource* a2 = (*iter);
@@ -326,10 +339,12 @@ int ModuleManager::delay(const char   *path,
                          void         *user_data)
 {
 	ModuleManager *mm = (ModuleManager *)user_data;
-    
-    char p[64] = "/ModuleManager/EF/Delay/Tile";
-    strcat(p, &argv[1]->s);
-    
+
+    char p[64];
+    strcpy(p, mm->OSCAddr);         //ModuleManagerアドレス
+    strcat(p, "/EF/Delay");          //ModuleManagerが管理するModuleアドレス
+    strcat(p, "/Tile");
+    strcat(p, &argv[1]->s);         //タイルID
     if (argv[0]->i) {//argv[0] = 1:モジュール生成 0:モジュール解放
         for (std::list<Delay*>::iterator iter = mm->delayList.begin(); iter != mm->delayList.end(); iter++) {
             Delay *delay = (*iter);
@@ -417,7 +432,7 @@ ModuleManager::~ModuleManager()
     deleteMethodFromServer("/GN/A1", "is");
     deleteMethodFromServer("/GN/A2", "is");
 	deleteMethodFromServer("/EF/Delay", "is");
-	deleteMethodFromServer("/RequestML", "i");
+    lo_server_thread_del_method(st->st, "ModuleManager/RequestML", "i");
 }
 
 

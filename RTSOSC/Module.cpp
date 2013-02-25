@@ -371,6 +371,54 @@ void Module::sendAudio(short *a, unsigned long l)
     }
 }
 
+void Module::sendAudio(Audio *a1, Audio *a2) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bb", 
+                    b1,b2);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2, Audio *a3) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+    lo_blob b3 = lo_blob_new(a3->length, a3->audio);
+    
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bbb", 
+                    b1,b2,b3);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2, Audio *a3, Audio *a4) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+    lo_blob b3 = lo_blob_new(a3->length, a3->audio);
+    lo_blob b4 = lo_blob_new(a4->length, a4->audio);
+
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bbbb", 
+                    b1,b2,b3,b4);
+        }
+    }
+}
+
 void Module::getAddr()
 {
     int fd;
@@ -454,7 +502,7 @@ void Module::disconnectFrom(Module *m, const char *t)
 
 Module::~Module()
 {
-    //sendDeleteMdtkn();
+    sendDeleteMdtkn();
 	deleteMethodFromServer("/SetRoute", "ss");
 	deleteMethodFromServer("/AddRoute", "ss");
     deleteMethodFromServer("/DeleteRoute", "ss");

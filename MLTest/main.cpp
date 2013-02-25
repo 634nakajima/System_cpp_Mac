@@ -11,10 +11,15 @@ int main()
 	Serial              *se;
     MyModule            *mym;
 	int                 mIndex;
+    char                dn[128];
+    dn[0] = '/';
+    
+    printf("Please Enter Your Device Name!\n");
+    scanf("%s", &dn[1]);
     
 	s = new Server();
     xbc = new XBeeController(s, "/XBC", "/dev/cu.usbserial-A50178PJ");
-	mm	= new ModuleManager(s, "/ModuleManager");
+	mm	= new ModuleManager(s, dn);
 	co	= new Coordinator(s, "/Coordinator");
     se  = new Serial(s, "/Serial", "/dev/cu.usbserial-A600afyl");
 	mym = new MyModule(s, "/MM");

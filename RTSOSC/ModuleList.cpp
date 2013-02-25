@@ -13,11 +13,12 @@
 ModuleList::ModuleList(Server *s, const char *osc) : Module(s,osc)
 {
     addMethodToServer("/setMList", "ssi", setMList, this);
+    addMethodToServer("/deleteMList", "ssi", deleteMList, this);
 	addMethodToServer("/Stream", "b", stream, this);
-	addMethodToServer("/TileState", "ssi", tileState, this);
+	//addMethodToServer("/TileState", "ssi", tileState, this);
 }
 
-int ModuleList::tileState(const char   *path, 
+/*int ModuleList::tileState(const char   *path, 
 						  const char   *types, 
 						  lo_arg       **argv, 
 						  int          argc,
@@ -49,7 +50,7 @@ int ModuleList::tileState(const char   *path,
 	
     return 0;
 	
-}
+}*/
 
 int ModuleList::setMList(const char   *path, 
                          const char   *types, 
@@ -63,9 +64,9 @@ int ModuleList::setMList(const char   *path,
 	lo_server_thread st = (lo_server_thread )mlc->st->st;
 	lo_server s = lo_server_thread_get_server(st);
 	struct sockaddr_in *test = (struct sockaddr_in *)lo_server_get_addr(s);
-	printf("itsumono:%s, s->addr:%s\n",
+	/*printf("itsumono:%s, s->addr:%s\n",
 		   (char *)argv[0], 
-		   inet_ntoa(test->sin_addr));
+		   inet_ntoa(test->sin_addr));*/
 	
 	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
 	strcpy(ip, inet_ntoa(test->sin_addr));
@@ -93,6 +94,42 @@ int ModuleList::setMList(const char   *path,
         printf("set:%s,%s ModuleIndex:%d\n",ip, (char *)argv[1], i);
     }
 
+    return 0;
+	
+}
+
+int ModuleList::deleteMList(const char   *path, 
+                            const char   *types, 
+                            lo_arg       **argv, 
+                            int          argc,
+                            void         *data,
+                            void         *user_data)
+{
+	ModuleList *mlc = (ModuleList *)user_data;
+    
+	lo_server_thread st = (lo_server_thread )mlc->st->st;
+	lo_server s = lo_server_thread_get_server(st);
+	struct sockaddr_in *test = (struct sockaddr_in *)lo_server_get_addr(s);
+	printf("itsumono:%s, s->addr:%s\n",
+		   (char *)argv[0], 
+		   inet_ntoa(test->sin_addr));
+	
+	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
+	strcpy(ip, inet_ntoa(test->sin_addr));
+		
+    //エラー処理、既存のモジュールリスト確認
+    for (std::list<MToken*>::iterator iter = mlc->mList.begin(); iter != mlc->mList.end(); iter++) {
+        MToken* ml = (*iter);
+        if (strcmp(ml->ip, ip)==0) {
+            if (strcmp(ml->osc, (char *)argv[1])==0) {
+                printf("delete:%s,%s ModuleIndex:%d\n",ml->ip, ml->osc, ml->tID);
+                mlc->mList.remove(ml);
+                delete ml;
+                return 0;
+            }
+        }
+    }
+    
     return 0;
 	
 }
@@ -186,7 +223,7 @@ void ModuleList::deleteModule(char *tID, int mc)
 	for (std::list<MToken*>::iterator iter = mList.begin(); iter != mList.end(); iter++) {
         MToken* ml = (*iter);
         if (mc == ml->tID) {
-			createModule(tID, ml);
+			deleteModule(tID, ml);
 			break;
 		}
     }

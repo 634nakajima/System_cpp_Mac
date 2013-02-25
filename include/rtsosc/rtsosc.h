@@ -16,6 +16,7 @@
 #include "Serial.h"
 #include "ModuleList.h"
 #include "ModuleController.h"
+#include "ModuleManager.h"
 #include "Server.h"
 #include "LPF.h"
 #include "lo.h"

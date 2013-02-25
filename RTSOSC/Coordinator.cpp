@@ -69,9 +69,9 @@ int Coordinator::setMtkn(const char   *path,
 	lo_server_thread st = (lo_server_thread )co->st->st;
 	lo_server s = lo_server_thread_get_server(st);
 	struct sockaddr_in *sin = (struct sockaddr_in *)lo_server_get_addr(s);
-	printf("itsumono:%s, s->addr:%s\n",
+	/*printf("itsumono:%s, s->addr:%s\n",
 		   (char *)argv[0], 
-		   inet_ntoa(sin->sin_addr));
+		   inet_ntoa(sin->sin_addr));*/
 	
 	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
 	strcpy(ip, inet_ntoa(sin->sin_addr));
@@ -114,6 +114,48 @@ int Coordinator::setMtkn(const char   *path,
             co->xbc->setAlive(m->tID, m->mColor);
     }
     
+    return 0;
+}
+
+int Coordinator::deleteMtkn(const char   *path, 
+                            const char   *types, 
+                            lo_arg       **argv, 
+                            int          argc,
+                            void         *data, 
+                            void         *user_data)
+{
+    Coordinator *co = (Coordinator *)user_data;
+    
+    lo_server_thread st = (lo_server_thread )co->st->st;
+	lo_server s = lo_server_thread_get_server(st);
+	struct sockaddr_in *sin = (struct sockaddr_in *)lo_server_get_addr(s);
+	printf("itsumono:%s, s->addr:%s\n",
+		   (char *)argv[0], 
+		   inet_ntoa(sin->sin_addr));
+	
+	char ip[16];//このあとの"ip"は"(char *)argv[0]"から変更しましたよ。
+	strcpy(ip, inet_ntoa(sin->sin_addr));
+	
+    //エラー処理、既存のモジュールトークン確認
+    for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
+        MToken *tmp = iter->second;
+        if (strcmp(tmp->ip,ip)==0) {
+            if (strcmp(tmp->osc,(char *)argv[1])==0) {
+                if (tmp->tID == argv[2]->i) {
+                    printf("delete:%s,%s tID:%d Module Color:%d\n",
+                           tmp->ip, 
+                           tmp->osc,
+                           tmp->tID, 
+                           tmp->mColor);
+                    
+                    delete co->mtknMap[tmp->tID];
+                    co->mtknMap.erase(tmp->tID);
+                    return 0;
+                }
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -164,7 +206,7 @@ void Coordinator::deleteMtkn(int tID)
 	mtknMap.erase(tID);
 }
 
-int Coordinator::deleteMtkn(const char   *path,
+/*int Coordinator::deleteMtkn(const char   *path,
                             const char   *types, 
                             lo_arg       **argv, 
                             int          argc,
@@ -175,7 +217,7 @@ int Coordinator::deleteMtkn(const char   *path,
     co->deleteMtkn(argv[2]->i);
     
     return 0;
-}
+}*/
 
 void Coordinator::connect(int tID1, int tID2, const char *t)
 {
