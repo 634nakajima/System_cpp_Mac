@@ -30,6 +30,7 @@ public:
 	
 	void	setXBC(XBeeController *xbeecontroller);
     void    connect(int tID1, int tID2, const char *t);
+    void    addConnection(int tID1, int tID2, const char *t);
     void    disconnect(int tID1, int tID2, const char *t);
 	void    disconnectAll(int tID, const char *t);
     void    deleteMtkn(int tID);
@@ -48,6 +49,12 @@ public:
                           void         *data, 
                           void         *user_data);
 
+	static int tileState(const char   *path, 
+						 const char   *types, 
+						 lo_arg       **argv, 
+						 int          argc,
+						 void         *data, 
+						 void         *user_data);
 };
 
 #endif

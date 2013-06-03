@@ -19,7 +19,7 @@ XBeeController::XBeeController(Server *s, const char *osc) : Module(s, osc)
 	
 	serial = new Serial(s, "/Serial");
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.25, this->deadCheck, this);
+    Pt_Start(0.2, this->deadCheck, this);
 }
 
 XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Module(s, osc)
@@ -32,7 +32,7 @@ XBeeController::XBeeController(Server *s, const char *osc, const char *d) : Modu
 
 	serial = new Serial(s, "/Serial", d);
 	serial->connectTo(this, "/Stream");
-    Pt_Start(0.25, this->deadCheck, this);
+    Pt_Start(0.2, this->deadCheck, this);
 }
 
 void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
@@ -44,7 +44,11 @@ void XBeeController::deadCheck(PtTimestamp timestamp, void *userData)
 			if (xbc->co != NULL) {
 				xbc->co->deleteMtkn(t->tID);
 				xbc->setAlive(t->tID, 0);
+				printf("xbc:delete %d\n", t->tID);
 			}
+			int buf = t->tID;
+			delete t;
+			xbc->tMap.erase(buf);
 		}
     }
 }
@@ -54,11 +58,19 @@ void XBeeController::initTile(int tID, unsigned char *a64, unsigned char *a16)
 	for (std::map<int, Tile*>::iterator iter = tMap.begin(); iter!=tMap.end(); iter++) {
         Tile *t = iter->second;
 		if (t->tID == tID) return;
+		int	n = 0;
+		for (int i = 0; i < 8; i++) {
+			n += abs((unsigned char)t->XBeeAddr64[i] - (unsigned char)a64[i]);
+		}
+		if (n == 0) {
+			printf("Identical Tile:%x\n", *((short *)a16));
+			return;
+		}
     }
 	Tile *tile = new Tile(tID, a64, a16);
 
 	tMap.insert(std::map<int, Tile*>::value_type(tID, tile));
-	printf("init Tile:%d\n", tMap[tID]->tID);
+	printf("init Tile:%d, %x%x\n", tMap[tID]->tID, (unsigned char)a16[0],(unsigned char)a16[1]);
 }
 
 void XBeeController::setCoordinator(Coordinator *coordinator)
@@ -69,102 +81,127 @@ void XBeeController::setCoordinator(Coordinator *coordinator)
 void XBeeController::parseData()
 {
 	unsigned int mode, tid1, tid2, mColor, type;
-	unsigned char a64[8], a16[2], s;
+	unsigned char a64[8], a16[2], s, data[4];
 
 	if (available() > 20) {
-		if (readData() == 0x7E) {
-			for (int i = 0; i < 3; i++) {
-				readData();
-			}
-			
-			a64[0] = readData();
-			a64[1] = readData();
-			a64[2] = readData();
-			a64[3] = readData();
-			a64[4] = readData();
-			a64[5] = readData();
-			a64[6] = readData();
-			a64[7] = readData();
-
-			a16[0] = readData();
-			a16[1] = readData();
-
-			readData();
-		
-			mode = readData();
-			tid1 = readData();
-			tid2 = readData();
-			type = readData();
-			mColor = readData();
-
-			readData();
-			
-			if (tMap.count(tid2)) {
-				tMap[tid2]->isAlive();
-			}else {
-				//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
-			}
-			
-			if (co != NULL) {
-				switch (mode) {
-					case 0x00:
-						switch (type) {
-							case 0x00:
-								if (tMap.count(tid2)) {
-									if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
-										co->connect(tid2, tid1, "/Data");
-										tMap[tid2]->data = tid1;
-									}else {
-										tMap[tid2]->data = tid1;
-									}
-								}
-								break;
-							case 0x01:
-								if (tMap.count(tid2)) {
-									if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {					
-										co->connect(tid2, tid1, "/Stream");
-										tMap[tid2]->stream = tid1;
-
-									}else {
-										tMap[tid2]->stream = tid1;
-									}
-								}
-								break;
-							default:
-								break;
-						}
-						break;
-
-					case 0x01:
-						switch (type) {
-							case 0x00:
-								if (tMap.count(tid2)) {
-									co->disconnectAll(tid2, "/Data");
-									tMap[tid2]->data = 0;
-								}
-								break;
-							case 0x01:
-								if (tMap.count(tid2)) {
-									co->disconnectAll(tid2, "/Stream");
-									tMap[tid2]->stream = 0;
-								}
-								break;
-							default:
-								break;
-						}
-						break;
-					
-					case 0x02:
-						initTile(tid2, a64, a16);
-						break;
-					
-					default:
-						break;
+        while (available() > 0) {
+            if (readData() == 0x7E) {
+                for (int i = 0; i < 2; i++) {
+                    readData();
+                }
+                data[0] = readData();
+                a64[0] = readData();
+                a64[1] = readData();
+                a64[2] = readData();
+                a64[3] = readData();
+                a64[4] = readData();
+                a64[5] = readData();
+                a64[6] = readData();
+                a64[7] = readData();
+                
+                a16[0] = readData();
+                a16[1] = readData();
+                
+                data[1] = readData();
+                
+                mode = readData();
+                tid1 = readData();
+                tid2 = readData();
+                type = readData();
+                mColor = readData();
+                
+                data[2] = readData();
+                
+				long sum = 0;
+				for (int i=0; i<2; i++) {
+					sum += data[i];
 				}
-			}
-			
-			//printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
-		}
+				for (int i=0; i<8; i++) {
+					sum += a64[i];
+				}
+				for (int i=0; i<2; i++) {
+					sum += a16[i];
+				}
+				sum += mode;
+				sum += tid1;
+				sum += tid2;
+				sum += type;
+				sum += mColor;
+
+				data[3] = (0xFF - (sum & 0xFF));
+				
+				if(data[2] != data[3]) {
+					printf("err:xbee\n");
+					return;
+				}
+                if (tMap.count(tid2)) {
+                    tMap[tid2]->isAlive();
+                }else {
+                    //printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+                }
+                
+                if (co != NULL) {
+                    switch (mode) {
+                        case 0x00:
+                            switch (type) {
+                                case 0x00:
+                                    if (tMap.count(tid2)) {
+                                        if (tMap[tid2]->data == tid1 || tMap[tid2]->data == 0) {					
+                                            co->connect(tid2, tid1, "/Data");
+                                            tMap[tid2]->data = tid1;
+                                        }else {
+                                            tMap[tid2]->data = tid1;
+                                        }
+                                    }
+                                    break;
+                                case 0x01:
+                                    if (tMap.count(tid2)) {
+                                        if (tMap[tid2]->stream == tid1 || tMap[tid2]->stream == 0) {					
+                                            co->connect(tid2, tid1, "/Stream");
+                                            tMap[tid2]->stream = tid1;
+                                            
+                                        }else {
+                                            tMap[tid2]->stream = tid1;
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                            
+                        case 0x01:
+                            switch (type) {
+                                case 0x00:
+                                    if (tMap.count(tid2)) {
+                                        co->disconnectAll(tid2, "/Data");
+                                        tMap[tid2]->data = 0;
+                                    }
+                                    break;
+                                case 0x01:
+                                    if (tMap.count(tid2)) {
+                                        co->disconnectAll(tid2, "/Stream");
+                                        tMap[tid2]->stream = 0;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                            
+                        case 0x02:
+                            initTile(tid2, a64, a16);
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                }
+                break;
+                //printf("%d, %d, %d, %d, %d\n",mode, tid1, tid2, type, mColor);
+            }
+        }
+
 	}
 }
 
@@ -172,7 +209,7 @@ char XBeeController::readData()
 {
 	char value;
 	value = buf[rp];
-	rp = (rp != 255 ? rp+1 : 0);
+	rp = (rp != 1023 ? rp+1 : 0);
 	return value;
 }
 
@@ -181,7 +218,7 @@ int XBeeController::available()
 	if (rp <= wp) {
 		return (wp-rp);
 	}else {
-		return (256+wp-rp);
+		return (1024+wp-rp);
 	}
 }
 
@@ -237,7 +274,7 @@ int XBeeController::stream(const char   *path,
     int size = lo_blob_datasize(b);
 	for (int i = 0; i < size; i++) {
 		xbc->buf[xbc->wp] = *dp++;
-		xbc->wp = (xbc->wp != 255 ? xbc->wp+1 : 0);
+		xbc->wp = (xbc->wp != 1023 ? xbc->wp+1 : 0);
 	}
 	xbc->parseData();
 }

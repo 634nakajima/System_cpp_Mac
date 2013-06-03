@@ -95,7 +95,7 @@ int AudioSource::data1(const char   *path,
 	
 	int v = argv[0]->i;
 	
-	if (v < 0) {
+	if (v < 1) {
 		audio->isPlaying = false;
 		audio->location = 0.0;
 	} else {
@@ -116,13 +116,17 @@ int AudioSource::data2(const char   *path,
     float f = (float)argv[0]->i;
 	
 	if (f > 64.0) {
+		if (!audio->isPlaying) audio->isPlaying = true;
         audio->rate = f/64.0;
     }
-    else if (f >= 0.0) {
+    else if (f > 0.0) {
+		if (!audio->isPlaying) audio->isPlaying = true;
         audio->rate = (63.0+f)/127.0;
     }
 	else {
 		audio->rate = 1.0;
+        audio->isPlaying = false;
+		audio->location = 0.0;
 	}
     audio->sendData(NULL, argv, argc);
     return 0;
@@ -151,9 +155,9 @@ int AudioSource::data3(const char   *path,
 AudioSource::AudioSource(Server *s, const char *osc) : Module(s, osc)
 {
 	addMethodToServer("/Stream", "b", AudioSource::stream, this);
-    addMethodToServer("/Data", "ii", AudioSource::data1, this);
-	addMethodToServer("/Data", "iiii", AudioSource::data2, this);
-	addMethodToServer("/Data", "iiiiii", AudioSource::data3, this);
+    addMethodToServer("/Data", "ii", AudioSource::data2, this);
+	addMethodToServer("/Data", "iiii", AudioSource::data3, this);
+	addMethodToServer("/Data", "iiiiii", AudioSource::data1, this);
 	
 	sampleRate	= SAMPLE_RATE;
 	numPackets	= 256;
@@ -197,6 +201,7 @@ int AudioSource::prepareAudioSource(const char *sound)
     psf_sndReadFloatFrames(ifd, sample, packetCount);
     psf_sndClose(ifd);
 	prepared = true;
+    isPlaying = true;
 	return 0;		
 }
 
@@ -205,7 +210,7 @@ void AudioSource::initAudioInfo()
 	rate = 1.0;
     location = 0.0;
 	isPlaying = false;
-	isLooping = false;
+	isLooping = true;
 	prepared = false;
 }
 

@@ -1,8 +1,8 @@
 #コンパイルするソースコード
-RTSOSCAPP	= MyModule.o main.o
+RTSOSCAPP	= MyModule.o main.o ModuleManager.o
 
 #実行ファイル名
-PROG		= myApp
+PROG		= mlTest
 
 INCLUDES 	= -I../include -I../include/lo -I../include/rtsosc
 LIBS 		= -L../lib -llo -lportaudio -lpm -lpt -lportsf -lrtsosc

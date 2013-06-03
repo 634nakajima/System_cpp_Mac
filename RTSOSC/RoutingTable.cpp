@@ -89,6 +89,30 @@ void RoutingTable::deleteAllRoute(char *osc)
     }
 }
 
+int RoutingTable::numRoute(char *osc)
+{
+    int num = 0;
+    for (int i=0; i<aNum; i++) {        
+        if (strstr(oscAddr[i], osc)) {
+            num++;
+        }
+    }
+    return num;
+}
+
+int RoutingTable::isRouting(char *ip, char *osc)
+{
+    for (int i=0; i<aNum; i++) {
+        const char *addr = lo_address_get_hostname(loAddr[i]);
+        if (strcmp(ip, addr) == 0) {
+            if (strcmp(osc, oscAddr[i]) == 0) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 RoutingTable::~RoutingTable()
 {
     for (int i=0; i<MAX_ANUM; i++) {

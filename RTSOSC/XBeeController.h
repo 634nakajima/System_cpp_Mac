@@ -21,7 +21,7 @@
 #endif
 
 
-#define	TILE_NUM	4
+#define	TILE_NUM	40
 
 class Coordinator;
 class XBeeController : public Module {
@@ -36,7 +36,7 @@ public:
 	std::map<int, Tile*>    tMap;;
     Coordinator				*co;
 	Serial					*serial;
-	char					buf[256];
+	char					buf[1024];
 	int						rp,wp;
 	
 	void	setCoordinator(Coordinator *coordinator);

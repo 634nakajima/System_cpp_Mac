@@ -42,12 +42,17 @@ public:
     
     void setTID(int t);
     void setRoute(char *ip, char *osc);
+    void addRoute(char *ip, char *osc);
     void deleteRoute(char *ip, char *osc);
 	void deleteAllRoute(char *osc);
     void addMethodToServer(const char *path, const char *type, lo_method_handler h, void *user_data);
 	void deleteMethodFromServer(const char *path, const char *type);
     void sendData(Data *d, lo_arg **argv, int argc);
     void sendAudio(Audio *a);
+    void sendAudio(Audio *a1, Audio *a2);
+    void sendAudio(Audio *a1, Audio *a2, Audio *a3);
+    void sendAudio(Audio *a1, Audio *a2, Audio *a3, Audio *a4);
+
     void sendAudio(short *a, unsigned long l);
     void sendSetMdtkn();
     void sendDeleteMdtkn();
@@ -60,6 +65,7 @@ private:
 
 
     static int setRoute(const char *path, const char *types, lo_arg **argv, int argc, void *data, void *user_data);
+    static int addRoute(const char *path, const char *types, lo_arg **argv, int argc, void *data, void *user_data);
     static int deleteRoute(const char *path, const char *types, lo_arg **argv, int argc, void *data, void *user_data);
 	static int deleteAllRoute(const char *path, const char *types, lo_arg **argv, int argc, void *data, void *user_data);
 

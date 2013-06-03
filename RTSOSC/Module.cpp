@@ -21,8 +21,22 @@ int Module::setRoute(const char   *path,
                      void         *user_data)
 {
     Module *mod = (Module *)user_data;
-    mod->rTable->setRoute((char *)argv[0], (char *)argv[1]);
+	
+    mod->setRoute((char *)argv[0], (char *)argv[1]);
 
+    return 0;
+}
+
+int Module::addRoute(const char   *path, 
+                     const char   *types, 
+                     lo_arg       **argv, 
+                     int          argc,
+                     void         *data, 
+                     void         *user_data)
+{
+    Module *mod = (Module *)user_data;
+    mod->addRoute((char *)argv[0], (char *)argv[1]);
+    
     return 0;
 }
 
@@ -46,7 +60,7 @@ int Module::deleteAllRoute(const char   *path,
 						   void         *user_data)
 {
     Module *mod = (Module *)user_data;
-    mod->rTable->deleteAllRoute((char *)argv[0]);
+    mod->deleteAllRoute((char *)argv[0]);
     return 0;
 }
 
@@ -57,6 +71,7 @@ Module::Module(Server *s, const char *osc)
     setOSCAddr(osc);
     
     addMethodToServer("/SetRoute", "ss", Module::setRoute, this);
+    addMethodToServer("/AddRoute", "ss", Module::addRoute, this);
     addMethodToServer("/DeleteRoute", "ss", Module::deleteRoute, this);
 	addMethodToServer("/DeleteAllRoute", "s", Module::deleteAllRoute, this);
 
@@ -146,89 +161,101 @@ void Module::sendData(Data *d, lo_arg **argv, int argc)
         switch (argc) {
             case 0:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "ii", 
-                            d->value,
-                            d->dataID);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "ii", 
+                                d->value,
+                                d->dataID);
+                    }
                 }
                 break;
             
             case 2:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            d->value,
-                            d->dataID);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                d->value,
+                                d->dataID);
+                    }
                 } 
                 break;
             
             case 4:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiii",
-                        argv[0]->i,
-                        argv[1]->i,
-                        argv[2]->i,
-                        argv[3]->i,
-                        d->value,
-                        d->dataID);
-            } 
-            break;
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                d->value,
+                                d->dataID);
+                    }
+                } 
+                break;
             
             case 6:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiiiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i,
-                            d->value,
-                            d->dataID);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i,
+                                d->value,
+                                d->dataID);
+                    }
                 } 
                 break;
         
             case 8:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiiiiiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i,
-                            argv[6]->i,
-                            argv[7]->i,
-                            d->value,
-                            d->dataID);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiiiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i,
+                                argv[6]->i,
+                                argv[7]->i,
+                                d->value,
+                                d->dataID);
+                    }
                 } 
                 break;
         
             case 10:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiiiiiii",
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i,
-                            argv[6]->i,
-                            argv[7]->i,
-                            argv[8]->i,
-                            argv[9]->i,
-                            d->value,
-                            d->dataID);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiiiiiii",
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i,
+                                argv[6]->i,
+                                argv[7]->i,
+                                argv[8]->i,
+                                argv[9]->i,
+                                d->value,
+                                d->dataID);
+                    }
                 } 
                 break;
             
@@ -239,71 +266,81 @@ void Module::sendData(Data *d, lo_arg **argv, int argc)
         switch (argc) {
             case 2:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "ii", 
-                            argv[0]->i,
-                            argv[1]->i);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "ii", 
+                                argv[0]->i,
+                                argv[1]->i);
+                    }
                 }
                 break;
                 
             case 4:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i);
+                    }
                 } 
                 break;
                 
             case 6:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i);
+                    }
                 } 
                 break;
                 
             case 8:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiiiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i,
-                            argv[6]->i,
-                            argv[7]->i);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i,
+                                argv[6]->i,
+                                argv[7]->i);
+                    }
                 } 
                 break;
                 
             case 10:
                 for (int i=0; i<rTable->aNum; i++) {
-                    lo_send(rTable->loAddr[i], 
-                            rTable->oscAddr[i],
-                            "iiiiiiiiii",
-                            argv[0]->i,
-                            argv[1]->i,
-                            argv[2]->i,
-                            argv[3]->i,
-                            argv[4]->i,
-                            argv[5]->i,
-                            argv[6]->i,
-                            argv[7]->i,
-                            argv[8]->i,
-                            argv[9]->i);
+                    if (strstr(rTable->oscAddr[i], "/Data")) {
+                        lo_send(rTable->loAddr[i], 
+                                rTable->oscAddr[i],
+                                "iiiiiiiiii",
+                                argv[0]->i,
+                                argv[1]->i,
+                                argv[2]->i,
+                                argv[3]->i,
+                                argv[4]->i,
+                                argv[5]->i,
+                                argv[6]->i,
+                                argv[7]->i,
+                                argv[8]->i,
+                                argv[9]->i);
+                    }
                 } 
                 break;
                 
@@ -325,10 +362,60 @@ void Module::sendAudio(short *a, unsigned long l)
 {
     lo_blob b = lo_blob_new(l, a);
     for (int i=0; i<rTable->aNum; i++) {
-        lo_send(rTable->loAddr[i], 
-                rTable->oscAddr[i],
-                "b", 
-                b);
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "b", 
+                    b);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bb", 
+                    b1,b2);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2, Audio *a3) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+    lo_blob b3 = lo_blob_new(a3->length, a3->audio);
+    
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bbb", 
+                    b1,b2,b3);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2, Audio *a3, Audio *a4) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+    lo_blob b3 = lo_blob_new(a3->length, a3->audio);
+    lo_blob b4 = lo_blob_new(a4->length, a4->audio);
+
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i], 
+                    rTable->oscAddr[i],
+                    "bbbb", 
+                    b1,b2,b3,b4);
+        }
     }
 }
 
@@ -376,8 +463,15 @@ void Module::deleteMethodFromServer(const char *path, const char *type)
 
 void Module::setRoute(char *ip, char *osc)
 {
+    if (rTable->isRouting(ip, osc) && rTable->numRoute(osc) == 1) return;
+    
+    rTable->deleteAllRoute(osc);
     rTable->setRoute(ip, osc);
-	//printf("setRoute:%s,%s\n",ip, osc);
+}
+
+void Module::addRoute(char *ip, char *osc)
+{
+    rTable->setRoute(ip, osc);
 }
 
 void Module::deleteRoute(char *ip,char *osc)
@@ -395,7 +489,7 @@ void Module::connectTo(Module *m, const char *t)
 	char p[64];
 	strcpy(p, m->OSCAddr);
     strcat(p, t);
-	setRoute(m->IPAddr, p);
+	addRoute(m->IPAddr, p);
 }
 
 void Module::disconnectFrom(Module *m, const char *t)
@@ -408,8 +502,9 @@ void Module::disconnectFrom(Module *m, const char *t)
 
 Module::~Module()
 {
-    //sendDeleteMdtkn();
+    sendDeleteMdtkn();
 	deleteMethodFromServer("/SetRoute", "ss");
+	deleteMethodFromServer("/AddRoute", "ss");
     deleteMethodFromServer("/DeleteRoute", "ss");
 	deleteMethodFromServer("/DeleteAllRoute", "s");
     delete rTable;

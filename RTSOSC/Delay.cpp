@@ -71,7 +71,6 @@ int Delay::data1(const char   *path,
     }
     
     d->setDt(dval[0]);
-
 	return 0;
 }
 
@@ -89,9 +88,9 @@ int Delay::data2(const char   *path,
         dval[i] = argv[i]->i;
     }
     
-    d->setDt(dval[2]);
-    d->bypass(dval[0]);
-
+    //d->setDt(dval[2]);
+    d->setGain(dval[0]);
+    printf("!!\n");
 	return 0;
 }
 
@@ -109,9 +108,9 @@ int Delay::data3(const char   *path,
         dval[i] = argv[i]->i;
     }
     
-    d->setDt(dval[4]);
-    d->bypass(dval[2]);
-    d->setGain(dval[0]);
+    //d->setDt(dval[4]);
+    //d->setGain(dval[2]);
+    d->bypass(dval[0]);
 
 	return 0;
 }
@@ -119,14 +118,14 @@ int Delay::data3(const char   *path,
 void Delay::bypass(int data) {
     if (data == -1) return;
     
-    isBypassing = (data < 64 ? true : false);
+    isBypassing = (data < 1 ? true : false);
     memset(buf, 0, maxbs);
 }
 
 void Delay::setDt(int data) {
     if (data == -1) return;
     
-    t = (float)data*1000.0/127.0;
+    t = (float)data*500.0/127.0;
     ps = 44.1*t;
 }
 

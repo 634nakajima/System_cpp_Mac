@@ -134,7 +134,6 @@ int DAC::data1(const char   *path,
     DAC *dac = (DAC *)user_data;
     dac->vVal = argv[0]->i;
     dac->vValcpy = argv[0]->i;
-
     return 0;
 }
 
