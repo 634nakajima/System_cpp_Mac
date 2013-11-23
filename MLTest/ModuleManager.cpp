@@ -18,7 +18,7 @@ ModuleManager::ModuleManager(Server *s, const char *osc) : Module(s,osc)
     addMethodToServer("/GN/A1", "is", a1, this);//1:create 0:delete, tID
     addMethodToServer("/GN/A2", "is", a2, this);//1:create 0:delete, tID
     lo_server_thread_add_method(st->st, "/ModuleManager/RequestML", "i", requestML, this);
-    
+
 }
 
 void ModuleManager::sendModuleList()

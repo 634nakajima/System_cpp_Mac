@@ -16,14 +16,19 @@ int main()
     
     printf("Please Enter Your Device Name!\n");
     scanf("%s", &dn[1]);
-    
+
 	s = new Server();
     xbc = new XBeeController(s, "/XBC", "/dev/cu.usbserial-A50178PJ");
+	printf("1\n");
+
 	mm	= new ModuleManager(s, dn);
+	printf("2\n");
+
 	co	= new Coordinator(s, "/Coordinator");
+
     se  = new Serial(s, "/Serial", "/dev/cu.usbmodemfd131");
 	mym = new MyModule(s, "/MM");
-    
+
 	mm->sendModuleList();
     xbc->co = co;
     co->xbc = xbc;

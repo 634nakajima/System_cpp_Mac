@@ -21,7 +21,7 @@ int Module::setRoute(const char   *path,
                      void         *user_data)
 {
     Module *mod = (Module *)user_data;
-	
+
     mod->setRoute((char *)argv[0], (char *)argv[1]);
 
     return 0;
@@ -61,6 +61,7 @@ int Module::deleteAllRoute(const char   *path,
 {
     Module *mod = (Module *)user_data;
     mod->deleteAllRoute((char *)argv[0]);
+
     return 0;
 }
 
