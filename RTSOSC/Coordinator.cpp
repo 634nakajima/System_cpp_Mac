@@ -324,8 +324,6 @@ void Coordinator::disconnectAll(int tID, const char *t)
                 "s", 
                 t);
     //}
-    printf("ef\n");
-
 }
 
 Coordinator::~Coordinator()

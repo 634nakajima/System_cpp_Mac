@@ -25,7 +25,7 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
     if (d < 0)  d = d + MAX_PACKET;
     
     if (dac->loop++==1000) {
-        printf("%d\n",d);
+        //printf("%d\n",d);
         dac->loop = 0;
     }
     
