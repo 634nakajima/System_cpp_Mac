@@ -31,7 +31,7 @@ int Coordinator::tileState(const char   *path,
 	for (std::map<int, MToken*>::iterator iter = co->mtknMap.begin(); iter!=co->mtknMap.end(); iter++) {
         MToken *tmp = iter->second;
         if (tmp->tID == argv[0]->i) {
-			for (int i; i<3; i++) {
+			for (int i=0; i<3; i++) {
 				lo_send(lo_address_new((char *)argv[1],"6340"), 
 						(char *)argv[2],
 						"ssii", 
@@ -45,7 +45,7 @@ int Coordinator::tileState(const char   *path,
         }
     }
 	
-    for (int i; i<3; i++) {
+    for (int i=0; i<3; i++) {
 		lo_send(lo_address_new((char *)argv[1],"6340"), 
 				(char *)argv[2],
 				"ssi", 
@@ -237,7 +237,7 @@ void Coordinator::connect(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    for (int i; i<3; i++) {
+    for (int i=0; i<3; i++) {
         lo_send(lo_address_new(m1->ip,"6340"), 
                 strcat(m1OSC,"/SetRoute"),
                 "ss", 
@@ -264,7 +264,7 @@ void Coordinator::addConnection(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    for (int i; i<3; i++) {
+    for (int i=0; i<3; i++) {
         lo_send(lo_address_new(m1->ip,"6340"), 
                 strcat(m1OSC,"/AddRoute"),
                 "ss", 
@@ -291,7 +291,7 @@ void Coordinator::disconnect(int tID1, int tID2, const char *t)
     strcpy(m1OSC, m1->osc);
     strcpy(m2OSC, m2->osc);
     
-    for (int i; i<3; i++) {
+    for (int i=0; i<3; i++) {
         lo_send(lo_address_new(m1->ip,"6340"), 
                 strcat(m1OSC,"/DeleteRoute"),
                 "ss", 
@@ -315,13 +315,15 @@ void Coordinator::disconnectAll(int tID, const char *t)
     
     //モジュールに対して切断するルートのアドレスを送信
     strcpy(m1OSC, m1->osc);
-    
-    for (int i; i<3; i++) {
-        lo_send(lo_address_new(m1->ip,"6340"), 
+    //printf("%s,%s,%s\n", m1->ip, strcat(m1OSC,"/DeleteAllRoute"), t);
+
+    //for (int i=0; i<3; i++) {
+
+        lo_send(lo_address_new(m1->ip,"6340"),
                 strcat(m1OSC,"/DeleteAllRoute"),
                 "s", 
                 t);
-    }
+    //}
 }
 
 Coordinator::~Coordinator()
