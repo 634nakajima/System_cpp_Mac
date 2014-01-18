@@ -15,7 +15,7 @@ int MyModule::stream(const char   *path,
                      void         *user_data) {
 
 	MyModule *o = (MyModule *)user_data;
-	
+
 	lo_blob b = (lo_blob)argv[0];
     unsigned char *dp = (unsigned char *)lo_blob_dataptr(b);
     int size = lo_blob_datasize(b);
