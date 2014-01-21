@@ -277,6 +277,7 @@ int XBeeController::stream(const char   *path,
 		xbc->wp = (xbc->wp != 1023 ? xbc->wp+1 : 0);
 	}
 	xbc->parseData();
+    return 0;
 }
 
 XBeeController::~XBeeController()

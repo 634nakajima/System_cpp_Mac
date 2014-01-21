@@ -21,7 +21,6 @@ int Module::setRoute(const char   *path,
                      void         *user_data)
 {
     Module *mod = (Module *)user_data;
-
     mod->setRoute((char *)argv[0], (char *)argv[1]);
 
     return 0;
@@ -372,16 +371,28 @@ void Module::sendAudio(short *a, unsigned long l)
     }
 }
 
-void Module::sendAudio(Audio *a1, Audio *a2) {
-    
-    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
-    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+void Module::sendAudio(lo_blob b1, lo_blob b2) {
 
     for (int i=0; i<rTable->aNum; i++) {
         if (strstr(rTable->oscAddr[i], "/Stream")) {
             lo_send(rTable->loAddr[i], 
                     rTable->oscAddr[i],
                     "bb", 
+                    b1,b2);
+        }
+    }
+}
+
+void Module::sendAudio(Audio *a1, Audio *a2) {
+    
+    lo_blob b1 = lo_blob_new(a1->length, a1->audio);
+    lo_blob b2 = lo_blob_new(a2->length, a2->audio);
+    
+    for (int i=0; i<rTable->aNum; i++) {
+        if (strstr(rTable->oscAddr[i], "/Stream")) {
+            lo_send(rTable->loAddr[i],
+                    rTable->oscAddr[i],
+                    "bb",
                     b1,b2);
         }
     }

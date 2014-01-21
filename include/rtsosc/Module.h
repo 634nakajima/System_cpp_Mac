@@ -50,6 +50,7 @@ public:
     void sendData(Data *d, lo_arg **argv, int argc);
     void sendAudio(Audio *a);
     void sendAudio(Audio *a1, Audio *a2);
+    void sendAudio(lo_blob b1, lo_blob b2);
     void sendAudio(Audio *a1, Audio *a2, Audio *a3);
     void sendAudio(Audio *a1, Audio *a2, Audio *a3, Audio *a4);
 

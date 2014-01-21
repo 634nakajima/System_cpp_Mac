@@ -42,32 +42,18 @@ int DAC::outputCallback(const void *inputBuffer, void *outputBuffer,
             if (d-- > 0) {
                 dac->vol = 0.005*dac->vTable[dac->vVal] + 0.995*dac->vol;
 				
-				switch (dac->ch) {
-					case 0:
-						*out++ = dac->buf[dac->rp]*dac->vol;
-						*out++ = 0;
-						break;
-					case 1:
-						*out++ = 0;
-						*out++ = dac->buf[dac->rp]*dac->vol;
-						break;
-					case 2:
-						*out++ = dac->buf[dac->rp]*dac->vol;
-						*out++ = dac->buf[dac->rp]*dac->vol;
-						break;
-					default:
-                        *out++ = 0;
-                        *out++ = 0;
-						break;
-				}
+				*out++ = dac->buf[dac->rp]*dac->vol;
+                *out++ = dac->buf[dac->rp]*dac->vol;
+                
                 dac->buf[dac->rp] = 0;
+                dac->buf2[dac->rp] = 0;
+                
                 dac->rp = (dac->rp != MAX_PACKET-1 ? dac->rp+1 : 0);
             } else {
                 dac->isPlaying = false;
                 printf("stop\n");
                 *out++ = 0;
 				*out++ = 0;
-
             }
             
         } else {
@@ -101,7 +87,25 @@ int DAC::stream(const char   *path,
         for(int i=0; i<size; i++){
             
             if (d++ <= dac->bs+size*4) {
-                dac->buf[dac->wp] = *dp++;
+                switch (dac->ch) {
+                    case 0:
+                        dac->buf[dac->wp] = *dp++;
+                        dac->buf2[dac->wp] = 0;
+
+                        break;
+                    case 1:
+                        dac->buf[dac->wp] = 0;
+                        dac->buf2[dac->wp] = *dp++;
+                        break;
+                    case 2:
+                        dac->buf[dac->wp] = *dp;
+                        dac->buf2[dac->wp] = *dp++;
+                        break;
+                    default:
+                        dac->buf[dac->wp] = 0;
+                        dac->buf2[dac->wp] = 0;
+                        break;
+                }
                 dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
             } else {
                 printf("//\n");
@@ -113,6 +117,54 @@ int DAC::stream(const char   *path,
         
         for(int i=0; i<size; i++){
             dac->buf[dac->wp] = *dp++;
+            dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
+        }
+        if (d+size > dac->bs && !dac->isPlaying) {
+			dac->vVal = dac->vValcpy;
+            dac->start();
+            printf("start\n");
+        }
+    }
+    return 0;
+}
+
+int DAC::stream2(const char   *path,
+                 const char   *types,
+                 lo_arg       **argv,
+                 int          argc,
+                 void         *data,
+                 void         *user_data)
+{
+    DAC *dac = (DAC *)user_data;
+    
+    lo_blob b   = (lo_blob)argv[0];
+    lo_blob b2  = (lo_blob)argv[1];
+    short *dp   = (short *)lo_blob_dataptr(b);
+    short *dp2  = (short *)lo_blob_dataptr(b2);
+    int size = lo_blob_datasize(b)/sizeof(short);
+    int d = dac->wp - dac->rp;
+    if (d < 0)  d = d + MAX_PACKET;
+    
+    dac->sendAudio(b, b2);
+    
+    if (dac->isPlaying) {
+        for(int i=0; i<size; i++){
+            
+            if (d++ <= dac->bs+size*4) {
+                dac->buf[dac->wp] = *dp++;
+                dac->buf2[dac->wp] = *dp2++;
+                dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
+            } else {
+                printf("//\n");
+                break;
+            }
+        }
+        
+    } else {
+        
+        for(int i=0; i<size; i++){
+            dac->buf[dac->wp] = *dp++;
+            dac->buf2[dac->wp] = *dp2++;
             dac->wp = (dac->wp != MAX_PACKET-1 ? dac->wp+1 : 0);
         }
         if (d+size > dac->bs && !dac->isPlaying) {
@@ -155,6 +207,7 @@ int DAC::data2(const char   *path,
 DAC::DAC(Server *s, const char *osc) : Module(s, osc)
 {
     addMethodToServer("/Stream", "b", DAC::stream, this);
+    addMethodToServer("/Stream", "bb", DAC::stream2, this);
     addMethodToServer("/Data", "ii", DAC::data1, this);
 	addMethodToServer("/Data", "iiii", DAC::data2, this);
 
@@ -173,7 +226,9 @@ DAC::DAC(Server *s, const char *osc) : Module(s, osc)
     bs          = 32*48;
 	ch			= 0;
     buf         = (short *)malloc(sizeof(short)*MAX_PACKET);
+    buf2        = (short *)malloc(sizeof(short)*MAX_PACKET);
     memset(buf, 0, sizeof(short)*MAX_PACKET);
+    memset(buf2, 0, sizeof(short)*MAX_PACKET);
     if(preparePa()) printf("err_preparePa\n");
 }
 
@@ -232,6 +287,7 @@ DAC::~DAC()
 {
 	//lo_server_thread_del_method(st->st, "/Stream", "b");
 	free(buf);
+    free(buf2);
     stop();
     Pa_CloseStream( paStream );
     Pa_Terminate();

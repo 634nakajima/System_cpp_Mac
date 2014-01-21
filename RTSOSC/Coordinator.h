@@ -17,6 +17,7 @@
 #include <list>
 
 class XBeeController;
+class Tile;
 class Coordinator : public Module {
 
 public:

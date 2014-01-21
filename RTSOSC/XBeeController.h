@@ -23,6 +23,7 @@
 
 #define	TILE_NUM	40
 
+class Tile;
 class Coordinator;
 class XBeeController : public Module {
 	

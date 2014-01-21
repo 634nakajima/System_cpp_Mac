@@ -27,7 +27,7 @@ public:
     
     bool            isPlaying;
     double          sampleRate;
-    short           *buf;
+    short           *buf, *buf2;
     unsigned long   bs,rp,wp,loop;
     float           vol, vTable[128];
     int             vVal, vValcpy;
@@ -47,12 +47,19 @@ private:
 							  PaStreamCallbackFlags statusFlags,
 							  void                  *userData);
     
-	static int stream(const char   *path, 
+	static int stream(const char   *path,
                       const char   *types, 
                       lo_arg       **argv, 
                       int          argc,
                       void         *data, 
                       void         *user_data);
+ 
+    static int stream2(const char   *path,
+                       const char   *types,
+                       lo_arg       **argv,
+                       int          argc,
+                       void         *data,
+                       void         *user_data);
     
     static int data1(const char   *path, 
                      const char   *types, 
